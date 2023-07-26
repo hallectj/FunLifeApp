@@ -1,0 +1,157 @@
+$background-color: #212223;
+
+header{
+  background: $background-color;
+  text-align: center;
+  width: 100%;
+  padding: 10px 0px;
+  z-index: 999;
+}
+
+.logo{
+  margin: 0px;
+  filter: invert(100%);
+
+  a{
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+}
+
+nav{
+  position: absolute;
+  text-align: left;
+  top: 100%;
+  left: 0;
+  background-color: $background-color;
+  width: 100%;
+  transform: scale(1, 0);
+  transform-origin: top;
+  transition: transform 400ms ease-in-out;
+
+  ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    .cust-nav-item {
+      margin-left: 1.0em;
+    }
+
+    a{
+      text-decoration: none;
+      font-size: 0.80em;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #fff;
+      opacity: 0;
+      transition: opacity 150ms ease-in-out;
+
+      &:hover{
+        color:  #cbc4c0;
+      }
+    }
+  }
+}
+
+#nav-toggle{
+  display: none;
+}
+
+.nav-toggle:checked ~ nav{
+  transform: scale(1,1);
+}
+
+.nav-toggle:checked ~ nav a{
+  opacity: 1;
+  transition: opacity 250ms ease-in-out 250ms;
+}
+
+.nav-toggle-label{
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 1em;
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  span, span::before, span::after{
+    width: 2rem;
+    height: 2px;
+    display: block;
+    background-color: white;
+    border-radius: 2px;
+    position: relative;
+  }
+
+  span::before, span::after{
+    content: '';
+    position: absolute;
+  }
+
+  span::before{
+    bottom: 7px;
+  }
+
+  span::after{
+    top: 7px;
+  }
+
+}
+
+@media screen and (min-width: 875px) {
+  .nav-toggle-label{
+    display: none;
+  }
+
+  .inner-header-div{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  header{
+    display: flex;
+
+    .logo-wrapper{
+      flex: 1;
+    }
+
+    nav{
+      all: unset;
+      display: flex;
+      align-items: center;
+      flex: 0 auto;
+
+      .main-menu-ul{
+        display: flex;
+      }
+
+      a{
+        opacity: 1;
+        position: relative;
+      }
+
+      a::before{
+        content: '';
+        display: block;
+        position: absolute;
+        top: -0.80em;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: goldenrod;
+        transform: scale(0, 1);
+        transition: transform ease-in-out 350ms;
+        transform-origin: left;
+      }
+
+      a:hover::before{
+        transform: scale(1,1);
+      }
+    }
+  }
+}
