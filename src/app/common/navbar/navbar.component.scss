@@ -6,6 +6,7 @@ header{
   width: 100%;
   padding: 10px 0px;
   z-index: 999;
+  position: relative;
 }
 
 .logo{
@@ -27,7 +28,10 @@ nav{
   width: 100%;
   transform: scale(1, 0);
   transform-origin: top;
-  transition: transform 400ms ease-in-out;
+
+  &::after{
+    transition: transform 400ms ease-in-out;
+  }
 
   ul{
     margin: 0;

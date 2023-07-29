@@ -1,0 +1,145 @@
+#mainWrapper{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 40px;
+  padding: 0px 20px;
+
+  #mainHome{
+    flex: 1;
+  }
+}
+
+#frontFeatureWrapper{
+  display: flex;
+  flex-direction: column;
+  min-width: 400px;
+  max-width: 675px;
+  width: 100%;
+  border: 4px solid black;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: sandybrown;
+
+  header{
+    background-color: #212223;
+    width: 100%;
+    color: white;
+
+    h4{
+      font-size: 1.0em;
+    }
+
+    .random_year{
+      font-size: 0.75em;
+    }
+  }
+
+  .feature_section{
+    display: flex;
+    margin: 10px;
+
+    .front_card_wrapper{
+      display: flex;
+      justify-content: space-around;
+    }
+  }
+}
+
+/** Card Styles **/
+.cust__card {
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   font-family: 'Rubik', sans-serif;
+
+  .card__img-wrapper {
+    flex: 2;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    box-shadow: 1.95px 1.95px 2.6px rgba(0, 0, 0, 0.2);
+    border: 1px solid black;
+    border-radius: 0.5em;
+    padding: 5px;
+    background-color: #000;
+
+    .card__img {
+      max-width: 425px;
+      min-width: 95px;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .card__content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 180px;
+    //white-space: nowrap;
+
+    div{
+      width: 100%;
+
+      a{
+        width: inherit;
+      }
+    }
+  
+    h3{
+      text-transform: capitalize;
+      padding: 0px;
+      font-size: 1em;
+    }
+  }
+
+  .cust__button {
+    text-transform: uppercase;
+    padding: 0.25em;
+    border-radius: 0.5em;
+    border: 0;
+    font-size: 0.75rem;
+    text-decoration: none;
+    background-color: #1b2435;
+    color: #fff;
+    transition: background-color 250ms ease;
+    min-width: 100px;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    //white-space: nowrap;
+  }
+  
+  .cust__button:is(:hover, :focus-visible) {
+    filter: invert(1);
+  }
+  
+  .cust__button:active {
+    scale: 1;
+  }
+  
+  .cust__button.active {
+    filter: invert(1);
+  }
+}
+
+.inflation_wrapper{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .inflation{
+    flex: 1;
+    width: 100%;
+    background-color: #17172d;
+    padding: 5px;
+    border-radius: 10px;
+  
+    h5{
+      color: white;
+    }
+  }
+}
