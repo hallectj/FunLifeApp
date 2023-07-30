@@ -1,0 +1,85 @@
+/** Card Styles **/
+.cust__card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: 'Rubik', sans-serif;
+  height: 100%;
+
+ .card__img-wrapper {
+   flex: 2;
+   width: 100%;
+   aspect-ratio: 4 / 3;
+   box-shadow: 1.95px 1.95px 2.6px rgba(0, 0, 0, 0.2);
+   border: 1px solid black;
+   border-radius: 0.5em;
+   padding: 5px;
+   background-color: #000;
+
+   .card__img {
+     max-width: 425px;
+     min-width: 95px;
+     display: block;
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+   }
+ }
+
+ .card__content {
+   text-align: center;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   max-width: 180px;
+   //white-space: nowrap;
+
+   div{
+     width: 100%;
+
+     a{
+       width: inherit;
+     }
+   }
+ 
+   h3{
+     text-transform: capitalize;
+     padding: 0px;
+     font-size: 1em;
+   }
+ }
+
+ .card_button_holder{
+    height: 40px;
+ }
+
+ .cust__button {
+   text-transform: uppercase;
+   padding: 0.25em;
+   border-radius: 0.5em;
+   border: 0;
+   font-size: 0.75rem;
+   text-decoration: none;
+   background-color: #1b2435;
+   color: #fff;
+   transition: background-color 250ms ease;
+   min-width: 100px;
+   height: inherit;
+   display: block;
+   margin: 0 auto;
+   text-align: center;
+   //white-space: nowrap;
+ }
+ 
+ .cust__button:is(:hover, :focus-visible) {
+   filter: invert(1);
+ }
+ 
+ .cust__button:active {
+   scale: 1;
+ }
+ 
+ .cust__button.active {
+   filter: invert(1);
+ }
+}

@@ -1,0 +1,55 @@
+#frontFeatureWrapper{
+  display: flex;
+  flex-direction: column;
+  min-width: 400px;
+  max-width: 675px;
+  width: 100%;
+  border: 4px solid black;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: sandybrown;
+
+  header{
+    background-color: #212223;
+    width: 100%;
+    color: white;
+
+    h4{
+      font-size: 1.0em;
+    }
+
+    .random_year{
+      font-size: 0.75em;
+    }
+  }
+
+  .feature_section{
+    display: flex;
+    margin: 10px;
+
+    .front_card_wrapper{
+      display: flex;
+      justify-content: space-around;
+      height: 240px;
+    }
+  }
+}
+
+
+.inflation_wrapper{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+ 
+  .inflation{
+    flex: 1;
+    width: 100%;
+    background-color: #17172d;
+    padding: 5px;
+    border-radius: 10px;
+  
+    h5{
+      color: white;
+    }
+  }
+ }

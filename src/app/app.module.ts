@@ -9,6 +9,8 @@ import { BirthdayComponent } from './modules/birthday/birthday.component';
 import { DayInHistoryComponent } from './modules/day-in-history/day-in-history.component';
 import { CelebrityComponent } from './modules/celebrity/celebrity.component';
 import { InfoSidebarComponent } from './modules/info-sidebar/info-sidebar.component';
+import { FrontFeatureComponent } from './components/front-feature/front-feature.component';
+import { FrontFeatureCardComponent } from './components/front-feature/front-feature-card/front-feature-card.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { InfoSidebarComponent } from './modules/info-sidebar/info-sidebar.compon
     BirthdayComponent,
     DayInHistoryComponent,
     CelebrityComponent,
-    InfoSidebarComponent
+    InfoSidebarComponent,
+    FrontFeatureComponent,
+    FrontFeatureCardComponent
   ],
   imports: [
     BrowserModule,
