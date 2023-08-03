@@ -1,1 +1,17 @@
-<p>info-sidebar works!</p>
+<div id="sidebarDivWrapper">
+  <header>
+    <h1>Songs that topped the charts in {{randomYear}} </h1>
+  </header>
+  <div id="song-list-wrapper">
+    <div class="song-wrapper">
+      <div class="song-div-left">
+        <img [src]="thumbnail" />
+      </div>
+      <div class="song-div-right">
+       <p class="song-title m-0"> Oh Pretty Woman</p>
+       <p class="song-singer m-0">Roy Orbison</p>
+       <div><span>4 weeks at #1</span></div>
+      </div>
+    </div>
+  </div>
+</div>
