@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Inflation } from 'src/app/models/shared-models';
 
 @Component({
@@ -7,10 +7,11 @@ import { Inflation } from 'src/app/models/shared-models';
   styleUrls: ['./front-feature.component.scss']
 })
 export class FrontFeatureComponent {
+  @Input() randomYear: string = "";
+
   public celebImg: string = "https://dims.apnews.com/dims4/default/27fcf74/2147483647/strip/true/crop/2192x1624+0+0/resize/599x444!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F64%2Fde%2F08e7c48f426f68098137900e4b59%2F12d2372949ba4ec594579c2bb761ee12";
 
   public dayInHistoryImg: string = "https://airandspace.si.edu/sites/default/files/styles/callout_half/public/images/editoral-stories/thumbnails/11878h.jpg";
-
 
   public todayDateAndMonth = "";
   public inflationObj: Inflation = {
