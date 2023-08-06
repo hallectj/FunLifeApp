@@ -1,3 +1,15 @@
+@keyframes scaleEffect {
+  25% {
+      transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  } 
+  100%{
+    transform: scale(1);
+  }
+}
+
 #sidebarDivWrapper{
   header{
 
@@ -48,5 +60,8 @@
       }
     }
 
+    .song-wrapper:hover{
+      animation: scaleEffect 0.5s ease-in-out;
+    }
   }
 }
