@@ -1,3 +1,10 @@
+export const GENERAL_URL = "https://hallectj.github.io"
+
+type DataResponse<T> = {
+  //dataset: string;
+  [key: string]: T[];
+};
+
 export interface Inflation {
   currency: string, 
   year: string, 
@@ -5,4 +12,19 @@ export interface Inflation {
   bread: string, 
   movie_ticket: string, 
   car: string
+}
+
+export interface ISong{
+  artist: string,
+  songTitle: string,
+  startDate: Date,
+  endDate: Date,
+  youtubeId: string,
+  days?: number,
+  youtubeThumb?: string
+}
+
+export interface ISongWeeks {
+  songs: ISong[],
+  days: number[]
 }

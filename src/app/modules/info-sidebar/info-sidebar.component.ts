@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { HomeService } from 'src/app/common/home/home.service';
+import { ISong } from 'src/app/models/shared-models';
+import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
   selector: 'info-sidebar',
@@ -8,31 +10,20 @@ import { HomeService } from 'src/app/common/home/home.service';
 })
 
 export class InfoSidebarComponent {
-  public youtubeURL: string = "https://www.youtube.com/watch?v=3KFvoDDs0XM";
-  public thumbnail: string = "";
-  public youtubeApi: ReturnType<InfoSidebarComponent['youtube']> | undefined;
-  
+  //ALL songs
+  public songs: ISong[] = [];
+
+  //Songs filtered by year and longest number one song
+  public songsByYearArr: ISong[] = [];
+
   @Input() randomYear: string = "1990";
   
-  constructor(public homeService: HomeService){}
+  constructor(public homeService: HomeService, public generalService: GeneralService){}
 
-  public youtube = () => {
-    let video: string = "", results: RegExpMatchArray | null;
-  
-    const youtubeObj = {
-      thumbnail: (url: string) => {
-        if (url === null) { return ""; }
-        results = url.match('[\\?&]v=([^&#]*)');
-        video = (results == null) ? url : results[1];
-        return `http://img.youtube.com/vi/${video}/2.jpg`;
-      },
-    };
-  
-    return youtubeObj;
-  };
+  public async ngOnInit(){
+    const response: ISong[] | undefined = await this.generalService.getSongs().toPromise();
+    this.songs = response as ISong[];
+    this.songsByYearArr = this.generalService.findLongestNumberOneSongs(this.songs, +this.randomYear, 10);
 
-  ngOnInit(){
-    this.youtubeApi = this.youtube();
-    this.thumbnail = this.youtubeApi.thumbnail(this.youtubeURL);
   }
 }

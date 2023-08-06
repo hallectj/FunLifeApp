@@ -2,16 +2,18 @@
   <header>
     <h1>Songs that topped the charts in {{randomYear}}</h1>
   </header>
-  <div id="song-list-wrapper">
-    <div class="song-wrapper">
-      <div class="song-div-left">
-        <a href="#"><img [src]="thumbnail" /></a>
+  <div  id="song-list-wrapper">
+    
+      <div *ngFor="let song of songsByYearArr; let i = index" class="song-wrapper">
+        <div class="song-div-left">
+          <a href="#"><img [src]="song?.youtubeThumb" /></a>
+        </div>
+        <div class="song-div-right">
+         <p class="song-title m-0"> {{song.songTitle}}</p>
+         <p class="song-singer m-0"> {{song.artist}} </p>
+         <div><span>{{song?.days}} days at #1</span></div>
+        </div>
       </div>
-      <div class="song-div-right">
-       <p class="song-title m-0"> Oh Pretty Woman</p>
-       <p class="song-singer m-0">Roy Orbison</p>
-       <div><span>4 weeks at #1</span></div>
-      </div>
-    </div>
+    
   </div>
 </div>

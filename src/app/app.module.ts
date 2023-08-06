@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './common/navbar/navbar.component';
@@ -11,6 +12,7 @@ import { CelebrityComponent } from './modules/celebrity/celebrity.component';
 import { InfoSidebarComponent } from './modules/info-sidebar/info-sidebar.component';
 import { FrontFeatureComponent } from './components/front-feature/front-feature.component';
 import { FrontFeatureCardComponent } from './components/front-feature/front-feature-card/front-feature-card.component';
+import { GeneralService } from './services/general.service';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import { FrontFeatureCardComponent } from './components/front-feature/front-feat
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
