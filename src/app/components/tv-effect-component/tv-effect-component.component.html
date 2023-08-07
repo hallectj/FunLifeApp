@@ -1,0 +1,33 @@
+<div id="monitor">
+  <div id="tvWrapper">
+    <main #main class="scanlines">
+      <div class="screen">
+        <canvas #canvas id="canvas" class="picture"></canvas>
+        <div class="overlay">
+          <div #text class="text"><span>AV-1</span></div>
+          <div #menu class="menu">
+            <header class="text-center">
+              <span [innerHTML]="sportEmoji"></span >
+                <div>{{sportObj.title}} Champions {{randomYear}}</div>
+              <span [innerHTML]="sportEmoji"></span>
+            </header>
+              <div class="text-center" #innerDiv id="innerDiv">
+                <div>{{sportObj.winner}}</div>
+                <div>-- Over --</div>
+                <div>{{sportObj.loser}}</div>
+                <div>Final Score: {{sportObj.score}}</div>
+                <div *ngIf="sportObj.sport !== 'NFL'">Series: {{sportObj.series}}</div>
+              </div>
+            <footer></footer>       
+          </div>
+        </div>
+      </div>
+    </main>	
+  </div>		
+</div>
+<div class="sports-bar">
+  <div (click)="onSportClick('NFL')" style="background: red;">NFL</div>
+  <div (click)="onSportClick('NBA')" style="background: lime;">NBA</div>
+  <div (click)="onSportClick('MLB')" style="background: aqua;">MLB</div>
+  <div (click)="onSportClick('NHL')" style="background: brown;">NHL</div>
+</div> 

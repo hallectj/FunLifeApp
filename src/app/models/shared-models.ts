@@ -24,6 +24,15 @@ export interface ISong{
   youtubeThumb?: string
 }
 
+export interface ISport {
+  sport: string,
+  winner: string,
+  loser: string,
+  score: string,
+  title: string,
+  series: string
+}
+
 export interface ISongWeeks {
   songs: ISong[],
   days: number[]

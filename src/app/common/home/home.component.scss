@@ -8,12 +8,25 @@
   #mainHome{
     flex: 2;
     margin-right: 20px;
+
+    #midFeature{
+      display: flex;
+      margin-top: 10px;
+      
+      .hist-box{
+        flex: 1;
+      }
+
+    }
+
+
   }
 
   #mainSidebar{
     flex: 1;
   }
 }
+
 
 @media screen and (max-width: 875px) {
   #mainWrapper{

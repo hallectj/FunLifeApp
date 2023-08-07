@@ -13,6 +13,7 @@ import { InfoSidebarComponent } from './modules/info-sidebar/info-sidebar.compon
 import { FrontFeatureComponent } from './components/front-feature/front-feature.component';
 import { FrontFeatureCardComponent } from './components/front-feature/front-feature-card/front-feature-card.component';
 import { GeneralService } from './services/general.service';
+import { TvEffectComponentComponent } from './components/tv-effect-component/tv-effect-component.component'
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { GeneralService } from './services/general.service';
     CelebrityComponent,
     InfoSidebarComponent,
     FrontFeatureComponent,
-    FrontFeatureCardComponent
+    FrontFeatureCardComponent,
+    TvEffectComponentComponent
   ],
   imports: [
     BrowserModule,
