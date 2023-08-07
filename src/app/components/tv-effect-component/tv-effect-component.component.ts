@@ -1,5 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { ISport } from 'src/app/models/shared-models';
+import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
   selector: 'tv-effect-component',
@@ -25,47 +26,29 @@ export class TvEffectComponentComponent {
   public sportEmoji: string = "&#127944;"  //football
 
 
-  public sportObjFromServer = {
-    sport: {
-      nfl: {
-        winner: "Los Angeles Raiders",
-        loser: "Washington Redskins",
-        score: "38-9",
-        title: "Super Bowl XVIII",
-        series: "1-0"
-      },
-      mlb: {
-        winner: "Detroit Tigers",
-        loser: "San Diego Padres",
-        score: "8-4",
-        title: "World Series",
-        series: "4-1"
-      },
-      nhl: {
-        winner: "Edmonton Oilers",
-        loser: "New York Islanders",
-        score: "5-2",
-        title: "Stanley Cup",
-        series: "4-1"
-      },
-      nba: {
-        winner: "Boston Celtics",
-        loser: "Los Angeles Lakers",
-        score: "111-102",
-        title: "NBA Championship",
-        series: "4-3"
-      }
-    }
-
-  }
+  public sportsArrFromServer: ISport[] = [];
 
   public sportObj: ISport = {
-    sport: "NFL",
-    winner: this.sportObjFromServer.sport.nfl.winner,
-    loser: this.sportObjFromServer.sport.nfl.loser,
-    title: this.sportObjFromServer.sport.nfl.title,
-    series: this.sportObjFromServer.sport.nfl.series,
-    score: this.sportObjFromServer.sport.nfl.score
+    sport: "",
+    winner: "",
+    loser: "",
+    title: "",
+    series: "",
+    score: ""
+  }
+
+  constructor(private service: GeneralService){}
+
+  public async ngOnInit(){
+    const response = await this.service.getSportsByYear(this.randomYear).toPromise();
+    this.sportsArrFromServer = response;
+    if(this.sportsArrFromServer && this.sportsArrFromServer.length > 0){
+      const nflIdx = this.sportsArrFromServer.findIndex(v => v.sport.toUpperCase() === "NFL");
+      if(nflIdx !== -1){
+        const nflObj = this.sportsArrFromServer[nflIdx];
+        this.sportObj = nflObj;
+      }
+    }
   }
 
   public ngAfterViewInit(){
@@ -110,46 +93,22 @@ export class TvEffectComponentComponent {
   }
 
   public onSportClick(sport: string){
+    const sportObjIdx = this.sportsArrFromServer.findIndex(v => v.sport.toUpperCase() === sport.toUpperCase());
+    let sportsObj: ISport = null;
+    if(sportObjIdx !== -1){
+      sportsObj = this.sportsArrFromServer[sportObjIdx];
+      this.sportObj = sportsObj;
+      this.sportObj.sport = this.sportsArrFromServer[sportObjIdx].sport.toUpperCase();
+    }
+
     if(sport === "NFL"){
       this.sportEmoji = "&#127944;";
-      this.sportObj = {
-        sport: sport,
-        winner: this.sportObjFromServer.sport.nfl.winner,
-        loser: this.sportObjFromServer.sport.nfl.loser,
-        title: this.sportObjFromServer.sport.nfl.title,
-        series: this.sportObjFromServer.sport.nfl.series,
-        score: this.sportObjFromServer.sport.nfl.score
-      }
     }else if(sport === "NBA"){
       this.sportEmoji = "&#127936;"
-      this.sportObj = {
-        sport: sport,
-        winner: this.sportObjFromServer.sport.nba.winner,
-        loser: this.sportObjFromServer.sport.nba.loser,
-        title: this.sportObjFromServer.sport.nba.title,
-        series: this.sportObjFromServer.sport.nba.series,
-        score: this.sportObjFromServer.sport.nba.score
-      }
     }else if(sport === "MLB"){
       this.sportEmoji = "&#9918;";
-      this.sportObj = {
-        sport: sport,
-        winner: this.sportObjFromServer.sport.mlb.winner,
-        loser: this.sportObjFromServer.sport.mlb.loser,
-        title: this.sportObjFromServer.sport.mlb.title,
-        series: this.sportObjFromServer.sport.mlb.series,
-        score: this.sportObjFromServer.sport.mlb.score
-      }
     }else if(sport === "NHL"){
       this.sportEmoji = "&#127954;";
-      this.sportObj = {
-        sport: sport,
-        winner: this.sportObjFromServer.sport.nhl.winner,
-        loser: this.sportObjFromServer.sport.nhl.loser,
-        title: this.sportObjFromServer.sport.nhl.title,
-        series: this.sportObjFromServer.sport.nhl.series,
-        score: this.sportObjFromServer.sport.nhl.score
-      }
     }
   }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GENERAL_URL, ISong } from '../models/shared-models';
+import { GENERAL_URL, ISong, ISport } from '../models/shared-models';
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +24,7 @@ export class GeneralService {
     return `http://img.youtube.com/vi/${video}/2.jpg`;
   }
 
-  private getData<T>(endpoint: string): Observable<T> {
+  private getData<T>(endpoint: string, year?: string): Observable<T> {
     const filePath = `${GENERAL_URL}/${endpoint}`;
     return this.http.get<any>(filePath).pipe(
       map((response) => {
@@ -37,6 +37,21 @@ export class GeneralService {
             return { ...song, days, youtubeThumb };
           });
           return songs as T;
+        }else if(response && response.dataset === "sports"){
+          const yearData = response?.year?.[year];
+          if (yearData) {
+            const sportsArray: ISport[] = [];
+            Object.keys(yearData.sport).forEach((sportType: string) => {
+              const sportData = yearData.sport[sportType];
+              sportsArray.push({
+                sport: sportType,
+                ...sportData
+              });
+            });
+            return sportsArray as T;
+          } else {
+            return null;
+          }
         }
         return response as T;
       })
@@ -45,6 +60,10 @@ export class GeneralService {
 
   public getSongs(): Observable<ISong[]> {
     return this.getData<ISong[]>('topSongs.json');
+  }
+
+  public getSportsByYear(year: string): Observable<ISport[]>{
+    return this.getData<ISport[]>('sports.json', year);
   }
 
   public findLongestNumberOneSongs(songs: ISong[], year: number, count: number): ISong[] {
