@@ -5,48 +5,29 @@
   <section class="feature_section">
     <div class="front_card_wrapper">
 
-      <front-feature-card 
-        [cardTitle]="'Britney Spears'" 
-        [cardImg]="celebImg"
-        [cardButtonText]="'Celebrities Born Today'"
-      ></front-feature-card>
-      
-      <front-feature-card 
-        [cardTitle]="'Challenger Explosion'" 
-        [cardImg]="dayInHistoryImg"
-        [cardButtonText]="'This Day In History'"
-      ></front-feature-card>
-      
-      <div class="inflation_wrapper">
-        <div class="inflation">
-          <h5 class="text-center">{{randomYear}} Prices</h5>
-          <div class="table-responsive">
-            <table class="table table-striped table-sm border-success">
-              <tbody>
-                <tr>
-                  <th scope="row">🎟️</th>
-                  <td>Movie Ticket</td>
-                  <td>$0.25</td>
-                </tr>
-                <tr>
-                  <th scope="row">⛽</th>
-                  <td>Gas</td>
-                  <td>$0.18</td>
-                </tr>
-                <tr>
-                  <th scope="row">🍞</th>
-                  <td>Bread</td>
-                  <td>$0.10</td>
-                </tr>
-                <tr>
-                  <th scope="row">🚗</th>
-                  <td>Car</td>
-                  <td>$800</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div>
+        <front-feature-card 
+          [cardTitle]="celebName" 
+          [cardImg]="celebImg"
+          [cardButtonText]="'Celebrities Born Today'"
+        ></front-feature-card>
+      </div>
+
+      <div>
+        <front-feature-card 
+          [cardTitle]="'Happened this day'" 
+          [cardImg]="histEvtImg"
+          [cardButtonText]="'This Day In History'"
+        ></front-feature-card>
+      </div>
+
+      <div>
+        <front-feature-card 
+          [cardTitle]="'President'" 
+          [cardImg]="presidentPortrait"
+          [cardButtonText]="'President ' + presidentDateStr"
+          [loading]="presidentLoading"
+        ></front-feature-card>
       </div>
     </div>
   </section>

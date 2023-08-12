@@ -1,62 +1,47 @@
-/** Card Styles **/
-.cust__card {
+/* Styles for the card container */
+.card-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Styles for individual cards */
+.cust_card {
+  flex: 1;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  text-align: center;
+  background-color: black;
+  color: white;
+}
+
+/* Styles for images within the cards */
+.cust_card img {
+   max-width: 100%;
+   height: 190px;
+   object-fit: cover;
+   transform: scale(0.95);
+   transition: all 0.25s ease-in;
+
+   &:hover{
+    transform: scale(1);
+
+   }
+}
+
+.card_button_holder{
+  height: 40px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  font-family: 'Rubik', sans-serif;
-  height: 100%;
-
- .card__img-wrapper {
-   flex: 2;
-   width: 100%;
-   aspect-ratio: 4 / 3;
-   box-shadow: 1.95px 1.95px 2.6px rgba(0, 0, 0, 0.2);
-   border: 1px solid black;
-   border-radius: 0.5em;
-   padding: 5px;
-   background-color: #000;
-
-   .card__img {
-     max-width: 425px;
-     min-width: 95px;
-     display: block;
-     width: 100%;
-     height: 100%;
-     object-fit: cover;
-   }
- }
-
- .card__content {
-   text-align: center;
-   display: flex;
-   flex-direction: column;
-   justify-content: space-between;
-   max-width: 180px;
-   //white-space: nowrap;
-
-   div{
-     width: 100%;
-
-     a{
-       width: inherit;
-     }
-   }
- 
-   h3{
-     text-transform: capitalize;
-     padding: 0px;
-     font-size: 1em;
-   }
- }
-
- .card_button_holder{
-    height: 40px;
+  width: 100%;
  }
 
  .cust__button {
    text-transform: uppercase;
    padding: 0.25em;
-   border-radius: 0.5em;
    border: 0;
    font-size: 0.75rem;
    text-decoration: none;
@@ -65,21 +50,46 @@
    transition: background-color 250ms ease;
    min-width: 100px;
    height: inherit;
-   display: block;
-   margin: 0 auto;
    text-align: center;
-   //white-space: nowrap;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+
+   &:hover{
+    filter: invert(1);
+   }
  }
- 
- .cust__button:is(:hover, :focus-visible) {
-   filter: invert(1);
- }
- 
- .cust__button:active {
-   scale: 1;
- }
- 
- .cust__button.active {
-   filter: invert(1);
- }
+
+.is-flipped{
+  transform: translateX(-100%) rotateY(-180deg);
+}
+
+.loading-wrapper{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 190px;
+}
+
+ //spinner styles
+ .loading {
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  -webkit-animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+  to { -webkit-transform: rotate(360deg); }
 }

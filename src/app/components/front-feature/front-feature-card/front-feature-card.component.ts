@@ -10,4 +10,11 @@ export class FrontFeatureCardComponent {
   @Input() cardTitle: string = "";
   @Input() cardAlt: string = "";
   @Input() cardButtonText: string = "";
+  @Input() loading: boolean = false;
+
+  public isFlipped: boolean = false;
+
+  flipCard() {
+    this.isFlipped = !this.isFlipped;
+  }
 }

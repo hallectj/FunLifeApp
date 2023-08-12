@@ -22,11 +22,13 @@ export class TvEffectComponentComponent {
 	public count: number = 0;
 	public toggle: boolean = true;
 	public frame: any;
+  public sportsInterval = null;
 
   public sportEmoji: string = "&#127944;"  //football
 
 
   public sportsArrFromServer: ISport[] = [];
+  public sportsIndex: number = 0;
 
   public sportObj: ISport = {
     sport: "",
@@ -62,9 +64,28 @@ export class TvEffectComponentComponent {
       this.main.nativeElement.classList.remove('off');
       this.animate(this.ctx);
       this.glitchEffect();
+      this.sportTextSlider(5000);
     }, 1000);
   }
 
+  public clearSportsInterval(){
+    clearInterval(this.sportsInterval);
+  }
+
+  public resumeInterval(){
+    this.sportTextSlider(5000);
+  }
+
+  public sportTextSlider(speed: number){
+    this.sportsInterval = setInterval(() => {
+      let sports = ["NFL", "NBA", "MLB", "NHL"];
+      if(this.sportsIndex === sports.length){
+        this.sportsIndex = 0;
+      }
+      this.onSportClick(sports[this.sportsIndex]);
+      this.sportsIndex++;
+    }, speed)
+  }
 
   public snow(ctx: CanvasRenderingContext2D) {
     let w = ctx.canvas.width;

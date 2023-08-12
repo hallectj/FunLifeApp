@@ -12,7 +12,7 @@ export class HomeComponent {
   constructor(public service: HomeService){}
 
   public ngOnInit(){
-    this.randomYear = this.getRandomYear(1940, 2020).toString();
+    this.randomYear = this.getRandomYear(1941, 2020).toString();
   }
 
   //years from 1940 to 2020

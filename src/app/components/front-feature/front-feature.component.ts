@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Inflation } from 'src/app/models/shared-models';
+import { IPresident, Inflation } from 'src/app/models/shared-models';
+import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
   selector: 'front-feature',
@@ -8,10 +9,13 @@ import { Inflation } from 'src/app/models/shared-models';
 })
 export class FrontFeatureComponent {
   @Input() randomYear: string = "";
+  public celebImg: string = "";
+  public celebName: string = "";
+  public histEvtImg: string = "";
+  public presidentPortrait: string = "";
+  public presidentDateStr: string = "";
 
-  public celebImg: string = "https://dims.apnews.com/dims4/default/27fcf74/2147483647/strip/true/crop/2192x1624+0+0/resize/599x444!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F64%2Fde%2F08e7c48f426f68098137900e4b59%2F12d2372949ba4ec594579c2bb761ee12";
-
-  public dayInHistoryImg: string = "https://airandspace.si.edu/sites/default/files/styles/callout_half/public/images/editoral-stories/thumbnails/11878h.jpg";
+  public presidentLoading: boolean = true;
 
   public todayDateAndMonth = "";
   public inflationObj: Inflation = {
@@ -23,11 +27,71 @@ export class FrontFeatureComponent {
     car: "950.00"
   }
 
-  constructor(){}
+  constructor(private service: GeneralService){}
 
-  public ngOnInit(){
+  public async ngOnInit(){
     let date = new Date();
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     this.todayDateAndMonth = months[date.getMonth()] + " " + date.getDate();
+    this.presidentDateStr = this.todayDateAndMonth + ", " + this.randomYear;
+
+    let month = (date.getMonth() + 1).toString();
+    let day = (date.getDate()).toString();
+
+    if(month.length === 1){
+      month = "0" + month;
+    }
+
+    if(day.length === 1){
+      day = "0" + day;
+    }
+
+    console.log(month, day);
+
+    const histEvents = await this.service.callWikiAPI(date, "events").toPromise();
+    console.log("histEvents", histEvents)
+
+    let eventCount = histEvents.events.length;
+    let randEventIndex = Math.floor(Math.random() * (eventCount - 0 + 1) + 0);
+    console.log("randEventIndex", randEventIndex)
+
+    this.histEvtImg = histEvents.events[randEventIndex].pages[0].originalimage.source;
+    
+    const famousBirths = await this.service.getFamousPeopleByDate(month, day).toPromise();
+    console.log(famousBirths);
+
+    const celeb = famousBirths.results.bindings[0];
+
+    this.celebImg = celeb.uniqueImage.value;
+    console.log("celebImg", celeb.uniqueImage.value);
+    this.celebName = celeb.personLabel.value;
+
+    const presidents = await this.service.getPresidents().toPromise();
+    const president = this.presidentByYear(presidents, this.randomYear);
+    this.presidentPortrait = president.portraitURL;
+    this.presidentLoading = false;
+    
+  }
+
+
+  private presidentByYear(presArr: IPresident[], year: string): IPresident{
+    const todayDate = new Date();
+    let month = (todayDate.getMonth() + 1).toString();
+    let day = (todayDate.getDate()).toString();
+    
+    const compareDate = new Date(month + "/" + day + "/" + year);
+    const dateToCheckTimestamp = new Date(compareDate).getTime();
+
+    for (const obj of presArr) {
+      const startDateTimestamp = new Date(obj.startDate).getTime();
+      const endDateTimestamp = new Date(obj.endDate).getTime();
+  
+      if (dateToCheckTimestamp >= startDateTimestamp && dateToCheckTimestamp <= endDateTimestamp) {
+        return obj;
+      }
+    }
+  
+    return null;
+
   }
 }

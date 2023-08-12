@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik&family=Tektur:wght@700&family=Work+Sans&display=swap');
+
 #mainWrapper{
   display: flex;
   justify-content: space-between;
@@ -11,15 +13,22 @@
 
     #midFeature{
       display: flex;
+      flex-wrap: wrap;
       margin-top: 10px;
       
       .hist-box{
         flex: 1;
+        margin: 0px 5px;
+
+        .hist-box-header{
+          text-align: center;
+          background-color: #212223;
+          font-family: Tektur, sans-serif;
+          text-shadow: 2px 2px #000;
+          color: white;
+        }
       }
-
     }
-
-
   }
 
   #mainSidebar{

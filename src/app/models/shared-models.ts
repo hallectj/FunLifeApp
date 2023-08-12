@@ -14,6 +14,16 @@ export interface Inflation {
   car: string
 }
 
+export interface IPresident{
+  number: string,
+  name: string,
+  startDate: Date,
+  endDate: Date,
+  portraitURL: string,
+  portraitDesc: string,
+  portraitSource: string
+}
+
 export interface ISong{
   artist: string,
   songTitle: string,

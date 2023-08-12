@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GENERAL_URL, ISong, ISport } from '../models/shared-models';
+import { GENERAL_URL, IPresident, ISong, ISport } from '../models/shared-models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GeneralService {
+  private sparqlEndpoint = 'https://query.wikidata.org/sparql';
+
   constructor(private http: HttpClient) {}
 
   private calculateDays(startDate: Date, endDate: Date): number {
@@ -52,6 +54,13 @@ export class GeneralService {
           } else {
             return null;
           }
+        }else if(response && response.dataset === "presidents"){
+          const presidents: IPresident[] = response.presidents.map((president: any) => {
+            const startDate = new Date(president.startDate);
+            const endDate = new Date(president.endDate);
+            return { ...president, startDate, endDate };
+          });
+          return presidents as T;
         }
         return response as T;
       })
@@ -65,7 +74,69 @@ export class GeneralService {
   public getSportsByYear(year: string): Observable<ISport[]>{
     return this.getData<ISport[]>('sports.json', year);
   }
+  
+  public getPresidents(): Observable<IPresident[]>{
+    return this.getData<IPresident[]>('presidents.json')
+  }
 
+  public callWikiAPI(date: Date, dataCategory: string): Observable<any>{
+    if(date && date instanceof Date){
+      let month = date.getMonth(); + 1;
+      let d = date.getDate();
+      console.log("month", month, "d", d);
+      
+      const cats: string[] = ["births", "deaths", "events", "holidays", "selected"];
+      const idx = cats.findIndex(v => v === dataCategory);
+      if(idx === -1){
+        throw new Error("Category does not exist on API");
+      }
+
+      const wikiURL = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/${dataCategory}/${month}/${d}`;
+      return this.http.get<any>(wikiURL);
+    }
+    
+    return null;
+  }
+
+  public getFamousPeopleByDate(month: string, day: string): Observable<any> {
+    const sparqlQuery = `
+      PREFIX wd: <http://www.wikidata.org/entity/>
+      PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+      PREFIX wikibase: <http://wikiba.se/ontology#>
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+      SELECT DISTINCT ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel
+      WHERE {
+        VALUES ?country {wd:Q30 wd:Q145}
+        ?person wdt:P31 wd:Q5 ;  # Instance of human
+          wdt:P569 ?birthdate ;  # Date of birth
+          wdt:P27 ?country ;  # Citizenship
+          wdt:P8687 ?followers; # Social Media Followers 
+          wdt:P18 ?uniqueImage .  # Image
+
+        FILTER(CONTAINS(STR(?birthdate), "${month}-${day}"))
+
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+      }
+      GROUP BY ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel
+      ORDER BY DESC(?followers)
+      LIMIT 20`;
+
+    const headers = {
+      'Accept': 'application/sparql-results+json'
+    };
+
+    const params = new HttpParams().set('query', sparqlQuery);
+
+    return this.http.get<any>(this.sparqlEndpoint, {
+      params: params,
+      headers: headers
+    });
+  }
+  
+  
+  
+  
   public findLongestNumberOneSongs(songs: ISong[], year: number, count: number): ISong[] {
     const filteredSongs = songs.filter((song) => {
       const startDateYear = new Date(song.startDate).getFullYear();
