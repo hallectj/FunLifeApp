@@ -1,32 +1,30 @@
 <div id="frontFeatureWrapper">
   <header class="lookback p-2">
-    <h4>{{todayDateAndMonth}}, <span class="random_year_info">a snapshot in time</span></h4>      
+    <h4>{{dateObj.monthName + ' ' + dateObj.day}}, <span class="random_year_info">a snapshot in time</span></h4>      
   </header>
   <section class="feature_section">
     <div class="front_card_wrapper">
-
       <div>
         <front-feature-card 
-          [cardTitle]="celebName" 
           [cardImg]="celebImg"
           [cardButtonText]="'Celebrities Born Today'"
+          [loading]="loading"
         ></front-feature-card>
       </div>
 
       <div>
         <front-feature-card 
-          [cardTitle]="'Happened this day'" 
           [cardImg]="histEvtImg"
           [cardButtonText]="'This Day In History'"
+          [loading]="loading"
         ></front-feature-card>
       </div>
 
       <div>
         <front-feature-card 
-          [cardTitle]="'President'" 
           [cardImg]="presidentPortrait"
-          [cardButtonText]="'President ' + presidentDateStr"
-          [loading]="presidentLoading"
+          [cardButtonText]="'President ' + dateObj.monthName + ' ' + dateObj.day + ' ' + dateObj.year"
+          [loading]="loading"
         ></front-feature-card>
       </div>
     </div>

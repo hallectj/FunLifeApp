@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { combineLatest, lastValueFrom, map } from 'rxjs';
 import { IPresident, Inflation } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
@@ -13,64 +14,64 @@ export class FrontFeatureComponent {
   public celebName: string = "";
   public histEvtImg: string = "";
   public presidentPortrait: string = "";
-  public presidentDateStr: string = "";
+  public loading: boolean = true;
 
-  public presidentLoading: boolean = true;
-
-  public todayDateAndMonth = "";
-  public inflationObj: Inflation = {
-    currency: "USD",
-    year: "1943",
-    gas: "0.21",
-    bread: "0.10",
-    movie_ticket: "0.25",
-    car: "950.00"
+  public dateObj: {date: Date, day: string, month: string, monthName: string, year: string} = {
+    date: new Date(), day: "", month: "", monthName: "", year: ""
   }
 
   constructor(private service: GeneralService){}
 
-  public async ngOnInit(){
+  private populateDateObj() {
     let date = new Date();
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    this.todayDateAndMonth = months[date.getMonth()] + " " + date.getDate();
-    this.presidentDateStr = this.todayDateAndMonth + ", " + this.randomYear;
-
+    const monthName = months[date.getMonth()];
     let month = (date.getMonth() + 1).toString();
     let day = (date.getDate()).toString();
+    if(month.length === 1) month = "0" + month;
+    if(day.length === 1) day = "0" + day;
+    const year = this.randomYear;
+    return {date, day, month, monthName, year}
+  }
 
-    if(month.length === 1){
-      month = "0" + month;
-    }
-
-    if(day.length === 1){
-      day = "0" + day;
-    }
-
-    console.log(month, day);
-
-    const histEvents = await this.service.callWikiAPI(date, "events").toPromise();
-    console.log("histEvents", histEvents)
-
-    let eventCount = histEvents.events.length;
-    let randEventIndex = Math.floor(Math.random() * (eventCount - 0 + 1) + 0);
-    console.log("randEventIndex", randEventIndex)
-
-    this.histEvtImg = histEvents.events[randEventIndex].pages[0].originalimage.source;
+  public async ngOnInit(){
+    this.dateObj = this.populateDateObj();
     
-    const famousBirths = await this.service.getFamousPeopleByDate(month, day).toPromise();
-    console.log(famousBirths);
+    const responses = await lastValueFrom(this.initData());
 
-    const celeb = famousBirths.results.bindings[0];
+    const histEvents = responses.histEvents;
+    const famousBirths = responses.famousBirths;
+    const presidents = responses.presidents;
 
+    let randEventIndex = Math.floor(Math.random() * histEvents.length);
+    this.histEvtImg = histEvents[randEventIndex]?.pages[0]?.originalimage?.source;
+
+    const celeb = famousBirths[0];
     this.celebImg = celeb.uniqueImage.value;
-    console.log("celebImg", celeb.uniqueImage.value);
     this.celebName = celeb.personLabel.value;
 
-    const presidents = await this.service.getPresidents().toPromise();
-    const president = this.presidentByYear(presidents, this.randomYear);
+    const president = this.presidentByYear(presidents, this.dateObj.year);
     this.presidentPortrait = president.portraitURL;
-    this.presidentLoading = false;
+    this.loading = false;
     
+  }
+
+  public initData(){
+    const observable = combineLatest({
+      histEvents: this.service.callWikiAPI(this.dateObj.date, "events"),
+      famousBirths: this.service.getFamousPeopleByDate(this.dateObj.month, this.dateObj.day),
+      presidents: this.service.getPresidents()
+    });
+
+    return observable.pipe(
+      map(({ histEvents, famousBirths, presidents }) => {
+        return {
+          histEvents: histEvents.events,
+          famousBirths: famousBirths.results.bindings,
+          presidents: presidents
+        }
+      })
+    )
   }
 
 
