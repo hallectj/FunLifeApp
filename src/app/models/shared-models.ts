@@ -34,6 +34,14 @@ export interface ISong{
   youtubeThumb?: string
 }
 
+export interface IMovie{
+  ticketPrice: number,
+  movieTitle: string,
+  startDate: Date,
+  endDate: Date,
+  youtubeId: string
+}
+
 export interface ISport {
   sport: string,
   winner: string,

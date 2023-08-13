@@ -40,7 +40,6 @@
 @media screen and (max-width: 875px) {
   #mainWrapper{
 
-
     #mainHome{
       flex: none;
       width: 100%;
@@ -51,4 +50,36 @@
       width: 100%;
     }
   }  
+}
+
+@media (min-width: 275px) and (max-width: 575px) {
+  #mainWrapper{ 
+    #mainHome {
+      #midFeature{
+        display: block;
+      }
+    }
+  }
+}
+
+.movie-wrapper{
+  width: 100%;
+  height: 90%;
+  display: flex;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio (height/width) */
+  overflow: hidden;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 95%;
+  object-fit: contain;
 }

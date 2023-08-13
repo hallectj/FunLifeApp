@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GENERAL_URL, IPresident, ISong, ISport } from '../models/shared-models';
+import { GENERAL_URL, IMovie, IPresident, ISong, ISport } from '../models/shared-models';
 
 @Injectable({
   providedIn: 'root',
@@ -55,12 +55,19 @@ export class GeneralService {
             return null;
           }
         }else if(response && response.dataset === "presidents"){
-          const presidents: IPresident[] = response.presidents.map((president: any) => {
+          const presidents: IPresident[] = response.presidents.map((president: IPresident) => {
             const startDate = new Date(president.startDate);
             const endDate = new Date(president.endDate);
             return { ...president, startDate, endDate };
           });
           return presidents as T;
+        }else if(response && response.dataset === "movies"){
+          const movies: IMovie[] = response.movies.map((movie: IMovie) => {
+            const startDate = new Date(movie.startDate);
+            const endDate = new Date(movie.endDate);
+            return { ... movie, startDate, endDate} ;
+          });
+          return movies as T;
         }
         return response as T;
       })
@@ -77,6 +84,10 @@ export class GeneralService {
   
   public getPresidents(): Observable<IPresident[]>{
     return this.getData<IPresident[]>('presidents.json')
+  }
+
+  public getMovies(): Observable<IMovie[]>{
+    return this.getData<IMovie[]>("topMovies.json");
   }
 
   public callWikiAPI(date: Date, dataCategory: string): Observable<any>{
