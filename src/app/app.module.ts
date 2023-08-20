@@ -15,6 +15,7 @@ import { FrontFeatureCardComponent } from './components/front-feature/front-feat
 import { GeneralService } from './services/general.service';
 import { TvEffectComponentComponent } from './components/tv-effect-component/tv-effect-component.component';
 import { FooterComponent } from './common/footer/footer.component';
+import { PostExcerptComponent } from './components/post-excerpt/post-excerpt.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { FooterComponent } from './common/footer/footer.component';
     FrontFeatureComponent,
     FrontFeatureCardComponent,
     TvEffectComponentComponent,
-    FooterComponent
+    FooterComponent,
+    PostExcerptComponent
   ],
   imports: [
     BrowserModule,

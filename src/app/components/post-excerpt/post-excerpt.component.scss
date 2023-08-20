@@ -1,0 +1,45 @@
+.excerpt-rectangle {
+  display: flex;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+
+  &:hover{
+    background-color: #dacac226;
+  }
+}
+
+.excerpt-rectangle img {
+  max-width: 150px;
+  height: auto;
+  margin-right: 10px;
+  object-fit: contain;
+}
+
+.excerpt-content {
+  flex: 1;
+}
+
+.excerpt-content h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0;
+}
+
+.excerpt-content p {
+  margin-top: 10px;
+}
+
+.read-more {
+  display: inline-block;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.read-more:hover {
+  text-decoration: underline;
+}
