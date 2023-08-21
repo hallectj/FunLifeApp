@@ -10,25 +10,6 @@
   #mainHome{
     flex: 2;
     margin-right: 20px;
-
-    #midFeature{
-      display: flex;
-      flex-wrap: wrap;
-      margin-top: 10px;
-      
-      .hist-box{
-        flex: 1;
-        margin: 0px 5px;
-
-        .hist-box-header{
-          text-align: center;
-          background-color: #212223;
-          font-family: Tektur, sans-serif;
-          text-shadow: 2px 2px #000;
-          color: white;
-        }
-      }
-    }
   }
 
   #mainSidebar{
@@ -49,37 +30,62 @@
       flex: none;
       width: 100%;
     }
-  }  
-}
+  }
 
-@media (min-width: 275px) and (max-width: 575px) {
-  #mainWrapper{ 
-    #mainHome {
-      #midFeature{
-        display: block;
+  .pagination {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin: 20px 0;
+  
+    div{
+      width: 150px;
+      margin: 0px 10px;
+  
+      .page-btn-chevron{
+        width: 100%;
       }
     }
   }
+  
+  .pagination a.prev,
+  .pagination a.next {
+    display: inline-block; /* Show on mobile */
+    margin: 5px; /* Add some margin for spacing on mobile */
+  }
+  
+  .page-numbers {
+    display: none; /* Hide page numbers on mobile */
+  }
 }
 
-.movie-wrapper{
-  width: 100%;
-  height: 90%;
+
+.pagination {
   display: flex;
+  justify-content: center;
+  text-align: center;
+  margin: 20px 0;
 }
 
-.video-container {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio (height/width) */
-  overflow: hidden;
+.pagination a {
+  display: inline-block;
+  padding: 2px 15px;
+  margin: 0 5px;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  color: #333;
+  border-radius: 5px;
+  font-size: 2em;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.video-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 95%;
-  object-fit: contain;
+.pagination a.active {
+  background-color: #333;
+  color: #fff;
+}
+
+.pagination a.prev,
+.pagination a.next {
+  display: inline-block; /* Show on both desktop and mobile */
 }

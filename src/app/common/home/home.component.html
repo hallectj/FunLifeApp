@@ -1,41 +1,19 @@
 <div id="mainWrapper">
   <main id="mainHome">
     <front-feature [randomYear]="randomYear"></front-feature>
-    <div id="midFeature">
-      <div class="hist-box">
-        <h6 class="hist-box-header">Pro Sport Championships in {{randomYear}}</h6>
-        <tv-effect-component [randomYear]="randomYear"></tv-effect-component>
-      </div>
-      
-      <div class="hist-box">
-        <h6 class="hist-box-header">Top Movie in {{randomYear}}</h6>
-        <div class="movie-wrapper">
-          <div class="video-container">
-            <iframe [src]="youTubeURL" allow="autoplay; encrypted-media" width="640" height="480" frameborder="0">
-            </iframe>
-          </div>
-        </div>
-      </div>
-    </div>
+    <mid-feature [randomYear]="randomYear"></mid-feature>
+    <post-excerpt-container></post-excerpt-container>
 
-    <div id="post-excerpt-wrapper">
-      <post-excerpt 
-        [excerptImg]="'https://rwrant.co.za/wp-content/uploads/2018/07/The-1980s.jpg'"
-        [excerptTitle]="'Why the 1980s was a Totally Rad Decade'"
-        [excerptDesc]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at ligula vel velit varius varius. Nunc sit amet...'"
-      ></post-excerpt>
-
-      <post-excerpt 
-        [excerptImg]="'https://i.pinimg.com/originals/3d/fd/ed/3dfded39445e1e437de0bcf342cebbcc.jpg'"
-        [excerptTitle]="'Celebrities that Attended High School Together'"
-        [excerptDesc]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at ligula vel velit varius varius. Nunc sit amet...'"
-      ></post-excerpt>
-
-      <post-excerpt 
-        [excerptImg]="'https://m.media-amazon.com/images/M/MV5BOTU3NDE5MDQ4MV5BMl5BanBnXkFtZTgwMzE5ODQ3MDI@._V1_.jpg'"
-        [excerptTitle]="'Movies Jennifer Lawrence Played in'"
-        [excerptDesc]="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at ligula vel velit varius varius. Nunc sit amet...'"
-      ></post-excerpt>
+    <div class="pagination">
+      <div><a href="#" class="page-btn-chevron prev"><i class="fas fa-chevron-left"></i></a></div>
+      <span class="page-numbers">
+        <a href="#" class="active">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#">4</a>
+        <a href="#">5</a>
+      </span>
+      <div><a href="#" class="page-btn-chevron next"><i class="fas fa-chevron-right"></i></a></div>
     </div>
   </main>
 

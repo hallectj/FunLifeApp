@@ -16,6 +16,8 @@ import { GeneralService } from './services/general.service';
 import { TvEffectComponentComponent } from './components/tv-effect-component/tv-effect-component.component';
 import { FooterComponent } from './common/footer/footer.component';
 import { PostExcerptComponent } from './components/post-excerpt/post-excerpt.component';
+import { MidFeatureComponent } from './components/mid-feature/mid-feature.component';
+import { PostExcerptContainerComponent } from './components/post-excerpt-container/post-excerpt-container.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { PostExcerptComponent } from './components/post-excerpt/post-excerpt.com
     FrontFeatureCardComponent,
     TvEffectComponentComponent,
     FooterComponent,
-    PostExcerptComponent
+    PostExcerptComponent,
+    MidFeatureComponent,
+    PostExcerptContainerComponent
   ],
   imports: [
     BrowserModule,
