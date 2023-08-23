@@ -19,6 +19,14 @@ import { PostExcerptComponent } from './components/post-excerpt/post-excerpt.com
 import { MidFeatureComponent } from './components/mid-feature/mid-feature.component';
 import { PostExcerptContainerComponent } from './components/post-excerpt-container/post-excerpt-container.component';
 import { PaginationComponent } from './common/pagination/pagination.component';
+import { RouterModule, Routes } from '@angular/router';
+import { NotFoundComponent } from './common/not-found/not-found.component';
+
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'birthday', component: BirthdayComponent },
+  { path: '**', component: NotFoundComponent }
+];
 
 @NgModule({
   declarations: [
@@ -36,14 +44,17 @@ import { PaginationComponent } from './common/pagination/pagination.component';
     PostExcerptComponent,
     MidFeatureComponent,
     PostExcerptContainerComponent,
-    PaginationComponent
+    PaginationComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forRoot(routes)
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [RouterModule]
 })
 export class AppModule { }
