@@ -3,18 +3,7 @@
     <front-feature [randomYear]="randomYear"></front-feature>
     <mid-feature [randomYear]="randomYear"></mid-feature>
     <post-excerpt-container></post-excerpt-container>
-
-    <div class="pagination">
-      <div><a href="#" class="page-btn-chevron prev"><i class="fas fa-chevron-left"></i></a></div>
-      <span class="page-numbers">
-        <a href="#" class="active">1</a>
-        <a href="#">2</a>
-        <a href="#">3</a>
-        <a href="#">4</a>
-        <a href="#">5</a>
-      </span>
-      <div><a href="#" class="page-btn-chevron next"><i class="fas fa-chevron-right"></i></a></div>
-    </div>
+    <pagination [currentPage]="pageNumber"></pagination>
   </main>
 
   <aside id="mainSidebar">

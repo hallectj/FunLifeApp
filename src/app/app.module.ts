@@ -18,6 +18,7 @@ import { FooterComponent } from './common/footer/footer.component';
 import { PostExcerptComponent } from './components/post-excerpt/post-excerpt.component';
 import { MidFeatureComponent } from './components/mid-feature/mid-feature.component';
 import { PostExcerptContainerComponent } from './components/post-excerpt-container/post-excerpt-container.component';
+import { PaginationComponent } from './common/pagination/pagination.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { PostExcerptContainerComponent } from './components/post-excerpt-contain
     FooterComponent,
     PostExcerptComponent,
     MidFeatureComponent,
-    PostExcerptContainerComponent
+    PostExcerptContainerComponent,
+    PaginationComponent
   ],
   imports: [
     BrowserModule,

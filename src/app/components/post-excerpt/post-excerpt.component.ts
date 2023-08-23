@@ -9,5 +9,6 @@ export class PostExcerptComponent {
   @Input() excerptImg: string = "";
   @Input() excerptTitle: string = "";
   @Input() excerptDesc: string = "";
+  @Input() isTopPost: boolean = false;
 
 }

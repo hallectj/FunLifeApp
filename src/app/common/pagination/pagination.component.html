@@ -1,0 +1,7 @@
+<div class="pagination">
+  <div (click)="prevPage($event)"><a href="#" class="page-btn-chevron prev"><i class="fa fa-thin fa-circle-chevron-left"></i></a></div>
+  <span class="page-numbers">
+    <a *ngFor="let page of pageRange(5); let currPage = index" [class.active]="currentPage === currPage + 1" (click)="clickNumberedPage($event, currPage+1)" href="#">{{currPage + 1}}</a>
+  </span>
+  <div (click)="nextPage($event)"><a href="#" class="page-btn-chevron next"><i class="fa fa-thin fa-circle-chevron-right"></i></a></div>
+</div>

@@ -8,6 +8,7 @@ import { GeneralService } from 'src/app/services/general.service';
 })
 export class HomeComponent {
   public randomYear: string = "1990";
+  public pageNumber: number = 1;
 
   constructor(public service: GeneralService){}
 
