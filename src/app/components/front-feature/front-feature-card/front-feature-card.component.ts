@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
   selector: 'front-feature-card',
@@ -11,10 +12,20 @@ export class FrontFeatureCardComponent {
   @Input() cardAlt: string = "";
   @Input() cardButtonText: string = "";
   @Input() loading: boolean = false;
+  @Input() routePath: string = "";
+  @Output() featureBtnClickEvent: EventEmitter<string> = new EventEmitter<string>();
 
   public isFlipped: boolean = false;
 
+  constructor(public service: GeneralService){}
+
   flipCard() {
     this.isFlipped = !this.isFlipped;
+  }
+
+  public navigateToPath(){
+    if(this.routePath === "/celebrity"){
+      this.featureBtnClickEvent.emit(this.routePath);
+    }
   }
 }

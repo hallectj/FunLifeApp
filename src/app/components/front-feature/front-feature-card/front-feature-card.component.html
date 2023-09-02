@@ -1,7 +1,9 @@
 <div class="card-container">
   <div *ngIf="!loading; else loadingState" class="cust_card">
     <img class="card__img" [src]="cardImg" alt="">
-    <div class="w-100 card_button_holder"><a href="#" class="cust__button">{{cardButtonText}}</a></div>
+    <div class="w-100 card_button_holder">
+      <a [routerLink]='routePath' (click)="navigateToPath()" class="cust__button">{{cardButtonText}}</a>
+    </div>
   </div>
   <ng-template #loadingState>
     <div class="cust_card loading-wrapper">

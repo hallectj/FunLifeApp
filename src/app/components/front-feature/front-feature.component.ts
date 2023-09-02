@@ -16,6 +16,8 @@ export class FrontFeatureComponent {
   public presidentPortrait: string = "";
   public loading: boolean = true;
 
+  public famousBirths: any;
+
   public dateObj: {date: Date, day: string, month: string, monthName: string, year: string} = {
     date: new Date(), day: "", month: "", monthName: "", year: ""
   }
@@ -40,13 +42,13 @@ export class FrontFeatureComponent {
     const responses = await lastValueFrom(this.initData());
 
     const histEvents = responses.histEvents;
-    const famousBirths = responses.famousBirths;
+    this.famousBirths = responses.famousBirths;
     const presidents = responses.presidents;
 
     let randEventIndex = Math.floor(Math.random() * histEvents.length);
     this.histEvtImg = histEvents[randEventIndex]?.pages[0]?.originalimage?.source;
 
-    const celeb = famousBirths[0];
+    const celeb = this.famousBirths[0];
     this.celebImg = celeb.uniqueImage.value;
     this.celebName = celeb.personLabel.value;
 
@@ -94,5 +96,12 @@ export class FrontFeatureComponent {
   
     return null;
 
+  }
+
+  public whichChildBtnWasClicked(componentPath: string){
+    if(componentPath === '/celebrity'){
+
+      this.service.sendCelebInfo(this.famousBirths);
+    }
   }
 }

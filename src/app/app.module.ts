@@ -25,6 +25,8 @@ import { NotFoundComponent } from './common/not-found/not-found.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'birthday', component: BirthdayComponent },
+  { path: 'day-in-history', component: DayInHistoryComponent},
+  { path: 'celebrity', component: CelebrityComponent },
   { path: '**', component: NotFoundComponent }
 ];
 

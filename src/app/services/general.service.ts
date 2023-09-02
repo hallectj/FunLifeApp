@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GENERAL_URL, IMovie, IPresident, ISong, ISport } from '../models/shared-models';
 
@@ -9,6 +9,7 @@ import { GENERAL_URL, IMovie, IPresident, ISong, ISport } from '../models/shared
 })
 export class GeneralService {
   private sparqlEndpoint = 'https://query.wikidata.org/sparql';
+  private celebritySubject: Subject<any> = new Subject<any>();
 
   constructor(private http: HttpClient) {}
 
@@ -110,28 +111,30 @@ export class GeneralService {
   }
 
   public getFamousPeopleByDate(month: string, day: string): Observable<any> {
-    const sparqlQuery = `
-      PREFIX wd: <http://www.wikidata.org/entity/>
-      PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-      PREFIX wikibase: <http://wikiba.se/ontology#>
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    const sparqlQuery = `      PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX wikibase: <http://wikiba.se/ontology#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-      SELECT DISTINCT ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel
-      WHERE {
-        VALUES ?country {wd:Q30 wd:Q145}
-        ?person wdt:P31 wd:Q5 ;  # Instance of human
-          wdt:P569 ?birthdate ;  # Date of birth
-          wdt:P27 ?country ;  # Citizenship
-          wdt:P8687 ?followers; # Social Media Followers 
-          wdt:P18 ?uniqueImage .  # Image
+    SELECT DISTINCT ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel (GROUP_CONCAT(DISTINCT ?occupationLabel; separator=", ") as ?occupations)
+    WHERE {
+      VALUES ?country {wd:Q30 wd:Q145}
+      ?person wdt:P31 wd:Q5 ;  # Instance of human
+        wdt:P569 ?birthdate ;  # Date of birth
+        wdt:P27 ?country ;  # Citizenship
+        wdt:P8687 ?followers; # Social Media Followers 
+        wdt:P106 ?occupation ;  # Occupation
+        wdt:P18 ?uniqueImage .  # Image
 
-        FILTER(CONTAINS(STR(?birthdate), "${month}-${day}"))
+      FILTER(CONTAINS(STR(?birthdate), "${month}-${day}"))
+      FILTER(LANG(?occupationLabel) = "en")
+      ?occupation rdfs:label ?occupationLabel .
 
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-      }
-      GROUP BY ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel
-      ORDER BY DESC(?followers)
-      LIMIT 20`;
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+    }
+    GROUP BY ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel
+    ORDER BY DESC(?followers)
+    LIMIT 20`;
 
     const headers = {
       'Accept': 'application/sparql-results+json'
@@ -157,5 +160,13 @@ export class GeneralService {
     filteredSongs.sort((a, b) => (b.days || 0) - (a.days || 0));
 
     return filteredSongs.slice(0, count);
+  }
+
+  public sendCelebInfo(celebObj: any){
+    this.celebritySubject.next(celebObj);
+  }
+
+  public subscribeToCelebInfo(){
+    return this.celebritySubject.asObservable();
   }
 }

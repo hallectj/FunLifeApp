@@ -9,6 +9,8 @@
           [cardImg]="celebImg"
           [cardButtonText]="'Celebrities Born Today'"
           [loading]="loading"
+          [routePath]="'/celebrity'"
+          (featureBtnClickEvent)="whichChildBtnWasClicked($event)"
         ></front-feature-card>
       </div>
 
@@ -17,6 +19,7 @@
           [cardImg]="histEvtImg"
           [cardButtonText]="'This Day In History'"
           [loading]="loading"
+          [routePath]="'/day-in-history'"
         ></front-feature-card>
       </div>
 
