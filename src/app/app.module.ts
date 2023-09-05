@@ -21,6 +21,7 @@ import { PostExcerptContainerComponent } from './components/post-excerpt-contain
 import { PaginationComponent } from './common/pagination/pagination.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './common/not-found/not-found.component';
+import { CelebCardComponent } from './modules/celebrity/celeb-card/celeb-card.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -47,7 +48,8 @@ const routes: Routes = [
     MidFeatureComponent,
     PostExcerptContainerComponent,
     PaginationComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    CelebCardComponent
   ],
   imports: [
     BrowserModule,

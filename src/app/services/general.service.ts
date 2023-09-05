@@ -110,7 +110,46 @@ export class GeneralService {
     return null;
   }
 
-  public getFamousPeopleByDate(month: string, day: string): Observable<any> {
+  public getFamousPeopleByDateRange(month: string, startDay: string, endDay: string, limit: number){
+    const sparqlQuery = `PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX wikibase: <http://wikiba.se/ontology#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    # Results for birthdates between "09-03" and "09-05" (any year) with unique persons
+    SELECT DISTINCT ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel (GROUP_CONCAT(DISTINCT ?occupationLabel; separator=", ") as ?occupations)
+    WHERE {
+      VALUES ?country {wd:Q30 wd:Q145}
+      ?person wdt:P31 wd:Q5 ;  # Instance of human
+        wdt:P569 ?birthdate ;  # Date of birth
+        wdt:P27 ?country ;  # Citizenship
+        wdt:P8687 ?followers; # Social Media Followers 
+        wdt:P106 ?occupation ;  # Occupation
+        wdt:P18 ?uniqueImage .  # Image
+    
+      FILTER((MONTH(?birthdate) = ${month}) && (DAY(?birthdate) >= ${startDay}) && (DAY(?birthdate) <= ${endDay}))
+      FILTER(LANG(?occupationLabel) = "en")
+      ?occupation rdfs:label ?occupationLabel .
+    
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+    }
+    GROUP BY ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel
+    ORDER BY DESC(?followers)
+    LIMIT ${limit}`;
+
+    const headers = {
+      'Accept': 'application/sparql-results+json'
+    };
+
+    const params = new HttpParams().set('query', sparqlQuery);
+
+    return this.http.get<any>(this.sparqlEndpoint, {
+      params: params,
+      headers: headers
+    });    
+  }
+
+  public getFamousPeopleByDate(month: string, day: string, limit: number): Observable<any> {
     const sparqlQuery = `      PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX wikibase: <http://wikiba.se/ontology#>
@@ -134,7 +173,7 @@ export class GeneralService {
     }
     GROUP BY ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel
     ORDER BY DESC(?followers)
-    LIMIT 20`;
+    LIMIT ${limit}`;
 
     const headers = {
       'Accept': 'application/sparql-results+json'

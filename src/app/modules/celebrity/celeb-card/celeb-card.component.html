@@ -1,0 +1,15 @@
+<div class="card" [ngClass]="{'small-card': size === 'small', 'large-card' : size === 'large' }">
+  <div class="medal-icon">
+    <div style="margin-right: 5px"><i [style.color]="medalColor" class="fa-solid fa-medal"></i></div>
+    <div><span>{{celebPopularity}}</span></div>
+  </div>
+  <div class="bulk-content">
+    <div class="inner-card" [ngStyle]="{'background-image': 'url(' + image + ')'}"></div>
+    <div class="skills">
+      <div class="cust-card-title"><h4>{{celebInfo.name}}, {{celebInfo.age}}</h4></div> 
+      <ul *ngIf="showSkills">
+        <li *ngFor="let occ of celebInfo.occupations">{{occ}}</li>
+      </ul>
+    </div>
+  </div>
+</div>

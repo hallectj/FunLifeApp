@@ -17,6 +17,8 @@ export class FrontFeatureComponent {
   public loading: boolean = true;
 
   public famousBirths: any;
+  public histEvents: any;
+  public presidents: any;
 
   public dateObj: {date: Date, day: string, month: string, monthName: string, year: string} = {
     date: new Date(), day: "", month: "", monthName: "", year: ""
@@ -39,20 +41,67 @@ export class FrontFeatureComponent {
   public async ngOnInit(){
     this.dateObj = this.populateDateObj();
     
-    const responses = await lastValueFrom(this.initData());
+    if(localStorage.getItem("featureDate")){
+      const localDate = new Date(JSON.parse(localStorage.getItem("featureDate")));
+      if(localDate.getDate() === this.dateObj.date.getDate() && localDate.getMonth() === this.dateObj.date.getMonth()){
+        let f = localStorage.getItem("famousBirths");
+        let p = localStorage.getItem("presidents");
+        let h = localStorage.getItem("histEvents");
+        if(f && p && h){
+          this.famousBirths = JSON.parse(f);
+          this.presidents = JSON.parse(p);
+          this.histEvents = JSON.parse(h);
+        }else{
+          const responses = await lastValueFrom(this.initData());      
+          localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
+          localStorage.setItem("presidents", JSON.stringify(responses.presidents));
+          localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
+        }
+      }else{
+        localStorage.setItem("featureDate", JSON.stringify(this.dateObj.date));
+        const responses = await lastValueFrom(this.initData());
+        this.histEvents = responses.histEvents;
+        this.famousBirths = responses.famousBirths;
+        this.presidents = responses.presidents;
 
-    const histEvents = responses.histEvents;
-    this.famousBirths = responses.famousBirths;
-    const presidents = responses.presidents;
+        localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
+        localStorage.setItem("presidents", JSON.stringify(responses.presidents));
+        localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
+      }
+    }else{
+      localStorage.setItem("featureDate", JSON.stringify(this.dateObj.date));
+      const responses = await lastValueFrom(this.initData());
+      this.histEvents = responses.histEvents;
+      this.famousBirths = responses.famousBirths;
+      this.presidents = responses.presidents;
 
-    let randEventIndex = Math.floor(Math.random() * histEvents.length);
-    this.histEvtImg = histEvents[randEventIndex]?.pages[0]?.originalimage?.source;
+      localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
+      localStorage.setItem("presidents", JSON.stringify(responses.presidents));
+      localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
+    }
+
+    let randEventIndex = Math.floor(Math.random() * this.histEvents.length);
+    this.histEvtImg = this.histEvents[randEventIndex]?.pages[0]?.originalimage?.source;
+    let giveUpCount = 0;
+    //sometimes there is no image from wikipedia, in that case try ten times until we get one
+    if(!this.histEvtImg){
+      while(giveUpCount < 10){
+        let random = Math.floor(Math.random() * this.histEvents.length);
+        this.histEvtImg = this.histEvents[random]?.pages[0]?.originalimage?.source;
+        giveUpCount += 1;
+        //if we have an image break out
+        if(this.histEvtImg){
+          break;
+        }
+      }
+    }
+
 
     const celeb = this.famousBirths[0];
     this.celebImg = celeb.uniqueImage.value;
     this.celebName = celeb.personLabel.value;
 
-    const president = this.presidentByYear(presidents, this.dateObj.year);
+    const president = this.presidentByYear(this.presidents, this.dateObj.year);
     this.presidentPortrait = president.portraitURL;
     this.loading = false;
     
@@ -61,7 +110,7 @@ export class FrontFeatureComponent {
   public initData(){
     const observable = combineLatest({
       histEvents: this.service.callWikiAPI(this.dateObj.date, "events"),
-      famousBirths: this.service.getFamousPeopleByDate(this.dateObj.month, this.dateObj.day),
+      famousBirths: this.service.getFamousPeopleByDate(this.dateObj.month, this.dateObj.day, 20),
       presidents: this.service.getPresidents()
     });
 
