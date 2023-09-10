@@ -5,6 +5,14 @@ type DataResponse<T> = {
   [key: string]: T[];
 };
 
+export interface IDateObj  {
+  today: Date, 
+  day: string, 
+  month: string, 
+  monthName: string, 
+  year: string
+} 
+
 export interface Inflation {
   currency: string, 
   year: string, 
@@ -54,4 +62,21 @@ export interface ISport {
 export interface ISongWeeks {
   songs: ISong[],
   days: number[]
+}
+
+export interface ICelebCard{
+  size: string,
+  medalColor: string,
+  image: string,
+  showSkills: boolean,
+  celebPopularity: number,
+  celebInfo: {name: string, age: number, occupations: string[]}
+};
+
+export interface ICelebrity{
+  name: string,
+  birthdate: Date,
+  followerCount: number,
+  image: string,
+  occupations: string[]
 }

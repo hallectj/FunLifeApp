@@ -1,26 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { LOADINGSPINNER } from 'src/app/common/base64Assests';
+import { ICelebCard, ICelebrity, IDateObj } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
-
-export interface ICelebCard{
-  size: string,
-  medalColor: string,
-  image: string,
-  showSkills: boolean,
-  celebPopularity: number,
-  celebInfo: {name: string, age: number, occupations: string[]}
-};
-
-export interface ICelebrity{
-  name: string,
-  birthdate: Date,
-  followerCount: number,
-  image: string,
-  occupations: string[]
-}
-
-const TODAYCELEBLENGTH: number = 6;
-const TOMORROWCELEBLENGTH: number = 8;
-const YESTERDAYCELEBLENGTH: number = 8;
 
 @Component({
   selector: 'app-celebrity',
@@ -31,63 +12,119 @@ const YESTERDAYCELEBLENGTH: number = 8;
 export class CelebrityComponent {
   constructor(public service: GeneralService){}
 
+  public dateObj: IDateObj = this.service.populateDateObj();
+  public tomorrow = new Date(this.dateObj.today)
+  public yesterday = new Date(this.dateObj.today)
+
+
+  public dateObjTomorow: IDateObj = null;
+  public dateObjYesterday: IDateObj = null;
+
   public todayCelebCards: ICelebCard[] = [];
+  public restOfTodayCelebCards: ICelebCard[] = [];
   public tomorrowCelebCards: ICelebCard[] = [];
   public yesterdayCelebCards: ICelebCard[] = [];
   
   public todayCelebBirths: ICelebrity[] = [];
   public tomorrowCelebBirths: ICelebrity[] = [];
   public yesterdayCelebBirths: ICelebrity[] = [];
-
-
+  public famousPeopleResp: any = null;
+  public initCelebCardsLen: number = 6;
+  public restOfTodayCelebsLength: number = 0;
+  public isExpanded: boolean = false;
+  @ViewChild('expandButton') public expandButton: ElementRef<HTMLDivElement>;
 
   public async ngOnInit(){
-    const testResp = await this.service.getFamousPeopleByDateRange("09", "03", "05", 40).toPromise();
-    const array = testResp.results.bindings;
+    this.yesterday.setDate(this.dateObj.today.getDate() - 1)
+    this.yesterday.setHours(0, 0, 0, 0);
+    
+    this.tomorrow.setDate(this.dateObj.today.getDate() + 1)
+    this.tomorrow.setHours(0, 0, 0, 0);
+    
+    this.dateObjTomorow = this.service.populateDateObj(this.tomorrow);
+    this.dateObjYesterday = this.service.populateDateObj(this.yesterday);
+
+    this.todayCelebCards = this.createDummyCards(6, "large", 6);
+    this.tomorrowCelebCards = this.createDummyCards(8, "small", 8);
+    this.yesterdayCelebCards = this.createDummyCards(8, "small", 8);
+
+    const date1 = this.constructSparqlDate(this.dateObjYesterday);
+    const date2 = this.constructSparqlDate(this.dateObj);
+    const date3 = this.constructSparqlDate(this.dateObjTomorow);
+
+    await this.getResponses(date1, date2, date3, 80);
+
+    this.todayCelebCards = [];
+    this.tomorrowCelebCards = [];
+    this.yesterdayCelebCards = [];
+
+    const array = this.famousPeopleResp.results.bindings;
     let unique = array.filter((e, i) => array.findIndex(a => a.personLabel.value === e.personLabel.value) === i)
+
+    unique = unique.filter( (v: any) => {
+      const occ = v.occupations.value.split(",");
+      for(let i = 0; i<occ.length; i++){
+        if(this.containsBadWord(occ[i])){
+          return false;
+        }
+        return true;
+      }
+      return false;
+    }) 
 
     const filteredBirthdays = this.filterBirthdaysByDate(unique);
 
-    this.todayCelebBirths = filteredBirthdays.today.map(v => ({
-      name: v.personLabel.value,
-      birthdate: new Date(v.birthdate.value),
-      followerCount: +v.followers.value,
-      image: v.uniqueImage.value,
-      occupations: v.occupations.value.split(",").map(s => s.trim()).splice(0, 4)
-    }))
+    this.todayCelebBirths = this.mapICelebrity(filteredBirthdays, "today");
+    this.tomorrowCelebBirths = this.mapICelebrity(filteredBirthdays, "tomorrow");
+    this.yesterdayCelebBirths = this.mapICelebrity(filteredBirthdays, "yesterday");
 
-    this.tomorrowCelebBirths = filteredBirthdays.tomorrow.map(v => ({
-      name: v.personLabel.value,
-      birthdate: new Date(v.birthdate.value),
-      followerCount: +v.followers.value,
-      image: v.uniqueImage.value,
-      occupations: v.occupations.value.split(",").map(s => s.trim()).splice(0, 4)
-    }))
-
-    this.yesterdayCelebBirths = filteredBirthdays.yesterday.map(v => ({
-      name: v.personLabel.value,
-      birthdate: new Date(v.birthdate.value),
-      followerCount: +v.followers.value,
-      image: v.uniqueImage.value,
-      occupations: v.occupations.value.split(",").map(s => s.trim()).splice(0, 4)
-    }))
-
-
-    this.todayCelebCards = this.constructCards(this.todayCelebBirths, "large", true, TODAYCELEBLENGTH);
-
-    this.tomorrowCelebCards = this.constructCards(this.tomorrowCelebBirths, "small", false, TOMORROWCELEBLENGTH);
-
-    this.yesterdayCelebCards = this.constructCards(this.yesterdayCelebBirths, "small", false, YESTERDAYCELEBLENGTH);
+    this.todayCelebCards = this.constructCards(this.todayCelebBirths, "large", true, -1);
+    this.tomorrowCelebCards = this.constructCards(this.tomorrowCelebBirths, "small", false, 8);
+    this.yesterdayCelebCards = this.constructCards(this.yesterdayCelebBirths, "small", false, 8);
 
     this.service.subscribeToCelebInfo().subscribe((celebBirths: any) => {
 
     })
   }
 
-  private constructCards(arr: ICelebrity[], cardSize: string, showSkills: boolean, lengthMax: number){
+  private constructSparqlDate(dateObj: IDateObj): string {
+    return (dateObj.today.getMonth() + 1).toString().padStart(2,"0") + "-" + dateObj.today.getDate().toString().padStart(2, "0");
+  }
+
+  private createDummyCards(len: number, size: string, dispAmt: number) : ICelebCard[] {
+    //create dummy cards first so something is on the page
+    let dummyCard: ICelebCard[] = [];
+
+    for(let i = 0; i<len; i++){
+      const obj: ICelebCard = {
+        size: size,
+        medalColor: "gold",
+        image: LOADINGSPINNER,
+        showSkills: true,
+        celebPopularity: 0,
+        celebInfo: {name: "LOADING", age: 0, occupations: []}
+      }
+      dummyCard.push(obj);
+    }
+    return dummyCard.splice(0, dispAmt)
+  }
+
+  private mapICelebrity(filteredBirths: any, timeProp: string): ICelebrity[] {
+    let iCelebrityArr: ICelebrity[] = [];
+    iCelebrityArr = filteredBirths[timeProp].map(v => ({
+      name: v.personLabel.value,
+      birthdate: new Date(v.birthdate.value),
+      followerCount: +v.followers.value,
+      image: v.uniqueImage.value,
+      occupations: v.occupations.value.split(",").map(s => this.filterBadWords(s.trim())).splice(0, 4)
+    }))
+
+    return iCelebrityArr;
+  }
+
+  private constructCards(arr: ICelebrity[], cardSize: string, showSkills: boolean, dispAmt: number){
     let cards: ICelebCard[] = [];
     for(let i = 0; i<arr.length; i++){
-      if(i >= lengthMax) break;
       const c = arr[i];
       const card: ICelebCard = {
         image: c.image,
@@ -99,16 +136,25 @@ export class CelebrityComponent {
       }
       cards.push(card);
     }
-    return cards;
+
+    if(dispAmt === -1){
+      return cards;
+    }else{
+      return cards.splice(0, dispAmt);
+    }
   }
 
   private filterBirthdaysByDate(birthdayArray: any[]) {
     const today = new Date();
-    today.setUTCHours(today.getUTCHours() - 6);
+    today.setHours(0, 0, 0, 0);
     today.setUTCHours(0, 0, 0, 0);
     const yesterday = new Date(today);
+    yesterday.setHours(today.getUTCHours() - 6);
+    yesterday.setUTCHours(0, 0, 0, 0);
     yesterday.setDate(today.getDate() - 1);
     const tomorrow = new Date(today);
+    tomorrow.setHours(0, 0, 0, 0);
+    tomorrow.setUTCHours(0, 0, 0, 0);
     tomorrow.setDate(today.getDate() + 1);
   
     return {
@@ -138,5 +184,63 @@ export class CelebrityComponent {
     }
     
     return age;
+  }
+
+  public async getResponses(d1: string, d2: string, d3: string, limit: number){
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setUTCHours(0, 0, 0, 0);
+    if(localStorage.getItem("featureDate")){
+      const localDate = new Date(JSON.parse(localStorage.getItem("featureDate")));
+      const equalDate = JSON.stringify(date) === JSON.stringify(localDate);
+      if(equalDate){
+        let h = localStorage.getItem("all_celebs");
+        if(h && h !== "null"){
+          this.famousPeopleResp = JSON.parse(h);
+        }else{
+          this.famousPeopleResp = await this.service.getFamousPeopleByThreeDates(d1, d2, d3, limit).toPromise();
+          localStorage.setItem("all_celebs", JSON.stringify(this.famousPeopleResp));
+        }
+      }else{
+        localStorage.setItem("featureDate", JSON.stringify(date));
+        this.famousPeopleResp = await this.service.getFamousPeopleByThreeDates(d1, d2, d3, limit).toPromise();
+        localStorage.setItem("all_celebs", JSON.stringify(this.famousPeopleResp));
+      }
+    }else{
+      localStorage.setItem("featureDate", JSON.stringify(date));
+      this.famousPeopleResp = await this.service.getFamousPeopleByThreeDates(d1, d2, d3, limit).toPromise();
+      localStorage.setItem("all_celebs", JSON.stringify(this.famousPeopleResp));
+    }
+  }
+
+  private filterBadWords(inputString: string) {
+    const badWords = ['oral sex', 'sex', 'lesbianism', 'anal sex', 'vaginal intercourse', 'pornographic actor'];
+    const pattern = new RegExp(badWords.join("|"), "gi");
+    return inputString.replace(pattern, "****");
+  }
+
+  public containsBadWord(inputString) {
+    const badWords = ['oral sex', 'sex', 'lesbianism', 'anal sex', 'vaginal intercourse', 'pornographic actor'];
+    const pattern = new RegExp(badWords.join("|"), "gi");
+    const hasBadWord = pattern.test(inputString);
+    return hasBadWord;
+  }
+
+  public expandCelebDivFunc(){
+    if (this.isExpanded) {
+      this.expandButton.nativeElement.textContent = "Show More Celebrities Born Today";
+      setTimeout(() => {
+        window.scrollTo({ top: this.expandButton.nativeElement.clientHeight, behavior: 'smooth' });
+      });
+    } else {
+      this.expandButton.nativeElement.textContent = "Show Less Celebrities Born Today";
+      const container = document.getElementsByClassName('card-container')[0] as HTMLDivElement;
+      setTimeout(() => {
+        window.scrollTo({ top: Math.floor(container.clientHeight * 0.80), behavior: 'smooth' });
+      });
+      
+    }
+
+    this.isExpanded = !this.isExpanded;
   }
 }

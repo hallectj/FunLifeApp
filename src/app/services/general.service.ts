@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GENERAL_URL, IMovie, IPresident, ISong, ISport } from '../models/shared-models';
+import { GENERAL_URL, IDateObj, IMovie, IPresident, ISong, ISport } from '../models/shared-models';
 
 @Injectable({
   providedIn: 'root',
@@ -110,24 +110,49 @@ export class GeneralService {
     return null;
   }
 
-  public getFamousPeopleByDateRange(month: string, startDay: string, endDay: string, limit: number){
+  public getFamousPeopleByThreeDates(date1: string, date2: string, date3: string, limit: number){
     const sparqlQuery = `PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX wikibase: <http://wikiba.se/ontology#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
-    # Results for birthdates between "09-03" and "09-05" (any year) with unique persons
+    # Results for birthdates matching any of the specified dates with unique persons
     SELECT DISTINCT ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel (GROUP_CONCAT(DISTINCT ?occupationLabel; separator=", ") as ?occupations)
     WHERE {
       VALUES ?country {wd:Q30 wd:Q145}
-      ?person wdt:P31 wd:Q5 ;  # Instance of human
-        wdt:P569 ?birthdate ;  # Date of birth
-        wdt:P27 ?country ;  # Citizenship
-        wdt:P8687 ?followers; # Social Media Followers 
-        wdt:P106 ?occupation ;  # Occupation
-        wdt:P18 ?uniqueImage .  # Image
+      {
+        ?person wdt:P31 wd:Q5 ;  # Instance of human
+          wdt:P569 ?birthdate ;  # Date of birth
+          wdt:P27 ?country ;  # Citizenship
+          wdt:P8687 ?followers; # Social Media Followers 
+          wdt:P106 ?occupation ;  # Occupation
+          wdt:P18 ?uniqueImage .  # Image
     
-      FILTER((MONTH(?birthdate) = ${month}) && (DAY(?birthdate) >= ${startDay}) && (DAY(?birthdate) <= ${endDay}))
+        FILTER(CONTAINS(STR(?birthdate), "${date1}"))
+      }
+      UNION
+      {
+        ?person wdt:P31 wd:Q5 ;  # Instance of human
+          wdt:P569 ?birthdate ;  # Date of birth
+          wdt:P27 ?country ;  # Citizenship
+          wdt:P8687 ?followers; # Social Media Followers 
+          wdt:P106 ?occupation ;  # Occupation
+          wdt:P18 ?uniqueImage .  # Image
+    
+        FILTER(CONTAINS(STR(?birthdate), "${date2}"))
+      }
+      UNION
+      {
+        ?person wdt:P31 wd:Q5 ;  # Instance of human
+          wdt:P569 ?birthdate ;  # Date of birth
+          wdt:P27 ?country ;  # Citizenship
+          wdt:P8687 ?followers; # Social Media Followers 
+          wdt:P106 ?occupation ;  # Occupation
+          wdt:P18 ?uniqueImage .  # Image
+    
+        FILTER(CONTAINS(STR(?birthdate), "${date3}"))
+      }
+    
       FILTER(LANG(?occupationLabel) = "en")
       ?occupation rdfs:label ?occupationLabel .
     
@@ -135,7 +160,7 @@ export class GeneralService {
     }
     GROUP BY ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel
     ORDER BY DESC(?followers)
-    LIMIT ${limit}`;
+    LIMIT  ${limit}`;
 
     const headers = {
       'Accept': 'application/sparql-results+json'
@@ -150,7 +175,7 @@ export class GeneralService {
   }
 
   public getFamousPeopleByDate(month: string, day: string, limit: number): Observable<any> {
-    const sparqlQuery = `      PREFIX wd: <http://www.wikidata.org/entity/>
+    const sparqlQuery = `PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX wikibase: <http://wikiba.se/ontology#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -199,6 +224,26 @@ export class GeneralService {
     filteredSongs.sort((a, b) => (b.days || 0) - (a.days || 0));
 
     return filteredSongs.slice(0, count);
+  }
+
+  public populateDateObj(d?: Date): IDateObj {
+    let today: Date = null;
+    if(d){
+      today = new Date(d);
+    }else{
+      today = new Date();
+    }
+
+    today.setHours(6, 0, 0, 0);
+
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const monthName = months[today.getMonth()];
+    let month = (today.getMonth() + 1).toString();
+    let day = (today.getDate()).toString();
+    if(month.length === 1) month = "0" + month;
+    if(day.length === 1) day = "0" + day;
+    const year = today.getFullYear().toString();
+    return {today, day, month, monthName, year}
   }
 
   public sendCelebInfo(celebObj: any){

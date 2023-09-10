@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { combineLatest, lastValueFrom, map } from 'rxjs';
-import { IPresident, Inflation } from 'src/app/models/shared-models';
+import { IDateObj, IPresident, Inflation } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
@@ -20,65 +20,18 @@ export class FrontFeatureComponent {
   public histEvents: any;
   public presidents: any;
 
-  public dateObj: {date: Date, day: string, month: string, monthName: string, year: string} = {
-    date: new Date(), day: "", month: "", monthName: "", year: ""
+  public dateObj: IDateObj = {
+    today: new Date(), day: "", month: "", monthName: "", year: ""
   }
 
   constructor(private service: GeneralService){}
 
-  private populateDateObj() {
-    let date = new Date();
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const monthName = months[date.getMonth()];
-    let month = (date.getMonth() + 1).toString();
-    let day = (date.getDate()).toString();
-    if(month.length === 1) month = "0" + month;
-    if(day.length === 1) day = "0" + day;
-    const year = this.randomYear;
-    return {date, day, month, monthName, year}
-  }
-
   public async ngOnInit(){
-    this.dateObj = this.populateDateObj();
-    
-    if(localStorage.getItem("featureDate")){
-      const localDate = new Date(JSON.parse(localStorage.getItem("featureDate")));
-      if(localDate.getDate() === this.dateObj.date.getDate() && localDate.getMonth() === this.dateObj.date.getMonth()){
-        let f = localStorage.getItem("famousBirths");
-        let p = localStorage.getItem("presidents");
-        let h = localStorage.getItem("histEvents");
-        if(f && p && h){
-          this.famousBirths = JSON.parse(f);
-          this.presidents = JSON.parse(p);
-          this.histEvents = JSON.parse(h);
-        }else{
-          const responses = await lastValueFrom(this.initData());      
-          localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
-          localStorage.setItem("presidents", JSON.stringify(responses.presidents));
-          localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
-        }
-      }else{
-        localStorage.setItem("featureDate", JSON.stringify(this.dateObj.date));
-        const responses = await lastValueFrom(this.initData());
-        this.histEvents = responses.histEvents;
-        this.famousBirths = responses.famousBirths;
-        this.presidents = responses.presidents;
-
-        localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
-        localStorage.setItem("presidents", JSON.stringify(responses.presidents));
-        localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
-      }
-    }else{
-      localStorage.setItem("featureDate", JSON.stringify(this.dateObj.date));
-      const responses = await lastValueFrom(this.initData());
-      this.histEvents = responses.histEvents;
-      this.famousBirths = responses.famousBirths;
-      this.presidents = responses.presidents;
-
-      localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
-      localStorage.setItem("presidents", JSON.stringify(responses.presidents));
-      localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
-    }
+    const date = new Date();
+    date.setFullYear(+this.randomYear, date.getMonth(), date.getDate());
+    this.dateObj = this.service.populateDateObj(date);
+  
+    await this.getResponses();
 
     let randEventIndex = Math.floor(Math.random() * this.histEvents.length);
     this.histEvtImg = this.histEvents[randEventIndex]?.pages[0]?.originalimage?.source;
@@ -109,7 +62,7 @@ export class FrontFeatureComponent {
 
   public initData(){
     const observable = combineLatest({
-      histEvents: this.service.callWikiAPI(this.dateObj.date, "events"),
+      histEvents: this.service.callWikiAPI(this.dateObj.today, "events"),
       famousBirths: this.service.getFamousPeopleByDate(this.dateObj.month, this.dateObj.day, 20),
       presidents: this.service.getPresidents()
     });
@@ -145,6 +98,57 @@ export class FrontFeatureComponent {
   
     return null;
 
+  }
+
+  public async getResponses(){
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setUTCHours(0, 0, 0, 0);
+    if(localStorage.getItem("featureDate")){
+      const localDate = new Date(JSON.parse(localStorage.getItem("featureDate")));
+      const equalDates = JSON.stringify(date) === JSON.stringify(localDate);
+      if(equalDates){
+        let f = localStorage.getItem("famousBirths");
+        let p = localStorage.getItem("presidents");
+        let h = localStorage.getItem("histEvents");
+        if((f && f !== 'null') && (p && p !== 'null') && (h && h !== 'null')){
+          this.famousBirths = JSON.parse(f);
+          this.presidents = JSON.parse(p);
+          this.histEvents = JSON.parse(h);
+        }else{
+          const responses = await lastValueFrom(this.initData());  
+          
+          this.famousBirths = responses.famousBirths;
+          this.presidents = responses.presidents;
+          this.histEvents = responses.histEvents;
+
+          localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
+          localStorage.setItem("presidents", JSON.stringify(responses.presidents));
+          localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
+        }
+      }else{
+        localStorage.setItem("featureDate", JSON.stringify(date));
+        const responses = await lastValueFrom(this.initData());
+
+        this.famousBirths = responses.famousBirths;
+        this.presidents = responses.presidents;
+        this.histEvents = responses.histEvents;
+
+        localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
+        localStorage.setItem("presidents", JSON.stringify(responses.presidents));
+        localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
+      }
+    }else{
+      localStorage.setItem("featureDate", JSON.stringify(date));
+      const responses = await lastValueFrom(this.initData());
+      this.histEvents = responses.histEvents;
+      this.famousBirths = responses.famousBirths;
+      this.presidents = responses.presidents;
+
+      localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
+      localStorage.setItem("presidents", JSON.stringify(responses.presidents));
+      localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
+    }
   }
 
   public whichChildBtnWasClicked(componentPath: string){

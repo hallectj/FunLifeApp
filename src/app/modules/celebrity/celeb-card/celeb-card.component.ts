@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { ICelebCard } from '../celebrity.component';
 
 @Component({
   selector: 'celeb-card',

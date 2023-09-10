@@ -1,3 +1,6 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,600,700,800);
+@import url(https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css);
+
 .card{
   position: relative;
 	display: flex;
@@ -8,6 +11,8 @@
 	border: 2px solid black;
 	margin-top: 0px;
 	position: relative;
+  margin-right: 10px;
+  margin-top: 10px;
 
   .medal-icon{
     position: absolute;
@@ -27,13 +32,12 @@
 
   .inner-card{
     margin: 10px;
-    border: 2px solid #03BFCB;
     height: 100%;
-    background-color: #cccccc;
+    background-color: #000;
     background-position: center;
     background-repeat: no-repeat;
     background-size: 60% 100%;
-    flex: 2;
+    height: 150%;
   }
 
   .cust-card-title{
@@ -44,6 +48,7 @@
     h4{
       margin: 5px 0px;
       font-size: 1.15em;
+      text-align: center;
     }
   }
 
@@ -57,7 +62,6 @@
     text-align: left;
     padding: 2px;
     height: inherit;
-    flex: 1;
   }
   
   .skills h6{

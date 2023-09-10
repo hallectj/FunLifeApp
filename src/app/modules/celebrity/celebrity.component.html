@@ -1,41 +1,19 @@
 <div class="breadcrumb"> Home &gt; Celebrity </div>
 
-<header id="celebrityPageHeader">
-  <div>
-    <h1 class="main-headline">Celebrities Born Today September 2</h1>
-    <p class="updated"><small>Updated September 4, 2023, 12:00:00 AM CST</small></p>
-    <p>These are some of the famous people in history, born September 2nd, of various years.
-    Numbers beside a medal <span><i class="fa-solid fa-medal"></i></span> indicates popularity, based on social media following.</p>
-    <p>If you want to know which celebrities were born on your birthday including year, check out our page <a href="#">Celebrities Born on My Birthday</a>.</p>
-  </div>
-</header>
-
-<div class="card-container">
-  <ng-container *ngFor="let card of todayCelebCards">
-    <celeb-card
-      [image]="card.image"
-      [size]="card.size"
-      [medalColor]="card.medalColor"
-      [showSkills]="card.showSkills"
-      [celebPopularity]="card.celebPopularity"
-      [celebInfo]="card.celebInfo"
-    ></celeb-card>
-  </ng-container>
-</div>
-
-<div class="show-all">
-  <button class="btn btn-outline-light text-primary font-weight-bold">40 Celebrities Born Today (Sep 4)</button>
-</div>
-
-<div id="midSection">
-  <section class="leftSection">
-    <div class="title-div">
-      <h3>Preview of Celebrities Born Tomorrow</h3>
-      <h3 class="tomorrow-date">September 5th, 2023</h3>
+<div id="celebrityPageWrapper" style="padding: 0px 20px;">
+  <header id="celebrityPageHeader">
+    <div>
+      <h1 class="main-headline">Celebrities Born Today {{dateObj.monthName}} {{dateObj.day}}</h1>
+      <p class="updated"><small>Updated {{dateObj.today}}</small></p>
+      <p>These are some of the famous people in history, born {{dateObj.monthName}} {{dateObj.day}}, of various years.
+      Numbers beside a medal <span><i class="fa-solid fa-medal"></i></span> indicates popularity, based on social media following.</p>
+      <p>If you want to know which celebrities were born on your birthday including year, check out our page <a href="#">Celebrities Born on My Birthday</a>.</p>
     </div>
+  </header>
   
-    <div class="card-container secondary-card-container">
-      <ng-container *ngFor="let card of tomorrowCelebCards">
+  <div class="card-container">
+    <ng-container *ngIf="!isExpanded; else showAllCelebs">
+      <ng-container *ngFor="let card of todayCelebCards | slice:0:initCelebCardsLen">
         <celeb-card
           [image]="card.image"
           [size]="card.size"
@@ -45,17 +23,10 @@
           [celebInfo]="card.celebInfo"
         ></celeb-card>
       </ng-container>
-    </div>
+    </ng-container>
 
-    <hr />
-
-    <div class="title-div" style="margin-top: 40px;">
-      <h3>Celebrities Born Yesterday you Missed</h3>
-      <h3 class="tomorrow-date">September 3rd, 2023</h3>
-    </div>
-
-    <div class="card-container secondary-card-container">
-      <ng-container *ngFor="let card of yesterdayCelebCards">
+    <ng-template #showAllCelebs>
+      <ng-container *ngFor="let card of todayCelebCards">
         <celeb-card
           [image]="card.image"
           [size]="card.size"
@@ -65,9 +36,57 @@
           [celebInfo]="card.celebInfo"
         ></celeb-card>
       </ng-container>
-    </div>
-  </section>
-  <aside class="rightSection">
-    <info-sidebar [randomYear]="'2010'"></info-sidebar>
-  </aside>
+    </ng-template>
+  </div>
+
+  <div class="show-all" (click)="expandCelebDivFunc()">
+    <div class="expand-arrow"><i class="fa-solid" [class]="!isExpanded ? 'fa-angle-down': 'fa-angle-up'"></i></div>
+    <div #expandButton class="expand-button">Show More Celebrities Born Today {{dateObj.monthName}} {{dateObj.day}}</div>
+    <div class="expand-arrow"><i class="fa-solid" [class]="!isExpanded ? 'fa-angle-down': 'fa-angle-up'"></i></div>
+  </div>
+  
+  <div id="midSection">
+    <section class="leftSection">
+      <div class="title-div">
+        <h3>Preview of Celebrities Born Tomorrow</h3>
+        <h3 class="tomorrow-date">{{dateObjTomorow.monthName}} {{dateObjTomorow.day}}</h3>
+      </div>
+    
+      <div class="card-container secondary-card-container">
+        <ng-container *ngFor="let card of tomorrowCelebCards">
+          <celeb-card
+            [image]="card.image"
+            [size]="card.size"
+            [medalColor]="card.medalColor"
+            [showSkills]="card.showSkills"
+            [celebPopularity]="card.celebPopularity"
+            [celebInfo]="card.celebInfo"
+          ></celeb-card>
+        </ng-container>
+      </div>
+  
+      <hr />
+  
+      <div class="title-div" style="margin-top: 40px;">
+        <h3>Celebrities Born Yesterday you Missed</h3>
+        <h3 class="tomorrow-date">{{dateObjYesterday.monthName}} {{dateObjYesterday.day}}</h3>
+      </div>
+  
+      <div class="card-container secondary-card-container">
+        <ng-container *ngFor="let card of yesterdayCelebCards">
+          <celeb-card
+            [image]="card.image"
+            [size]="card.size"
+            [medalColor]="card.medalColor"
+            [showSkills]="card.showSkills"
+            [celebPopularity]="card.celebPopularity"
+            [celebInfo]="card.celebInfo"
+          ></celeb-card>
+        </ng-container>
+      </div>
+    </section>
+    <aside class="rightSection">
+      <info-sidebar [randomYear]="'2010'"></info-sidebar>
+    </aside>
+  </div>
 </div>
