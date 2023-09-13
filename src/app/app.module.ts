@@ -22,6 +22,7 @@ import { PaginationComponent } from './common/pagination/pagination.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './common/not-found/not-found.component';
 import { CelebCardComponent } from './modules/celebrity/celeb-card/celeb-card.component';
+import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -55,6 +56,7 @@ const routes: Routes = [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
     RouterModule.forRoot(routes)
   ],
   providers: [],

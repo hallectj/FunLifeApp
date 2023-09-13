@@ -1,1 +1,70 @@
-<p>birthday works!</p>
+<div class="birthday-container">
+  <h1 id="birthdayHeadline">Find Your Birthday Song And More</h1>
+  <div id="birthdayTop">
+    <div class="dropdown-container">
+      <div class="dropdown">
+        <label for="month">Month:</label>
+        <select id="month" class="custom-select" [(ngModel)]="selectedMonth" (change)="getMonth()">
+          <option *ngFor="let month of monthNames" [value]="month">{{month}}</option>
+        </select>
+      </div>
+      <div class="dropdown">
+        <label for="day">Day:</label>
+        <select id="day" class="custom-select" [(ngModel)]="selectedDay">
+          <option *ngFor="let day of days" [value]="day">{{day}}</option>
+        </select>
+      </div>
+      <div class="dropdown">
+        <label for="year">Year:</label>
+        <select id="year" class="custom-select" [(ngModel)]="selectedYear">
+          <option *ngFor="let year of years" [value]="year">{{year}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="birthday-button-div"><button class="find-button" (click)="getBirthDateInfo()">#1 Song and More</button></div>
+  </div>
+</div>
+
+<section class="middle-section">
+  <div class="mid-div middle-section-left">
+    <div class="card-wrapper">
+      <div class="blog-card">
+        <div class="card-details">
+          <h4>#1 Song {{birthdayDateStr}} was</h4>
+          <h1>{{birthDaySong.songTitle}}</h1>
+          <p>By: {{birthDaySong.artist}}</p>
+        </div>
+        <div *ngIf="showMedia; else noMedia" class="video-wrapper">
+          <iframe [src]="youTubeSongURL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <ng-template #noMedia>
+          <div class="img-fluid default-img-div">
+            <img src="../../../assets/questionMarkBox.png" />
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="mid-div middle-section-right">
+    <div class="card-wrapper">
+      <div class="blog-card">
+        <div class="card-details">
+          <h4>#1 Movie {{birthdayDateStr}} was</h4>
+          <h1>{{birthDayMovie.movieTitle}}</h1>
+        </div>
+        <div *ngIf="showMedia; else noMedia" class="video-wrapper">
+          <iframe [src]="youTubeMovieURL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <ng-template #noMedia>
+          <div class="img-fluid default-img-div">
+            <img src="../../../assets/questionMarkBox.png" />
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <div class="middle-section-ad">
+    <img src="https://dummyimage.com/125x400/000/fff.png&text=Ad+125+x+400" />
+  </div>
+</section>

@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+
+/* Style for the container */
+.birthday-container {
+  text-align: center;
+  margin: 20px;
+  font-family: 'Russo One', sans-serif;
+}
+
+#birthdayTop{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: first baseline;
+  justify-content: center;
+  width: auto;
+}
+
+/* Style for the dropdown container */
+.dropdown-container {
+  display: flex;
+  justify-content: center;
+  align-items: last baseline;
+  gap: 10px;
+  margin-right: 20px;
+}
+
+/* Style for the individual dropdowns */
+.dropdown {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style for labels */
+label {
+  font-weight: bold;
+}
+
+/* Style for custom-select */
+.custom-select {
+  width: 150px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Style for the find button */
+.find-button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.find-button:hover {
+  background-color: #0056b3;
+}
+
+.find-button:active{
+  background-color: aqua;
+}
+
+.birthday-button-div{
+  margin-top: 0px;
+}
+
+.middle-section{
+  display: flex;
+  flex-wrap: wrap;
+
+  .middle-section-ad{
+    display: block;
+    margin-top: 10px;
+  }
+
+  .mid-div{
+    width: 100%;
+    flex: 1;
+  }
+
+  .card-wrapper{
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    margin: 0px 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    max-width: 500px;
+    min-width: 295px;
+
+    .blog-card{
+      background: #fff;
+      border: 2px solid black;
+      text-align: center;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      width: -moz-fit-content;
+      width: fit-content;
+      flex-direction: column;
+      background-color: #2d3442;
+
+      .default-img-div{
+        border-top: 10px solid black;
+        border-bottom: 10px solid black;
+        img{
+          width: 46.5%;
+        }
+      }
+      
+      .video-wrapper {
+        position: relative; 
+        padding-bottom: 56.25%; /* 16:9 */  
+        padding-top: 25px;
+      }
+      
+      .video-wrapper iframe {
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%;
+      }
+    
+      .card-details{
+        padding: 5px 10px;
+        font-family: 'Roboto', sans-serif;
+        color:#fff;
+        background: #2d3442;
+        height: 125px;
+        
+        h1{
+          font-size:26px;
+          width:100%;
+          color:#fff;
+          font-family: 'Oswald', sans-serif;
+          margin: 4px 0px;
+          text-shadow: 1px 2px #000;
+        }
+      
+        h4{
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+}
+
+@media screen and (max-width: 875px) {
+  #birthdayTop{
+    .dropdown-container{
+      width: 100%;
+      margin-right: 0px;
+    }
+
+    .find-button {
+      width: 100%;
+    }
+    
+    .dropdown{
+      width: 33%;
+    }
+
+    .custom-select{
+      width: 100%;
+    }
+
+    .birthday-button-div{
+      width: 100%;
+      margin-top: 20px;
+    }
+  }
+  
+  .middle-section{
+    .middle-section-ad{
+      display: none;
+    }
+  }
+}
