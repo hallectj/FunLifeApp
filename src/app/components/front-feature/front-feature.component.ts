@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { combineLatest, lastValueFrom, map } from 'rxjs';
-import { IDateObj, IPresident, Inflation } from 'src/app/models/shared-models';
+import { IDateObj, IFamousBirths, IHistEvent, IPresident, Inflation } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
@@ -16,8 +16,8 @@ export class FrontFeatureComponent {
   public presidentPortrait: string = "";
   public loading: boolean = true;
 
-  public famousBirths: any;
-  public histEvents: any;
+  public famousBirths: IFamousBirths[];
+  public histEvents: IHistEvent[];
   public presidents: any;
 
   public dateObj: IDateObj = {
@@ -34,16 +34,18 @@ export class FrontFeatureComponent {
     await this.getResponses();
 
     let randEventIndex = Math.floor(Math.random() * this.histEvents.length);
-    this.histEvtImg = this.histEvents[randEventIndex]?.pages[0]?.originalimage?.source;
+    let randomHistEvent = this.histEvents[randEventIndex];
+
+    this.histEvtImg = randomHistEvent.imageURL;
     let giveUpCount = 0;
     //sometimes there is no image from wikipedia, in that case try ten times until we get one
-    if(!this.histEvtImg){
+    if(randomHistEvent.noImageFound){
       while(giveUpCount < 10){
         let random = Math.floor(Math.random() * this.histEvents.length);
-        this.histEvtImg = this.histEvents[random]?.pages[0]?.originalimage?.source;
+        this.histEvtImg = this.histEvents[random].imageURL;
         giveUpCount += 1;
         //if we have an image break out
-        if(this.histEvtImg){
+        if(!this.histEvents[random].noImageFound){
           break;
         }
       }
@@ -51,8 +53,8 @@ export class FrontFeatureComponent {
 
 
     const celeb = this.famousBirths[0];
-    this.celebImg = celeb.uniqueImage.value;
-    this.celebName = celeb.personLabel.value;
+    this.celebImg = celeb.image;
+    this.celebName = celeb.personLabel;
 
     const president = this.presidentByYear(this.presidents, this.dateObj.year);
     this.presidentPortrait = president.portraitURL;
@@ -62,16 +64,16 @@ export class FrontFeatureComponent {
 
   public initData(){
     const observable = combineLatest({
-      histEvents: this.service.callWikiAPI(this.dateObj.today, "events"),
-      famousBirths: this.service.getFamousPeopleByDate(this.dateObj.month, this.dateObj.day, 20),
+      histEvents: this.service.getEvents(this.dateObj.today),
+      famousBirths: this.service.getFamousPeopleByDate(this.dateObj.month, this.dateObj.day, "", 20),
       presidents: this.service.getPresidents()
     });
 
     return observable.pipe(
       map(({ histEvents, famousBirths, presidents }) => {
         return {
-          histEvents: histEvents.events,
-          famousBirths: famousBirths.results.bindings,
+          histEvents: histEvents,
+          famousBirths: famousBirths,
           presidents: presidents
         }
       })
@@ -103,9 +105,9 @@ export class FrontFeatureComponent {
   public async getResponses(){
     const date = new Date();
     date.setHours(0, 0, 0, 0);
-    date.setUTCHours(0, 0, 0, 0);
     if(localStorage.getItem("featureDate")){
       const localDate = new Date(JSON.parse(localStorage.getItem("featureDate")));
+      localDate.setHours(0, 0, 0, 0);
       const equalDates = JSON.stringify(date) === JSON.stringify(localDate);
       if(equalDates){
         let f = localStorage.getItem("famousBirths");

@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LOADINGSPINNER } from 'src/app/common/base64Assests';
-import { ICelebCard, ICelebrity, IDateObj } from 'src/app/models/shared-models';
+import { ICelebCard, ICelebrity, IDateObj, IFamousBirths } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class CelebrityComponent {
   public todayCelebBirths: ICelebrity[] = [];
   public tomorrowCelebBirths: ICelebrity[] = [];
   public yesterdayCelebBirths: ICelebrity[] = [];
-  public famousPeopleResp: any = null;
+  public famousPeopleResp: IFamousBirths[] = [];
   public initCelebCardsLen: number = 6;
   public restOfTodayCelebsLength: number = 0;
   public isExpanded: boolean = false;
@@ -58,13 +58,13 @@ export class CelebrityComponent {
     this.tomorrowCelebCards = [];
     this.yesterdayCelebCards = [];
 
-    const array = this.famousPeopleResp.results.bindings;
-    let unique = array.filter((e, i) => array.findIndex(a => a.personLabel.value === e.personLabel.value) === i)
+    const array = this.famousPeopleResp;
+    let unique = array.filter((e, i) => array.findIndex(a => a.personLabel === e.personLabel) === i)
 
     unique = unique.filter( (v: any) => {
-      const occ = v.occupations.value.split(",");
+      const occ = v.occupations;
       for(let i = 0; i<occ.length; i++){
-        if(this.containsBadWord(occ[i])){
+        if(this.service.containsBadWord(occ[i])){
           return false;
         }
         return true;
@@ -88,7 +88,8 @@ export class CelebrityComponent {
   }
 
   private constructSparqlDate(dateObj: IDateObj): string {
-    return (dateObj.today.getMonth() + 1).toString().padStart(2,"0") + "-" + dateObj.today.getDate().toString().padStart(2, "0");
+    const d = (dateObj.today.getMonth() + 1).toString().padStart(2,"0") + "-" + dateObj.today.getDate().toString().padStart(2, "0");
+    return d;
   }
 
   private createDummyCards(len: number, size: string, dispAmt: number) : ICelebCard[] {
@@ -109,14 +110,14 @@ export class CelebrityComponent {
     return dummyCard.splice(0, dispAmt)
   }
 
-  private mapICelebrity(filteredBirths: any, timeProp: string): ICelebrity[] {
+  private mapICelebrity(filteredBirths: {today: IFamousBirths[], yesterday: IFamousBirths[], tomorrow: IFamousBirths[]}, timeProp: string): ICelebrity[] {
     let iCelebrityArr: ICelebrity[] = [];
-    iCelebrityArr = filteredBirths[timeProp].map(v => ({
-      name: v.personLabel.value,
-      birthdate: new Date(v.birthdate.value),
-      followerCount: +v.followers.value,
-      image: v.uniqueImage.value,
-      occupations: v.occupations.value.split(",").map(s => this.filterBadWords(s.trim())).splice(0, 4)
+    iCelebrityArr = filteredBirths[timeProp].map((v: IFamousBirths) => ({
+      name: v.personLabel,
+      birthdate: new Date(v.birthdate),
+      followerCount: v.followerCount,
+      image: v.image,
+      occupations: v.occupations.splice(0, 4)
     }))
 
     return iCelebrityArr;
@@ -144,7 +145,7 @@ export class CelebrityComponent {
     }
   }
 
-  private filterBirthdaysByDate(birthdayArray: any[]) {
+  private filterBirthdaysByDate(birthdayArray: IFamousBirths[]) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     today.setUTCHours(0, 0, 0, 0);
@@ -158,9 +159,9 @@ export class CelebrityComponent {
     tomorrow.setDate(today.getDate() + 1);
   
     return {
-      yesterday: birthdayArray.filter(obj => this.isSameMonthAndDay(new Date(obj.birthdate.value), yesterday)),
-      today: birthdayArray.filter(obj => this.isSameMonthAndDay(new Date(obj.birthdate.value), today)),
-      tomorrow: birthdayArray.filter(obj => this.isSameMonthAndDay(new Date(obj.birthdate.value), tomorrow))
+      yesterday: birthdayArray.filter(obj => this.isSameMonthAndDay(new Date(obj.birthdate), yesterday)),
+      today: birthdayArray.filter(obj => this.isSameMonthAndDay(new Date(obj.birthdate), today)),
+      tomorrow: birthdayArray.filter(obj => this.isSameMonthAndDay(new Date(obj.birthdate), tomorrow))
     };
   }
   
@@ -189,9 +190,9 @@ export class CelebrityComponent {
   public async getResponses(d1: string, d2: string, d3: string, limit: number){
     const date = new Date();
     date.setHours(0, 0, 0, 0);
-    date.setUTCHours(0, 0, 0, 0);
     if(localStorage.getItem("featureDate")){
       const localDate = new Date(JSON.parse(localStorage.getItem("featureDate")));
+      localDate.setHours(0, 0, 0, 0);
       const equalDate = JSON.stringify(date) === JSON.stringify(localDate);
       if(equalDate){
         let h = localStorage.getItem("all_celebs");
@@ -211,19 +212,6 @@ export class CelebrityComponent {
       this.famousPeopleResp = await this.service.getFamousPeopleByThreeDates(d1, d2, d3, limit).toPromise();
       localStorage.setItem("all_celebs", JSON.stringify(this.famousPeopleResp));
     }
-  }
-
-  private filterBadWords(inputString: string) {
-    const badWords = ['oral sex', 'sex', 'lesbianism', 'anal sex', 'vaginal intercourse', 'pornographic actor'];
-    const pattern = new RegExp(badWords.join("|"), "gi");
-    return inputString.replace(pattern, "****");
-  }
-
-  public containsBadWord(inputString) {
-    const badWords = ['oral sex', 'sex', 'lesbianism', 'anal sex', 'vaginal intercourse', 'pornographic actor'];
-    const pattern = new RegExp(badWords.join("|"), "gi");
-    const hasBadWord = pattern.test(inputString);
-    return hasBadWord;
   }
 
   public expandCelebDivFunc(){

@@ -23,6 +23,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './common/not-found/not-found.component';
 import { CelebCardComponent } from './modules/celebrity/celeb-card/celeb-card.component';
 import { FormsModule } from '@angular/forms';
+import { RibbonComponent } from './common/ribbon/ribbon.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -50,7 +51,8 @@ const routes: Routes = [
     PostExcerptContainerComponent,
     PaginationComponent,
     NotFoundComponent,
-    CelebCardComponent
+    CelebCardComponent,
+    RibbonComponent
   ],
   imports: [
     BrowserModule,

@@ -2,6 +2,11 @@
   <div class="excerpt-image-div"><img width="295" [src]="excerptImg" alt="Image"></div>
   <div class="excerpt-content">
     <h2>{{excerptTitle}}</h2>
-    <p>{{excerptDesc}}  <a href="#" class="read-more">Read more</a></p>
+    <p [ngStyle]="{'margin-right':useRibbonYear ? '50px' : '10px' }">{{excerptDesc}}  <a href="#" class="read-more">Read more</a></p>
+  </div>
+  <div *ngIf="useRibbonYear" class="ribbon down">
+    <div class="content">
+      <span style="writing-mode: vertical-rl; text-orientation: upright;">{{year}}</span>
+    </div>
   </div>
 </div>

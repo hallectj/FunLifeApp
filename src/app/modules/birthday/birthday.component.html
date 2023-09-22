@@ -25,7 +25,7 @@
   </div>
 </div>
 
-<section class="middle-section">
+<section class="section middle-section">
   <div class="mid-div middle-section-left">
     <div class="card-wrapper">
       <div class="blog-card">
@@ -66,5 +66,82 @@
   </div>
   <div class="middle-section-ad">
     <img src="https://dummyimage.com/125x400/000/fff.png&text=Ad+125+x+400" />
+  </div>
+</section>
+
+<section *ngIf="showHistEvents" class="section events-section">
+  <ribbon [ribbonWidth]="'100%'" [ribbonTitle]="'This day in world history ' + lockedInMonthAndDay">
+    <div class="event-holder">
+      <div *ngFor="let histEvt of historyEvents" class="event-post-excerpt">
+        <post-excerpt 
+          [excerptImg]="(histEvt.imageURL) ? histEvt.imageURL : '../../../assets/image-not-found-icon.png'"
+          [excerptTitle]="histEvt.title"
+          [excerptDesc]="histEvt.description"
+          [useRibbonYear]="true"
+          [year]="histEvt.year"
+        ></post-excerpt>
+      </div>
+    </div>
+  </ribbon>
+</section>
+
+<section *ngIf="showCelebs" class="section celebrity-section">
+  <h3>Celebrities you share a birthday with {{lockedInMonthAndDay}}</h3>
+  <div class="celebrity-holder">
+    <div *ngFor="let card of cards">
+      <celeb-card
+        [image]="card.image"
+        [size]="'large'"
+        [medalColor]="'gold'"
+        [showSkills]="true"
+        [celebPopularity]="card.celebPopularity"
+        [celebInfo]="card.celebInfo"
+      ></celeb-card>
+    </div>
+  </div>
+</section>
+
+<section class="section other-section">
+  <div *ngIf="showSports">
+    <ribbon [ribbonWidth]="'100%'" [ribbonTitle]="'🏈🏀⚾🏒 Professional Sports Outcomes 🏒⚾🏀🏈'">
+      <div class="sports-wrapper">
+        <div class="rectangle" *ngFor="let sport of sports">
+          <div #sportCards class="sport-card card">
+            <div class="arrow-right">
+              <span *ngIf="sport.sport === 'nfl'">🏈</span>
+              <span *ngIf="sport.sport === 'mlb'">⚾</span>
+              <span *ngIf="sport.sport === 'nhl'">🏒</span>
+              <span *ngIf="sport.sport === 'nba'">🏀</span>
+            </div>
+            <div class="title">
+              <h1>{{sport.title}}</h1>
+              <h5>{{sport.winner}}</h5>
+              <div>------ over ------</div>
+              <h5>{{sport.loser}}</h5>
+            </div>
+            <div class="sport-content">
+              <div>Final Score: {{sport.score}}</div>
+              <div *ngIf="sport.sport !== 'nfl'">Series: {{sport.series}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ribbon>
+  </div>
+
+  <div *ngIf="showPresident">
+    <ribbon [ribbonWidth]="'100%'" [ribbonTitle]="presidentNumberOrdinal + ' President ' + birthdayDateStr">
+      <div class="president-container">
+        <div class="president-card full">
+          <div class="president-content">
+            <h1>{{currentPresident.name}}</h1>
+            <p class="copy">President From {{currentPresident.startDate.toDateString()}} to {{currentPresident.endDate.toDateString()}}</p>
+          </div>
+          <div class="image">
+            <img [src]="currentPresident.portraitURL" alt="President of the United State" />
+          </div>
+        </div>
+      </div>
+    </ribbon>
   </div>
 </section>

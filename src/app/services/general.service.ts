@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GENERAL_URL, IDateObj, IMovie, IPresident, ISong, ISport } from '../models/shared-models';
+import { GENERAL_URL, IDateObj, IFamousBirths, IHistEvent, IMovie, IPresident, ISong, ISport } from '../models/shared-models';
 
 @Injectable({
   providedIn: 'root',
@@ -93,9 +93,7 @@ export class GeneralService {
 
   public callWikiAPI(date: Date, dataCategory: string): Observable<any>{
     if(date && date instanceof Date){
-      let month = date.getMonth(); + 1;
       let d = date.getDate();
-      console.log("month", month, "d", d);
       
       const cats: string[] = ["births", "deaths", "events", "holidays", "selected"];
       const idx = cats.findIndex(v => v === dataCategory);
@@ -103,14 +101,36 @@ export class GeneralService {
         throw new Error("Category does not exist on API");
       }
 
-      const wikiURL = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/${dataCategory}/${month}/${d}`;
+      const wikiURL = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/${dataCategory}/${date.getMonth() + 1}/${d}`;
       return this.http.get<any>(wikiURL);
     }
     
     return null;
   }
 
-  public getFamousPeopleByThreeDates(date1: string, date2: string, date3: string, limit: number){
+  public getEvents(date: Date): Observable<IHistEvent[]>{
+    return this.callWikiAPI(date, 'events').pipe(
+      map((response) => {
+        const events: IHistEvent[] = response.events.map((v: any) => {
+          let image = (v.pages[0]?.originalimage?.source) ? v.pages[0]?.originalimage?.source : "";
+          let wikiURL = (v.pages[0]?.content_urls?.desktop?.page) ? v.pages[0]?.content_urls?.desktop?.page : "";
+          let title = (v.pages[0]?.normalizedtitle) ? v.pages[0]?.normalizedtitle : "";
+          const obj: IHistEvent = {
+            description: v.text,
+            year: v.year,
+            imageURL: image,
+            wikiURL: wikiURL,
+            title: title,
+            noImageFound: (image === "") ? true : false
+          }
+          return obj;
+        })
+        return events;
+      })
+    )
+  }
+
+  public getFamousPeopleByThreeDates(date1: string, date2: string, date3: string, limit: number): Observable<IFamousBirths[]>{
     const sparqlQuery = `PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX wikibase: <http://wikiba.se/ontology#>
@@ -171,11 +191,11 @@ export class GeneralService {
     return this.http.get<any>(this.sparqlEndpoint, {
       params: params,
       headers: headers
-    });    
+    }).pipe(map(this.mapResponseToIFamousBirths));
   }
 
-  public getFamousPeopleByDate(month: string, day: string, limit: number): Observable<any> {
-    const sparqlQuery = `PREFIX wd: <http://www.wikidata.org/entity/>
+  public getFamousPeopleByDate(month: string, day: string, year: string, limit: number): Observable<IFamousBirths[]> {
+    let sparqlQuery = `PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX wikibase: <http://wikiba.se/ontology#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -188,9 +208,17 @@ export class GeneralService {
         wdt:P27 ?country ;  # Citizenship
         wdt:P8687 ?followers; # Social Media Followers 
         wdt:P106 ?occupation ;  # Occupation
-        wdt:P18 ?uniqueImage .  # Image
+        wdt:P18 ?uniqueImage .  # Image`;
 
-      FILTER(CONTAINS(STR(?birthdate), "${month}-${day}"))
+    if (!!year) {
+      sparqlQuery += `
+        FILTER(CONTAINS(STR(?birthdate), "${year}-${month}-${day}"))`;
+    } else {
+      sparqlQuery += `
+        FILTER(CONTAINS(STR(?birthdate), "${month}-${day}"))`;
+    }
+
+    sparqlQuery += `
       FILTER(LANG(?occupationLabel) = "en")
       ?occupation rdfs:label ?occupationLabel .
 
@@ -209,7 +237,7 @@ export class GeneralService {
     return this.http.get<any>(this.sparqlEndpoint, {
       params: params,
       headers: headers
-    });
+    }).pipe(map(this.mapResponseToIFamousBirths));
   }
   
   
@@ -252,5 +280,37 @@ export class GeneralService {
 
   public subscribeToCelebInfo(){
     return this.celebritySubject.asObservable();
+  }
+
+  private mapResponseToIFamousBirths(response: any): IFamousBirths[] {
+    const bindings = response.results.bindings;
+    const famousBirths: IFamousBirths[] = [];
+  
+    for (const binding of bindings) {
+      const wikiURL = binding.person.value;
+      const personLabel = binding.personLabel.value;
+      const birthdate = new Date(binding.birthdate.value);
+      const followerCount = parseInt(binding.followers.value);
+      const image = binding.uniqueImage.value;
+      const country = binding.countryLabel.value;
+      const occupations = binding.occupations.value.split(',');
+  
+      famousBirths.push({
+        wikiURL,
+        personLabel,
+        birthdate,
+        followerCount,
+        image,
+        country,
+        occupations
+      });
+    }
+  
+    return famousBirths;
+  }
+
+  public containsBadWord(inputString: string) {
+    const badWords = ['oral sex', 'sex', 'lesbianism', 'anal sex', 'vaginal intercourse', 'pornographic actor'];
+    return badWords.some(v => v === inputString.trim().toLowerCase());
   }
 }

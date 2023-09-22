@@ -32,6 +32,25 @@ export interface IPresident{
   portraitSource: string
 }
 
+export interface IHistEvent{
+  description: string,
+  year: number, 
+  imageURL: string,
+  wikiURL: string,
+  title: string,
+  noImageFound: boolean
+}
+
+export interface IFamousBirths{
+  wikiURL: string,
+  personLabel: string,
+  birthdate: Date,
+  followerCount: number,
+  image: string,
+  country: string,
+  occupations: string[]
+}
+
 export interface ISong{
   artist: string,
   songTitle: string,

@@ -30,6 +30,11 @@
   flex-direction: column;
 }
 
+.section {
+  width: 95%;
+  margin: 0 auto;
+}
+
 /* Style for labels */
 label {
   font-weight: bold;
@@ -130,10 +135,14 @@ label {
         font-family: 'Roboto', sans-serif;
         color:#fff;
         background: #2d3442;
-        height: 125px;
+        height: 115px;
+
+        p{
+          margin-bottom: 0.5rem;
+        }
         
         h1{
-          font-size:26px;
+          font-size:24px;
           width:100%;
           color:#fff;
           font-family: 'Oswald', sans-serif;
@@ -148,6 +157,16 @@ label {
     }
   }
 
+}
+
+.event-holder{
+  max-height: 375px;
+  overflow-y: auto;
+
+  .event-post-excerpt{
+    position: relative;
+    margin: 0px 10px;
+  }
 }
 
 @media screen and (max-width: 875px) {
@@ -178,6 +197,226 @@ label {
   .middle-section{
     .middle-section-ad{
       display: none;
+    }
+  }
+}
+
+.celebrity-section{
+  .celebrity-holder{
+    display: flex;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+}
+
+.other-section{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .sports-wrapper{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 481px;
+    
+
+    .rectangle {
+      padding: 5px;
+      border: 2px solid #ccc;
+      margin: 10px;
+      display: flex;
+    }
+
+    .sport-content {
+      margin: 0px;
+      display: flex;
+      padding: 5px 0px;
+      flex-direction: column;
+      text-align: center;
+      font-family: 'Teko', sans-serif;
+      font-size: 0.8rem;
+    }
+      
+    h1 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      text-shadow: 2px 2px 1px rgba(23, 78, 99, 0.75);
+      color: cyan;
+    }
+    
+    h5{
+      font-size: 16px;
+      margin: 0;
+    }
+    
+    .sport-card { 
+      position: relative; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #000000;
+      font-family: Arial, sans-serif;
+      color: #ffffff;
+      line-height: 1.5;
+      width: 400px;
+      text-align: center;
+
+      .arrow-right{
+        position: absolute;
+        left: 0%;
+        top: 0%;
+        width: 85px;
+        height: 75px;
+        background-color: green;
+        clip-path: polygon(0% 0%, 100% 0%, 0% 100%);
+
+        span {
+          color: #f5f5f5;
+          font-family: sans-serif;
+          font-size: 1.85em;
+          left: -15px;
+          top: 0px;
+          position: absolute;
+          width: 80px;
+        }
+      }
+
+      //[ngStyle]="{'--bg-image': 'url(' + testImage + ')'}"
+      
+      &::before{  
+        content: "";
+        background-image: var(--bg-image);
+        background-position: 100% 50%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.20;
+        filter: blur(3.5px);
+      }
+    }
+  }
+
+
+
+  /* president styles  */
+  // The main container
+  .president-container {
+    background: #161616;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  
+    h1 {
+      font-family: 'Josefin Sans', serif;
+      font-size: 2rem;
+      line-height: 24px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+  
+    &:before {
+      content: '';
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      position: absolute;
+      opacity: 0.3;
+    }
+  
+    // The cards
+    .president-card {
+      width: 360px;
+      box-shadow: 0 0 16px 0 rgba(0,0,0,0.32);
+      cursor: pointer;
+      position: relative;
+      transform-origin: center;
+      // easeOutQuart
+      transition: all 400ms cubic-bezier(0.165, 0.84, 0.44, 1);
+      margin: 0 16px 0 0;
+      font-family: 'Roboto', sans-serif;
+      color: #f3f3f3;
+      font-weight: 400;
+      text-align: left;
+      text-rendering: auto;
+  
+      p {
+        font-size: 1.0rem;
+        line-height: 28px;
+        letter-spacing: 0.5px;
+        text-align: center;
+      }
+  
+      &:last-child {margin: 0;}
+  
+      &:hover {
+        transform: scale(1.05);
+      }
+  
+      .president-content {
+        padding: 40px 24px 48px 24px;
+        position: relative;
+
+        h1, p {
+          // easeInOutSine
+          transition: all 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+
+          &.copy {
+            margin: 16px 0 0 0;
+          }
+        }
+      }
+  
+      &.full {
+        height: 480px;
+        background: #161616;
+        overflow: hidden;
+    
+        .president-content {
+          position: absolute;
+          z-index: 1;
+          bottom: 40px;
+          padding: 0 24px;
+          // easeOutQuart
+          transition: all 400ms cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+    
+        // Hover state for the full card
+        &:hover {
+          .content {
+            bottom: 56px;
+          }
+        }
+    
+        .image {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+      
+          img {
+            height: 480px;
+            width: auto;
+          }
+      
+          &:before {
+            content: '';
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);
+            position: absolute;
+          }
+        }
+      }
     }
   }
 }

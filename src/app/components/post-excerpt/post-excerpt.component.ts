@@ -10,5 +10,6 @@ export class PostExcerptComponent {
   @Input() excerptTitle: string = "";
   @Input() excerptDesc: string = "";
   @Input() isTopPost: boolean = false;
-
+  @Input() useRibbonYear: boolean = false;
+  @Input() year: number = 0;
 }
