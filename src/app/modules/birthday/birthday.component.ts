@@ -1,7 +1,7 @@
 import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { LOADINGSPINNER } from 'src/app/common/base64Assests';
-import { ICelebCard, ICelebrity, IFamousBirths, IHistEvent, IMovie, IPresident, ISong, ISport } from 'src/app/models/shared-models';
+import { ICelebCard, ICelebrity, IFamousBirths, IHistEvent, IMovie, IPostExcerpt, IPresident, ISong, ISport } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 @Component({
   selector: 'birthday',
@@ -39,6 +39,8 @@ export class BirthdayComponent {
   public historyEvents: IHistEvent[] = [];
   public famousBirths: IFamousBirths[] = [];
   public sports: ISport[] = [];
+
+  public dispHistory: {post: IPostExcerpt, useRibbon: boolean, year: number}[] = [];
 
   public currentPresident: IPresident = {
     number: '',
@@ -150,6 +152,19 @@ export class BirthdayComponent {
     this.cards = this.createDummyCards(3, "large", 3);
 
     this.historyEvents = await this.service.getEvents(birthDate).toPromise();
+    this.dispHistory = this.historyEvents.map((v: IHistEvent) => (
+      {
+        post: {
+          excerptDesc: v.description,
+          excerptImage: v.imageURL, 
+          excerptTitle: v.title,
+          isFeaturePost: false
+        }, 
+        useRibbon: true,
+        year: v.year
+      }
+    ));
+
     this.showHistEvents = true;
 
     this.sports = await this.service.getSportsByYear(birthDate.getFullYear().toString()).toPromise();
@@ -167,18 +182,9 @@ export class BirthdayComponent {
     //celebs
     this.famousBirths = await this.service.getFamousPeopleByDate(mm, dd, "", 9).toPromise();
     this.famousBirths = this.famousBirths.filter((e, i) => this.famousBirths.findIndex(a => a.personLabel === e.personLabel) === i);
-    this.famousBirths = this.famousBirths.filter( (v: IFamousBirths) => {
-      const occ = v.occupations;
-      for(let i = 0; i<occ.length; i++){
-        if(this.service.containsBadWord(occ[i])){
-          return false;
-        }
-        return true;
-      }
-      return false;
-    }) 
 
-    console.log("famous births", this.famousBirths)
+    this.famousBirths = this.famousBirths.filter((v: IFamousBirths) =>
+      v.occupations.every((occ) => !this.service.containsBadWord(occ)));
 
     this.cards = [];
 
@@ -190,7 +196,7 @@ export class BirthdayComponent {
         image: c.image,
         showSkills: true,
         celebPopularity: i+1,
-        celebInfo: {name: c.personLabel, age: this.computeAge(c.birthdate), occupations: c.occupations.splice(0, 4)}
+        celebInfo: {name: c.personLabel, age: this.computeAge(new Date(c.birthdate)), occupations: c.occupations.splice(0, 4)}
       }
       this.cards.push(obj);
     }

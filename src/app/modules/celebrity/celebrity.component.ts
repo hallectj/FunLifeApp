@@ -13,9 +13,9 @@ export class CelebrityComponent {
   constructor(public service: GeneralService){}
 
   public dateObj: IDateObj = this.service.populateDateObj();
-  public tomorrow = new Date(this.dateObj.today)
-  public yesterday = new Date(this.dateObj.today)
-
+  public yesterday = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-1);
+  public tomorrow = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()+1);
+  public today = new Date();
 
   public dateObjTomorow: IDateObj = null;
   public dateObjYesterday: IDateObj = null;
@@ -35,12 +35,10 @@ export class CelebrityComponent {
   @ViewChild('expandButton') public expandButton: ElementRef<HTMLDivElement>;
 
   public async ngOnInit(){
-    this.yesterday.setDate(this.dateObj.today.getDate() - 1)
     this.yesterday.setHours(0, 0, 0, 0);
-    
-    this.tomorrow.setDate(this.dateObj.today.getDate() + 1)
     this.tomorrow.setHours(0, 0, 0, 0);
-    
+    this.today.setHours(0, 0, 0, 0);
+
     this.dateObjTomorow = this.service.populateDateObj(this.tomorrow);
     this.dateObjYesterday = this.service.populateDateObj(this.yesterday);
 
@@ -53,24 +51,16 @@ export class CelebrityComponent {
     const date3 = this.constructSparqlDate(this.dateObjTomorow);
 
     await this.getResponses(date1, date2, date3, 80);
-
     this.todayCelebCards = [];
     this.tomorrowCelebCards = [];
     this.yesterdayCelebCards = [];
 
-    const array = this.famousPeopleResp;
+    let array = this.famousPeopleResp;
+
     let unique = array.filter((e, i) => array.findIndex(a => a.personLabel === e.personLabel) === i)
 
-    unique = unique.filter( (v: any) => {
-      const occ = v.occupations;
-      for(let i = 0; i<occ.length; i++){
-        if(this.service.containsBadWord(occ[i])){
-          return false;
-        }
-        return true;
-      }
-      return false;
-    }) 
+    unique = unique.filter((v: IFamousBirths) => v.occupations.every((occ) => !this.service.containsBadWord(occ)));
+
 
     const filteredBirthdays = this.filterBirthdaysByDate(unique);
 
@@ -81,14 +71,10 @@ export class CelebrityComponent {
     this.todayCelebCards = this.constructCards(this.todayCelebBirths, "large", true, -1);
     this.tomorrowCelebCards = this.constructCards(this.tomorrowCelebBirths, "small", false, 8);
     this.yesterdayCelebCards = this.constructCards(this.yesterdayCelebBirths, "small", false, 8);
-
-    this.service.subscribeToCelebInfo().subscribe((celebBirths: any) => {
-
-    })
   }
 
   private constructSparqlDate(dateObj: IDateObj): string {
-    const d = (dateObj.today.getMonth() + 1).toString().padStart(2,"0") + "-" + dateObj.today.getDate().toString().padStart(2, "0");
+    const d = (dateObj.date.getMonth()+1).toString().padStart(2,"0") + "-" + (dateObj.date.getDate()).toString().padStart(2, "0");
     return d;
   }
 
@@ -110,7 +96,7 @@ export class CelebrityComponent {
     return dummyCard.splice(0, dispAmt)
   }
 
-  private mapICelebrity(filteredBirths: {today: IFamousBirths[], yesterday: IFamousBirths[], tomorrow: IFamousBirths[]}, timeProp: string): ICelebrity[] {
+  private mapICelebrity(filteredBirths: {yesterday: IFamousBirths[], today: IFamousBirths[], tomorrow: IFamousBirths[]}, timeProp: string): ICelebrity[] {
     let iCelebrityArr: ICelebrity[] = [];
     iCelebrityArr = filteredBirths[timeProp].map((v: IFamousBirths) => ({
       name: v.personLabel,
@@ -146,29 +132,21 @@ export class CelebrityComponent {
   }
 
   private filterBirthdaysByDate(birthdayArray: IFamousBirths[]) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    today.setUTCHours(0, 0, 0, 0);
-    const yesterday = new Date(today);
-    yesterday.setHours(today.getUTCHours() - 6);
-    yesterday.setUTCHours(0, 0, 0, 0);
-    yesterday.setDate(today.getDate() - 1);
-    const tomorrow = new Date(today);
-    tomorrow.setHours(0, 0, 0, 0);
-    tomorrow.setUTCHours(0, 0, 0, 0);
-    tomorrow.setDate(today.getDate() + 1);
-  
     return {
-      yesterday: birthdayArray.filter(obj => this.isSameMonthAndDay(new Date(obj.birthdate), yesterday)),
-      today: birthdayArray.filter(obj => this.isSameMonthAndDay(new Date(obj.birthdate), today)),
-      tomorrow: birthdayArray.filter(obj => this.isSameMonthAndDay(new Date(obj.birthdate), tomorrow))
-    };
+      yesterday: birthdayArray.filter(v => this.isSameMonthAndDay(v.birthdate, this.yesterday.toISOString())),
+      today: birthdayArray.filter(v => this.isSameMonthAndDay(v.birthdate, this.today.toISOString())), 
+      tomorrow: birthdayArray.filter(v => this.isSameMonthAndDay(v.birthdate, this.tomorrow.toISOString())), 
+    }
+    
   }
   
-  private isSameMonthAndDay(date1: Date, date2: Date) {
+  private isSameMonthAndDay(isoDate1: string, isoDate2: string) {
+    const obj1 = this.service.getMonthAndDayFromISOString(isoDate1);
+    const obj2 = this.service.getMonthAndDayFromISOString(isoDate2);
+    let month1 = obj1.month, day1 = obj1.day;
+    let month2 = obj2.month, day2 = obj2.day;
     return (
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
+      month1 === month2 && day1 === day2
     );
   }
 
@@ -188,13 +166,11 @@ export class CelebrityComponent {
   }
 
   public async getResponses(d1: string, d2: string, d3: string, limit: number){
-    const date = new Date();
-    date.setHours(0, 0, 0, 0);
-    if(localStorage.getItem("featureDate")){
-      const localDate = new Date(JSON.parse(localStorage.getItem("featureDate")));
-      localDate.setHours(0, 0, 0, 0);
-      const equalDate = JSON.stringify(date) === JSON.stringify(localDate);
-      if(equalDate){
+    const dateISO: string = this.dateObj.date.toISOString().split("T")[0];
+    if(localStorage.getItem("featureDateISO")){
+      const localDateISO: string = JSON.parse(localStorage.getItem('featureDateISO'));
+      const isEqualDateISO = JSON.stringify(dateISO) === JSON.stringify(localDateISO);
+      if(isEqualDateISO){
         let h = localStorage.getItem("all_celebs");
         if(h && h !== "null"){
           this.famousPeopleResp = JSON.parse(h);
@@ -203,12 +179,12 @@ export class CelebrityComponent {
           localStorage.setItem("all_celebs", JSON.stringify(this.famousPeopleResp));
         }
       }else{
-        localStorage.setItem("featureDate", JSON.stringify(date));
+        localStorage.setItem("featureDateISO", JSON.stringify(dateISO));
         this.famousPeopleResp = await this.service.getFamousPeopleByThreeDates(d1, d2, d3, limit).toPromise();
         localStorage.setItem("all_celebs", JSON.stringify(this.famousPeopleResp));
       }
     }else{
-      localStorage.setItem("featureDate", JSON.stringify(date));
+      localStorage.setItem("featureDateISO", JSON.stringify(dateISO));
       this.famousPeopleResp = await this.service.getFamousPeopleByThreeDates(d1, d2, d3, limit).toPromise();
       localStorage.setItem("all_celebs", JSON.stringify(this.famousPeopleResp));
     }

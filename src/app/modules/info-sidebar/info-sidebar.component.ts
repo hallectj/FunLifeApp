@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { HomeService } from 'src/app/common/home/home.service';
 import { ISong } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
@@ -18,7 +17,7 @@ export class InfoSidebarComponent {
 
   @Input() randomYear: string = "1990";
   
-  constructor(public homeService: HomeService, public generalService: GeneralService){}
+  constructor(public generalService: GeneralService){}
 
   public async ngOnInit(){
     const response: ISong[] | undefined = await this.generalService.getSongs().toPromise();

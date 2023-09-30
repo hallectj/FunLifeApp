@@ -1,0 +1,110 @@
+.dynamic-content-wrapper{
+  .loading{
+    display: flex;
+    align-items: center;
+
+    div:first-child{
+      margin-right: 10px;
+      font-size: 24px;
+    }
+  }
+
+  article {
+    margin: 10px auto; 
+    font-size: 1.5rem;
+    padding: 1.5rem;
+    color: #23234b;
+    background-color: snow;
+    font-family: 'Nunito', sans-serif;
+  }
+  
+  article p {
+    max-width: 90%;
+    margin: 0 auto; 
+    padding: .8rem 0;
+    line-height: 160%;
+  }
+  
+  article h2 {
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    font-family: 'Russo One', sans-serif;
+  }
+  
+  h2 {
+    margin-top: 1em;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Russo One', sans-serif;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: 'Russo One', sans-serif;
+  }
+  
+  p {
+    font-size: clamp(1rem, 0.875rem + 0.4vw, 1.125rem);
+    letter-spacing: 0.25px;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+  
+  blockquote{
+    border-top: 3px solid #130f40;
+    border-left: 3px solid #130f40;
+    background: #30336b25;
+    position: relative;
+    padding: 1.6rem 10px;
+    font-size: 1.42rem
+  }
+  
+  blockquote::before{
+    content: "";
+    width: 24px;
+    height:24px;
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    background-size: 18px 18px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-color: #fff;
+    border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='icon icon-tabler icon-tabler-quote' width='44' height='44' viewBox='0 0 24 24' stroke-width='2' stroke='%23130f40' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M10 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5' /%3E%3Cpath d='M19 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5' /%3E%3C/svg%3E");
+    border-left: 1px solid #30336b;
+  
+  }
+  
+  cite {
+    font-weight: 500;
+    font-style: italic;
+  }
+  
+  .link {
+    cursor: pointer;
+  }
+  
+  img {
+    width: 100%;
+    margin-block: 1em;
+    border-radius: 0.5em;
+  }
+  
+  ul {
+    margin: 0.8em;
+  }
+  
+  li {
+    padding-bottom: 0.8em;
+    margin-left: 0.5em;
+    font-size: clamp(1rem, 0.875rem + 0.4vw, 1.125rem);
+    list-style: square;
+  }
+}
+

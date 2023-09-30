@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik&family=Tektur:wght@700&family=Work+Sans&display=swap');
+
+#mainWrapper{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 40px;
+  padding: 0px 20px;
+
+  #mainPage, #mainHome{
+    flex: 2;
+    margin-right: 20px;
+    margin-right: 20px;
+    min-height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  #mainSidebar{
+    flex: 1;
+  }
+}
+
+@media screen and (max-width: 875px) {
+  #mainWrapper{
+
+    #mainPage, #mainHome{
+      flex: none;
+      width: 100%;
+      min-height: unset;
+    }
+
+    #mainSidebar{
+      flex: none;
+      width: 100%;
+    }
+  }
+}

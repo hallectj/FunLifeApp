@@ -72,14 +72,8 @@
 <section *ngIf="showHistEvents" class="section events-section">
   <ribbon [ribbonWidth]="'100%'" [ribbonTitle]="'This day in world history ' + lockedInMonthAndDay">
     <div class="event-holder">
-      <div *ngFor="let histEvt of historyEvents" class="event-post-excerpt">
-        <post-excerpt 
-          [excerptImg]="(histEvt.imageURL) ? histEvt.imageURL : '../../../assets/image-not-found-icon.png'"
-          [excerptTitle]="histEvt.title"
-          [excerptDesc]="histEvt.description"
-          [useRibbonYear]="true"
-          [year]="histEvt.year"
-        ></post-excerpt>
+      <div *ngFor="let histEvt of dispHistory" class="event-post-excerpt">
+        <post-excerpt [postExcerpt]="histEvt.post" [useRibbonYear]="true" [year]="histEvt.year"></post-excerpt>
       </div>
     </div>
   </ribbon>

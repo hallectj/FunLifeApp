@@ -5,8 +5,15 @@ type DataResponse<T> = {
   [key: string]: T[];
 };
 
+export interface IPostExcerpt {
+  excerptImage: string,
+  excerptTitle: string,
+  excerptDesc: string,
+  isFeaturePost: boolean
+}
+
 export interface IDateObj  {
-  today: Date, 
+  date: Date, 
   day: string, 
   month: string, 
   monthName: string, 
@@ -44,7 +51,7 @@ export interface IHistEvent{
 export interface IFamousBirths{
   wikiURL: string,
   personLabel: string,
-  birthdate: Date,
+  birthdate: string, //ISOString
   followerCount: number,
   image: string,
   country: string,

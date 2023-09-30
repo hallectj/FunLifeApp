@@ -255,23 +255,24 @@ export class GeneralService {
   }
 
   public populateDateObj(d?: Date): IDateObj {
-    let today: Date = null;
+    let date: Date = null;
     if(d){
-      today = new Date(d);
+      date = new Date(d);
     }else{
-      today = new Date();
+      date = new Date();
     }
 
-    today.setHours(6, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
 
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const monthName = months[today.getMonth()];
-    let month = (today.getMonth() + 1).toString();
-    let day = (today.getDate()).toString();
+    const monthName = months[date.getMonth()];
+    let month = (date.getMonth() + 1).toString();
+    let day = (date.getDate()).toString();
     if(month.length === 1) month = "0" + month;
     if(day.length === 1) day = "0" + day;
-    const year = today.getFullYear().toString();
-    return {today, day, month, monthName, year}
+    const year = date.getFullYear().toString();
+
+    return {date, day, month, monthName, year}
   }
 
   public sendCelebInfo(celebObj: any){
@@ -289,7 +290,7 @@ export class GeneralService {
     for (const binding of bindings) {
       const wikiURL = binding.person.value;
       const personLabel = binding.personLabel.value;
-      const birthdate = new Date(binding.birthdate.value);
+      const birthdate = new Date(binding.birthdate.value).toISOString();
       const followerCount = parseInt(binding.followers.value);
       const image = binding.uniqueImage.value;
       const country = binding.countryLabel.value;
@@ -310,7 +311,15 @@ export class GeneralService {
   }
 
   public containsBadWord(inputString: string) {
-    const badWords = ['oral sex', 'sex', 'lesbianism', 'anal sex', 'vaginal intercourse', 'pornographic actor'];
-    return badWords.some(v => v === inputString.trim().toLowerCase());
+    const badWords = ['oral sex', 'sex', 'lesbianism', 'anal sex', 'vaginal intercourse', 'pornographic actor', 'pornographic actress'];
+    return badWords.some(v => v === inputString.trimStart().toLowerCase());
+  }
+
+  public getMonthAndDayFromISOString(isoString: string) {
+    const date = new Date(isoString); // Create a Date object from the ISO string
+    const month = date.getUTCMonth() + 1; // Get the month (0-indexed, so add 1)
+    const day = date.getUTCDate(); // Get the day
+  
+    return { month, day };
   }
 }

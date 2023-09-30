@@ -21,7 +21,7 @@ export class FrontFeatureComponent {
   public presidents: any;
 
   public dateObj: IDateObj = {
-    today: new Date(), day: "", month: "", monthName: "", year: ""
+    date: new Date(), day: "", month: "", monthName: "", year: ""
   }
 
   constructor(private service: GeneralService){}
@@ -64,7 +64,7 @@ export class FrontFeatureComponent {
 
   public initData(){
     const observable = combineLatest({
-      histEvents: this.service.getEvents(this.dateObj.today),
+      histEvents: this.service.getEvents(this.dateObj.date),
       famousBirths: this.service.getFamousPeopleByDate(this.dateObj.month, this.dateObj.day, "", 20),
       presidents: this.service.getPresidents()
     });
@@ -103,13 +103,11 @@ export class FrontFeatureComponent {
   }
 
   public async getResponses(){
-    const date = new Date();
-    date.setHours(0, 0, 0, 0);
-    if(localStorage.getItem("featureDate")){
-      const localDate = new Date(JSON.parse(localStorage.getItem("featureDate")));
-      localDate.setHours(0, 0, 0, 0);
-      const equalDates = JSON.stringify(date) === JSON.stringify(localDate);
-      if(equalDates){
+    const dateISO: string = new Date().toISOString().split("T")[0];
+    if(localStorage.getItem("featureDateISO")){
+      const localDateISO = JSON.parse(localStorage.getItem("featureDateISO"));
+      const isEqualDates = JSON.stringify(dateISO) === JSON.stringify(localDateISO);
+      if(isEqualDates){
         let f = localStorage.getItem("famousBirths");
         let p = localStorage.getItem("presidents");
         let h = localStorage.getItem("histEvents");
@@ -129,7 +127,7 @@ export class FrontFeatureComponent {
           localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
         }
       }else{
-        localStorage.setItem("featureDate", JSON.stringify(date));
+        localStorage.setItem("featureDateISO", JSON.stringify(dateISO));
         const responses = await lastValueFrom(this.initData());
 
         this.famousBirths = responses.famousBirths;
@@ -141,7 +139,7 @@ export class FrontFeatureComponent {
         localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
       }
     }else{
-      localStorage.setItem("featureDate", JSON.stringify(date));
+      localStorage.setItem("featureDateISO", JSON.stringify(dateISO));
       const responses = await lastValueFrom(this.initData());
       this.histEvents = responses.histEvents;
       this.famousBirths = responses.famousBirths;

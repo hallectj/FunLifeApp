@@ -24,11 +24,17 @@ import { NotFoundComponent } from './common/not-found/not-found.component';
 import { CelebCardComponent } from './modules/celebrity/celeb-card/celeb-card.component';
 import { FormsModule } from '@angular/forms';
 import { RibbonComponent } from './common/ribbon/ribbon.component';
+import { BlogpostComponent } from './common/blogpost/blogpost.component';
+import { PageComponent } from './common/page/page.component';
+import { DynamicContentComponent } from './common/blogpost/dynamic-content/dynamic-content.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', pathMatch: 'full', component: PageComponent },
+  { path: 'page/:pageId', component: PageComponent },
+  { path: 'page/:pageId/:postTitle', component: BlogpostComponent },
+  { path: 'post/:postTitle', component: BlogpostComponent },
   { path: 'birthday', component: BirthdayComponent },
-  { path: 'day-in-history', component: DayInHistoryComponent},
+  { path: 'day-in-history', component: DayInHistoryComponent },
   { path: 'celebrity', component: CelebrityComponent },
   { path: '**', component: NotFoundComponent }
 ];
@@ -52,7 +58,10 @@ const routes: Routes = [
     PaginationComponent,
     NotFoundComponent,
     CelebCardComponent,
-    RibbonComponent
+    RibbonComponent,
+    BlogpostComponent,
+    PageComponent,
+    DynamicContentComponent,
   ],
   imports: [
     BrowserModule,

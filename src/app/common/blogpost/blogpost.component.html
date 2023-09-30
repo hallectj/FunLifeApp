@@ -1,0 +1,34 @@
+<div id="blogpost-wrapper">
+  <div id="left-side">
+    <main>
+      <header>
+        <h1>{{postExcerpt.excerptTitle}}</h1>
+        <div class="info_block">
+          <div class="author-date">
+            <span>Written by &nbsp;</span><span class="author-name">Joe Smith</span>&nbsp; 
+            <span class="article-date">August 22, 2023</span> | <span class="read-time">8min read</span>
+        </div>
+        </div> 
+        <div><p class="last_update">Last updated September 27, 2023</p></div>
+      </header>
+      
+      <div id="main_img_wrapper">
+        <img [src]="postExcerpt.excerptImage" />
+      </div> 
+       
+      <!-- Article from Server -->
+      <dynamic-content></dynamic-content>
+    </main>  
+  </div>
+  <div id="right-side">
+    <div class="ad_block_250x250">
+      <img src="https://dummyimage.com/250x250/000/fff" />
+    </div>
+    <info-sidebar [randomYear]="'1999'"></info-sidebar>
+  </div>
+  <div id="in-case-you-missed">
+    <div class="excerpt-box">
+
+    </div>
+  </div>
+</div>

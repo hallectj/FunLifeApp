@@ -1,0 +1,11 @@
+<div class="dynamic-content-wrapper">
+  <div *ngIf="contentIsLoading; else finshedLoading" class="loading">
+    <div>Loading Article...</div>
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+  <ng-template #finshedLoading>
+    <div [innerHTML]="exampleHTML"></div>
+  </ng-template>
+</div>

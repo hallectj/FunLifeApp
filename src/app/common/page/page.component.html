@@ -1,0 +1,16 @@
+<div id="mainWrapper">
+  <main id="mainPage">
+    <ng-container *ngIf="pageNumber === 1">
+      <front-feature [randomYear]="randomYear"></front-feature>
+      <mid-feature [randomYear]="randomYear"></mid-feature>
+    </ng-container>
+    <post-excerpt-container [pageNumber]="pageNumber" [postsPerPage]="pageNumber === 1 ? 5 : 8"></post-excerpt-container>
+    <pagination [(pageNumber)]="pageNumber"></pagination>
+  </main>
+  
+  <aside id="mainSidebar">
+    <info-sidebar [randomYear]="randomYear"></info-sidebar>
+  </aside>
+</div>
+
+

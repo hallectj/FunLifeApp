@@ -5,27 +5,38 @@
   margin: 20px 0;
 }
 
-.pagination a {
+.pagination div {
   display: inline-block;
   padding: 2px 15px;
   margin: 0 5px;
-  border: 1px solid #ccc;
   text-decoration: none;
   color: #333;
   border-radius: 5px;
-  font-size: 2em;
+  font-size: 1em;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
+  cursor: pointer;
 }
 
-.pagination a.active {
+.page-numbers{
+  display: flex;
+}
+
+.page-numbers > div{
+  border: 1px solid #ccc;
+  font-size: 1.75em;
+}
+
+.pagination div.active {
   background-color: #333;
   color: #fff;
 }
 
-.pagination a.prev,
-.pagination a.next {
-  display: inline-block; /* Show on both desktop and mobile */
+.pagination div.prev,
+.pagination div.next {
+  display: inline-block;
+  font-size: 1.75em;
+  border: 1px solid #ccc;
 }
 
 
@@ -35,24 +46,19 @@
     justify-content: center;
     text-align: center;
     margin: 20px 0;
-  
-    div{
-      width: 150px;
-      margin: 0px 10px;
-  
-      .page-btn-chevron{
-        width: 100%;
-      }
+
+    .page-numbers {
+      display: none; /* Hide page numbers on mobile */
     }
   }
   
-  .pagination a.prev,
-  .pagination a.next {
-    display: inline-block; /* Show on mobile */
-    margin: 5px; /* Add some margin for spacing on mobile */
+  .page-btn-chevron{
+    width: 100%;
   }
-  
-  .page-numbers {
-    display: none; /* Hide page numbers on mobile */
+   
+  .pagination div.prev,
+  .pagination div.next {
+    display: inline-block;
   }
+
 }
