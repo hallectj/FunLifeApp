@@ -4,6 +4,7 @@
   background: transparent !important;
   position: relative;
   z-index: 1;
+  width: 100%;
 }
 .ribbon {
   background: hsl(30, 90%, 65%);
@@ -84,4 +85,14 @@
 }
 .underpage p:last-child {
   margin-bottom: 0;
+}
+
+@media screen and (max-width: 875px) {
+  .ribbon {
+    font-size: 12px;
+  }  
+
+  .ribbon-container{
+    width: 425px;
+  }
 }

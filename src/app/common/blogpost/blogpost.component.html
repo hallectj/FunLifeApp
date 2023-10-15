@@ -1,34 +1,49 @@
 <div id="blogpost-wrapper">
-  <div id="left-side">
-    <main>
-      <header>
-        <h1>{{postExcerpt.excerptTitle}}</h1>
-        <div class="info_block">
-          <div class="author-date">
-            <span>Written by &nbsp;</span><span class="author-name">Joe Smith</span>&nbsp; 
-            <span class="article-date">August 22, 2023</span> | <span class="read-time">8min read</span>
-        </div>
+  <div id="blogBothSides">
+    <div id="left-side">
+      <main>
+        <header>
+          <h1>{{postExcerpt.excerptTitle}}</h1>
+          <div class="info_block">
+            <div class="author-date">
+              <span>Written by &nbsp;</span><span class="author-name">Joe Smith</span>&nbsp; 
+              <span class="article-date">August 22, 2023</span> | <span class="read-time">8min read</span>
+          </div>
+          </div> 
+          <div><p class="last_update">Last updated September 27, 2023</p></div>
+        </header>
+        
+        <div id="main_img_wrapper">
+          <img [src]="postExcerpt.excerptImage" />
         </div> 
-        <div><p class="last_update">Last updated September 27, 2023</p></div>
-      </header>
-      
-      <div id="main_img_wrapper">
-        <img [src]="postExcerpt.excerptImage" />
-      </div> 
-       
-      <!-- Article from Server -->
-      <dynamic-content></dynamic-content>
-    </main>  
-  </div>
-  <div id="right-side">
-    <div class="ad_block_250x250">
-      <img src="https://dummyimage.com/250x250/000/fff" />
+         
+        <!-- Article from Server -->
+        <dynamic-content></dynamic-content>
+      </main>
     </div>
-    <info-sidebar [randomYear]="'1999'"></info-sidebar>
-  </div>
-  <div id="in-case-you-missed">
-    <div class="excerpt-box">
+    <div id="right-side">
+      <div class="ad_block_250x250">
+        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="lightgray" />
+          <text x="50%" y="50%" text-anchor="middle" fill="black" font-size="24" font-family="Arial">AD Block Here</text>
+        </svg>
+      </div>
+      
+      <info-sidebar [randomYear]="'1999'"></info-sidebar>
 
+      <div></div>
+
+    </div>
+  </div>
+
+  <div id="in-case-you-missed">
+    <div><h3 class="h3-styles">In Case You Missed These Articles</h3></div>
+    <div class="missed-articles">
+      <div *ngFor="let miss of inCaseYouMissedArr" class="missed-article-wrapper">
+        <div class="missed-pic" [ngStyle]="{'background-image': 'url(' + miss.excerptImage + ')'}"></div>
+        <p class="missed-header">{{miss.excerptTitle}}</p>
+        <p class="missed-content">{{miss.excerptDesc}}</p>
+      </div>
     </div>
   </div>
 </div>

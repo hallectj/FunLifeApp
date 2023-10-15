@@ -1,4 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Yesteryear&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
+
+$white: hsl(0, 0%, 100%);
+$light-gray: hsl(212, 45%, 89%);
+$grayish-blue: hsl(220, 15%, 55%);
+$dark-blue: hsl(218, 44%, 22%);
 
 @keyframes scaleEffect {
   25% {
@@ -74,5 +80,112 @@
     .song-wrapper:hover{
       animation: scaleEffect 0.5s ease-in-out;
     }
+  }
+
+  .toy-card {
+    padding: 0;
+    margin: 0;
+    margin-top: 10px;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+    background: $white;
+    box-shadow: 2px 2px 25px 0px rgba(128, 128, 128, 0.247);
+    border-radius: 15px;
+    padding: 15px;
+
+    .card-toy-year{
+      font-size: 1.75em;
+      text-align: center;
+      color: $dark-blue;
+      padding: 0px;
+      margin: 0px;
+      margin-bottom: 6px;
+    }
+
+    .toy-card-img {
+      width: 100%;
+      img {
+        width: 100%;
+        border-radius: 12px;
+        max-height: 200px;
+        max-width: 200px;
+        height: 100%;
+        border-radius: 12px;
+        display: block;
+        margin: 0 auto;
+      }
+    }
+      
+    .toy-card-content {
+      width: 100%;
+      margin-top: 20px;
+
+      h1 {
+        color: $dark-blue;
+        font-size: 24px;
+        text-align: center;
+        font-weight: 700;
+      }
+          
+      p {
+        margin-top: 15px;
+        color: $grayish-blue;
+        text-align: center;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .quote-section{
+    margin-top: 10px;
+    background-color: #fff;
+    padding: 5px;
+
+    h3{
+      text-align: center;
+    }
+
+    .card-quote {
+      color: #fff;
+      background-color: #314048;
+      background-repeat:  no-repeat;
+      background-position: center center;
+      background-size: contain;
+      overflow: hidden;
+      border: none;
+    
+      &::before {
+        opacity: 0.3;
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+    
+      .lead {
+        font-size: 1.20rem;
+        line-height: 1.25rem;
+        font-weight: bold;
+      }
+    
+      .blockquote {
+        &::before {
+          content: "";
+          font-family: "Font Awesome 5 Pro";
+          font-weight: 900;
+          font-size: 5rem;
+          opacity: 0.9;
+        }
+    
+        position: relative;
+      }
+    
+      .blockquote-footer {
+        color: #fff;
+      }
+    }
+
   }
 }

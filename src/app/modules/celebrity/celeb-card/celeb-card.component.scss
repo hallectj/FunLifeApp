@@ -61,7 +61,8 @@
   .skills {
     text-align: left;
     padding: 2px;
-    height: inherit;
+    overflow: auto;
+    height: 290px;
   }
   
   .skills h6{

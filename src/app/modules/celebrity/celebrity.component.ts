@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LOADINGSPINNER } from 'src/app/common/base64Assests';
-import { ICelebCard, ICelebrity, IDateObj, IFamousBirths } from 'src/app/models/shared-models';
+import { ICelebCard, ICelebrity, IDateObj } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class CelebrityComponent {
   public todayCelebBirths: ICelebrity[] = [];
   public tomorrowCelebBirths: ICelebrity[] = [];
   public yesterdayCelebBirths: ICelebrity[] = [];
-  public famousPeopleResp: IFamousBirths[] = [];
+  public famousPeopleResp: { [date: string]: ICelebrity[] } | ICelebrity[];
   public initCelebCardsLen: number = 6;
   public restOfTodayCelebsLength: number = 0;
   public isExpanded: boolean = false;
@@ -46,36 +46,29 @@ export class CelebrityComponent {
     this.tomorrowCelebCards = this.createDummyCards(8, "small", 8);
     this.yesterdayCelebCards = this.createDummyCards(8, "small", 8);
 
-    const date1 = this.constructSparqlDate(this.dateObjYesterday);
-    const date2 = this.constructSparqlDate(this.dateObj);
-    const date3 = this.constructSparqlDate(this.dateObjTomorow);
+    //await this.getResponses(date1, date2, date3, 80);
+    this.famousPeopleResp = await this.service.getCelebrityBirths(this.dateObj.date, true).toPromise() as { [date: string]: ICelebrity[] };
+    console.log("famousPeopleResp", this.famousPeopleResp);
 
-    await this.getResponses(date1, date2, date3, 80);
     this.todayCelebCards = [];
     this.tomorrowCelebCards = [];
     this.yesterdayCelebCards = [];
 
-    let array = this.famousPeopleResp;
+    const keys = Object.keys(this.famousPeopleResp);
 
-    let unique = array.filter((e, i) => array.findIndex(a => a.personLabel === e.personLabel) === i)
+    const famousBirths: {yesterday: ICelebrity[], today: ICelebrity[], tomorrow: ICelebrity[]} = {
+      yesterday: this.famousPeopleResp[keys[0]],
+      today: this.famousPeopleResp[keys[1]],
+      tomorrow: this.famousPeopleResp[keys[2]]
+    }
 
-    unique = unique.filter((v: IFamousBirths) => v.occupations.every((occ) => !this.service.containsBadWord(occ)));
-
-
-    const filteredBirthdays = this.filterBirthdaysByDate(unique);
-
-    this.todayCelebBirths = this.mapICelebrity(filteredBirthdays, "today");
-    this.tomorrowCelebBirths = this.mapICelebrity(filteredBirthdays, "tomorrow");
-    this.yesterdayCelebBirths = this.mapICelebrity(filteredBirthdays, "yesterday");
+    this.todayCelebBirths = this.mapICelebrity(famousBirths, "today");
+    this.tomorrowCelebBirths = this.mapICelebrity(famousBirths, "tomorrow");
+    this.yesterdayCelebBirths = this.mapICelebrity(famousBirths, "yesterday");
 
     this.todayCelebCards = this.constructCards(this.todayCelebBirths, "large", true, -1);
     this.tomorrowCelebCards = this.constructCards(this.tomorrowCelebBirths, "small", false, 8);
     this.yesterdayCelebCards = this.constructCards(this.yesterdayCelebBirths, "small", false, 8);
-  }
-
-  private constructSparqlDate(dateObj: IDateObj): string {
-    const d = (dateObj.date.getMonth()+1).toString().padStart(2,"0") + "-" + (dateObj.date.getDate()).toString().padStart(2, "0");
-    return d;
   }
 
   private createDummyCards(len: number, size: string, dispAmt: number) : ICelebCard[] {
@@ -96,10 +89,10 @@ export class CelebrityComponent {
     return dummyCard.splice(0, dispAmt)
   }
 
-  private mapICelebrity(filteredBirths: {yesterday: IFamousBirths[], today: IFamousBirths[], tomorrow: IFamousBirths[]}, timeProp: string): ICelebrity[] {
+  private mapICelebrity(filteredBirths: {yesterday: ICelebrity[], today: ICelebrity[], tomorrow: ICelebrity[]}, timeProp: string): ICelebrity[] {
     let iCelebrityArr: ICelebrity[] = [];
-    iCelebrityArr = filteredBirths[timeProp].map((v: IFamousBirths) => ({
-      name: v.personLabel,
+    iCelebrityArr = filteredBirths[timeProp].map((v: ICelebrity) => ({
+      name: v.name,
       birthdate: new Date(v.birthdate),
       followerCount: v.followerCount,
       image: v.image,
@@ -119,7 +112,7 @@ export class CelebrityComponent {
         celebPopularity: (i+1),
         showSkills: showSkills,
         medalColor: "gold",
-        celebInfo: {name: c.name, age: this.calculateAge(c.birthdate), occupations: c.occupations}
+        celebInfo: {name: c.name, age: this.calculateAge(new Date(c.birthdate)), occupations: c.occupations}
       }
       cards.push(card);
     }
@@ -129,25 +122,6 @@ export class CelebrityComponent {
     }else{
       return cards.splice(0, dispAmt);
     }
-  }
-
-  private filterBirthdaysByDate(birthdayArray: IFamousBirths[]) {
-    return {
-      yesterday: birthdayArray.filter(v => this.isSameMonthAndDay(v.birthdate, this.yesterday.toISOString())),
-      today: birthdayArray.filter(v => this.isSameMonthAndDay(v.birthdate, this.today.toISOString())), 
-      tomorrow: birthdayArray.filter(v => this.isSameMonthAndDay(v.birthdate, this.tomorrow.toISOString())), 
-    }
-    
-  }
-  
-  private isSameMonthAndDay(isoDate1: string, isoDate2: string) {
-    const obj1 = this.service.getMonthAndDayFromISOString(isoDate1);
-    const obj2 = this.service.getMonthAndDayFromISOString(isoDate2);
-    let month1 = obj1.month, day1 = obj1.day;
-    let month2 = obj2.month, day2 = obj2.day;
-    return (
-      month1 === month2 && day1 === day2
-    );
   }
 
   private calculateAge(dateOfBirth: Date) {
@@ -164,32 +138,7 @@ export class CelebrityComponent {
     
     return age;
   }
-
-  public async getResponses(d1: string, d2: string, d3: string, limit: number){
-    const dateISO: string = this.dateObj.date.toISOString().split("T")[0];
-    if(localStorage.getItem("featureDateISO")){
-      const localDateISO: string = JSON.parse(localStorage.getItem('featureDateISO'));
-      const isEqualDateISO = JSON.stringify(dateISO) === JSON.stringify(localDateISO);
-      if(isEqualDateISO){
-        let h = localStorage.getItem("all_celebs");
-        if(h && h !== "null"){
-          this.famousPeopleResp = JSON.parse(h);
-        }else{
-          this.famousPeopleResp = await this.service.getFamousPeopleByThreeDates(d1, d2, d3, limit).toPromise();
-          localStorage.setItem("all_celebs", JSON.stringify(this.famousPeopleResp));
-        }
-      }else{
-        localStorage.setItem("featureDateISO", JSON.stringify(dateISO));
-        this.famousPeopleResp = await this.service.getFamousPeopleByThreeDates(d1, d2, d3, limit).toPromise();
-        localStorage.setItem("all_celebs", JSON.stringify(this.famousPeopleResp));
-      }
-    }else{
-      localStorage.setItem("featureDateISO", JSON.stringify(dateISO));
-      this.famousPeopleResp = await this.service.getFamousPeopleByThreeDates(d1, d2, d3, limit).toPromise();
-      localStorage.setItem("all_celebs", JSON.stringify(this.famousPeopleResp));
-    }
-  }
-
+  
   public expandCelebDivFunc(){
     if (this.isExpanded) {
       this.expandButton.nativeElement.textContent = "Show More Celebrities Born Today";

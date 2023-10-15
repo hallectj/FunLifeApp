@@ -1,7 +1,7 @@
 import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { LOADINGSPINNER } from 'src/app/common/base64Assests';
-import { ICelebCard, ICelebrity, IFamousBirths, IHistEvent, IMovie, IPostExcerpt, IPresident, ISong, ISport } from 'src/app/models/shared-models';
+import { ICelebCard, ICelebrity, IHistEvent, IMovie, IPostExcerpt, IPresident, ISong, ISport } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 @Component({
   selector: 'birthday',
@@ -37,7 +37,7 @@ export class BirthdayComponent {
   public movies: IMovie[] = [];
 
   public historyEvents: IHistEvent[] = [];
-  public famousBirths: IFamousBirths[] = [];
+  public famousBirths: ICelebrity[] = [];
   public sports: ISport[] = [];
 
   public dispHistory: {post: IPostExcerpt, useRibbon: boolean, year: number}[] = [];
@@ -86,6 +86,10 @@ export class BirthdayComponent {
 
   constructor(public service: GeneralService, public sanitizer: DomSanitizer){}
   
+  public isLeapYear(year: number){
+    return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
+  }
+
   public async ngOnInit(){
     //this.cards = this.createDummyCards(3, "large", 3);
     this.songs = await this.service.getSongs().toPromise();
@@ -95,9 +99,26 @@ export class BirthdayComponent {
   public getMonth(){
     let idx = this.monthNames.findIndex(v => v === this.selectedMonth);
     if(idx !== -1){
+      if(this.selectedMonth === "February" && this.isLeapYear(this.selectedYear)){
+        this.dayEndings[idx] = 29;
+      }else{
+        this.dayEndings[1] = 28;
+      }
       this.dayEnd = this.dayEndings[idx];
       this.days = Array.from(Array(this.dayEnd).keys()).map(d => 1 + d)
     }
+  }
+
+  public updateDaySelectionIfLeapYear(){
+    const isLeap = this.isLeapYear(this.selectedYear);
+    if(this.selectedMonth === "February" && isLeap){
+      this.dayEndings[1] = 29;
+      this.dayEnd = this.dayEndings[1];
+    }else{
+      this.dayEndings[1] = 28;
+      this.dayEnd = this.dayEndings[this.monthNames.findIndex(v => v === this.selectedMonth)];
+    }
+    this.days = Array.from(Array(this.dayEnd).keys()).map(d => 1 + d)    
   }
 
   public findMediaByDate<T extends ISong | IMovie>(mediaArr: T[], targetDate: Date): T | null{
@@ -179,24 +200,22 @@ export class BirthdayComponent {
 
     this.showPresident = true;
 
-    //celebs
-    this.famousBirths = await this.service.getFamousPeopleByDate(mm, dd, "", 9).toPromise();
-    this.famousBirths = this.famousBirths.filter((e, i) => this.famousBirths.findIndex(a => a.personLabel === e.personLabel) === i);
+    this.famousBirths = await this.service.getCelebrityBirths(new Date(birthDate), false).toPromise() as ICelebrity[];
 
-    this.famousBirths = this.famousBirths.filter((v: IFamousBirths) =>
+    this.famousBirths = this.famousBirths.filter((v: ICelebrity) =>
       v.occupations.every((occ) => !this.service.containsBadWord(occ)));
 
     this.cards = [];
 
     for(let i = 0; i<this.famousBirths.length; i++){
-      const c: IFamousBirths = this.famousBirths[i];
+      const c: ICelebrity = this.famousBirths[i];
       const obj: ICelebCard = {
         size: "large",
         medalColor: "gold",
         image: c.image,
         showSkills: true,
         celebPopularity: i+1,
-        celebInfo: {name: c.personLabel, age: this.computeAge(new Date(c.birthdate)), occupations: c.occupations.splice(0, 4)}
+        celebInfo: {name: c.name, age: this.computeAge(new Date(c.birthdate)), occupations: c.occupations.splice(0, 4)}
       }
       this.cards.push(obj);
     }

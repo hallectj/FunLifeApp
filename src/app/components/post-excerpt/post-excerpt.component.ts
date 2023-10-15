@@ -12,6 +12,7 @@ export class PostExcerptComponent {
   @Input() postExcerpt: IPostExcerpt;
   @Input() useRibbonYear: boolean = false;
   @Input() year: number = 0;
+  @Input() useRow: boolean = true;
   @Output() postExcerptEvent: EventEmitter<IPostExcerpt> = new EventEmitter<IPostExcerpt>();
 
   constructor(public service: PostService, public router: Router ){}

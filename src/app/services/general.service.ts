@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { GENERAL_URL, IDateObj, IFamousBirths, IHistEvent, IMovie, IPresident, ISong, ISport } from '../models/shared-models';
+import { map, switchMap } from 'rxjs/operators';
+import { GENERAL_URL, ICelebrity, IDateObj, IHistEvent, IMovie, IPresident, ISong, ISport, IToy } from '../models/shared-models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GeneralService {
   private sparqlEndpoint = 'https://query.wikidata.org/sparql';
+  public coreWikiURL = 'https://en.wikipedia.org/w/api.php';
   private celebritySubject: Subject<any> = new Subject<any>();
 
   constructor(private http: HttpClient) {}
@@ -69,6 +70,11 @@ export class GeneralService {
             return { ... movie, startDate, endDate} ;
           });
           return movies as T;
+        }else if(response && response.dataset === "historical_toys"){
+          const toys: IToy[] = response.toys.map((toy: IToy) => {
+            return { ...toy };
+          });
+          return toys as T;
         }
         return response as T;
       })
@@ -91,6 +97,51 @@ export class GeneralService {
     return this.getData<IMovie[]>("topMovies.json");
   }
 
+  public getToys(): Observable<IToy[]>{
+    return this.getData<IToy[]>("topToys.json");
+  }
+
+  private celebDataBirthsFunc(endpoint: string, date: Date, isAllThreeDates: boolean): Observable<{ [date: string]: ICelebrity[] } | ICelebrity[]> {
+    const filePath = `${GENERAL_URL}/${endpoint}`;
+  
+    // Calculate yesterday, today, and tomorrow dates
+    const yesterday = new Date(date);
+    yesterday.setDate(date.getDate() - 1);
+  
+    const tomorrow = new Date(date);
+    tomorrow.setDate(date.getDate() + 1);
+  
+    const formattedDates = [
+      this.formatDate(yesterday),
+      this.formatDate(date),
+      this.formatDate(tomorrow)
+    ];
+  
+    // Make an HTTP GET request to fetch the JSON data
+    return this.http.get<{ [date: string]: ICelebrity[] }>(filePath).pipe(
+      map((response) => {
+        // Filter and construct the response based on the calculated dates
+        const result: { [date: string]: ICelebrity[] } = {};
+  
+        formattedDates.forEach((formattedDate) => {
+          if (response[formattedDate]) {
+            result[formattedDate] = response[formattedDate];
+          }
+        });
+
+        if (isAllThreeDates) {
+          return result;
+        } else {
+          return result[formattedDates[1]] || [];
+        }
+      })
+    );
+  }
+
+  public getCelebrityBirths(date: Date, isAllThreeDates: boolean = false){
+    return this.celebDataBirthsFunc("celebrityBirthdays.json", date, isAllThreeDates);
+  }
+
   public callWikiAPI(date: Date, dataCategory: string): Observable<any>{
     if(date && date instanceof Date){
       let d = date.getDate();
@@ -106,6 +157,46 @@ export class GeneralService {
     }
     
     return null;
+  }
+
+  public getRandomQuote(): Observable<any> {
+    // First, call the Quote Garden API to get a random quote
+    return this.http.get('https://quote-garden.onrender.com/api/v3/quotes/random').pipe(
+      switchMap((quoteResponse: any) => {
+        // Extract the author's name from the quote response
+        const authorName = (quoteResponse.data[0].quoteAuthor);
+
+        const params = {
+          action: 'query',
+          format: 'json',
+          prop: 'pageimages',
+          piprop: 'original',
+          origin: '*',
+          titles: authorName
+        }
+  
+        // Now, call the Wikipedia API to get the author's image
+        return this.http.get(this.coreWikiURL, {params}).pipe(
+          map((wikiResponse: any) => {
+            console.log("wikiResponse", wikiResponse);
+            // Extract the author's image URL from the Wikipedia response
+            const pages = wikiResponse?.query?.pages;
+            let pageId = -1;
+            let authorImage = "";
+            if(pages){
+              pageId = +Object.keys(pages)[0];
+              authorImage = pages[pageId]?.original?.source;
+            }
+            
+            // Add the author's image URL to the quote response
+            quoteResponse.data[0].authorImage = authorImage;
+  
+            // Return the modified quote response
+            return quoteResponse;
+          })
+        );
+      })
+    );
   }
 
   public getEvents(date: Date): Observable<IHistEvent[]>{
@@ -130,7 +221,7 @@ export class GeneralService {
     )
   }
 
-  public getFamousPeopleByThreeDates(date1: string, date2: string, date3: string, limit: number): Observable<IFamousBirths[]>{
+  public getFamousPeopleByThreeDates(date1: string, date2: string, date3: string, limit: number): Observable<ICelebrity[]>{
     const sparqlQuery = `PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX wikibase: <http://wikiba.se/ontology#>
@@ -194,7 +285,7 @@ export class GeneralService {
     }).pipe(map(this.mapResponseToIFamousBirths));
   }
 
-  public getFamousPeopleByDate(month: string, day: string, year: string, limit: number): Observable<IFamousBirths[]> {
+  public getFamousPeopleByDate(month: string, day: string, year: string, limit: number): Observable<ICelebrity[]> {
     let sparqlQuery = `PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX wikibase: <http://wikiba.se/ontology#>
@@ -283,26 +374,24 @@ export class GeneralService {
     return this.celebritySubject.asObservable();
   }
 
-  private mapResponseToIFamousBirths(response: any): IFamousBirths[] {
+  private mapResponseToIFamousBirths(response: any): ICelebrity[] {
     const bindings = response.results.bindings;
-    const famousBirths: IFamousBirths[] = [];
+    const famousBirths: ICelebrity[] = [];
   
     for (const binding of bindings) {
       const wikiURL = binding.person.value;
-      const personLabel = binding.personLabel.value;
+      const name = binding.personLabel.value;
       const birthdate = new Date(binding.birthdate.value).toISOString();
       const followerCount = parseInt(binding.followers.value);
       const image = binding.uniqueImage.value;
-      const country = binding.countryLabel.value;
+      //const country = binding.countryLabel.value;
       const occupations = binding.occupations.value.split(',');
   
       famousBirths.push({
-        wikiURL,
-        personLabel,
+        name,
         birthdate,
         followerCount,
         image,
-        country,
         occupations
       });
     }
@@ -321,5 +410,12 @@ export class GeneralService {
     const day = date.getUTCDate(); // Get the day
   
     return { month, day };
+  }
+
+  // Define a function to format a date as "MM-DD"
+  public formatDate(date: Date): string {
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${month}-${day}`;
   }
 }

@@ -48,14 +48,13 @@ export interface IHistEvent{
   noImageFound: boolean
 }
 
-export interface IFamousBirths{
-  wikiURL: string,
-  personLabel: string,
-  birthdate: string, //ISOString
-  followerCount: number,
-  image: string,
-  country: string,
-  occupations: string[]
+export interface IFamousQuote{
+  __v: number,
+  _id: string,
+  authorImage: string,
+  quoteAuthor: string,
+  quoteGenre: string,
+  quoteText: string
 }
 
 export interface ISong{
@@ -85,6 +84,16 @@ export interface ISport {
   series: string
 }
 
+export interface IToy {
+  year: number,
+  toy: string,
+  price: number,
+  description: string,
+  image: string,
+  image_source: string,
+  image_source_url: string
+}
+
 export interface ISongWeeks {
   songs: ISong[],
   days: number[]
@@ -101,7 +110,7 @@ export interface ICelebCard{
 
 export interface ICelebrity{
   name: string,
-  birthdate: Date,
+  birthdate: string,
   followerCount: number,
   image: string,
   occupations: string[]

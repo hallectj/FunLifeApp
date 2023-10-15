@@ -13,12 +13,11 @@ export class DynamicContentComponent {
 
   @ViewChild('postContent', { static: true }) postContent: ElementRef;
 
-  constructor(private renderer: Renderer2, public service: PostService){}
+  constructor(public service: PostService){}
 
   public async ngOnInit(){
     this.contentIsLoading = true;
     this.exampleHTML = await this.service.getPost().toPromise();
-    //this.renderer.setProperty(this.postContent.nativeElement, 'innerHTML', this.exampleHTML);
     this.contentIsLoading = false;
   }
 }

@@ -16,7 +16,7 @@
       </div>
       <div class="dropdown">
         <label for="year">Year:</label>
-        <select id="year" class="custom-select" [(ngModel)]="selectedYear">
+        <select id="year" class="custom-select" [(ngModel)]="selectedYear" (change)="updateDaySelectionIfLeapYear()">
           <option *ngFor="let year of years" [value]="year">{{year}}</option>
         </select>
       </div>

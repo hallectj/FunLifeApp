@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { combineLatest, lastValueFrom, map } from 'rxjs';
-import { IDateObj, IFamousBirths, IHistEvent, IPresident, Inflation } from 'src/app/models/shared-models';
+import { IDateObj, ICelebrity, IHistEvent, IPresident, Inflation } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class FrontFeatureComponent {
   public presidentPortrait: string = "";
   public loading: boolean = true;
 
-  public famousBirths: IFamousBirths[];
+  public famousBirths: ICelebrity[];
   public histEvents: IHistEvent[];
   public presidents: any;
 
@@ -28,10 +28,15 @@ export class FrontFeatureComponent {
 
   public async ngOnInit(){
     const date = new Date();
+    date.setHours(0, 0, 0, 0);
     date.setFullYear(+this.randomYear, date.getMonth(), date.getDate());
     this.dateObj = this.service.populateDateObj(date);
   
-    await this.getResponses();
+    //await this.getResponses();
+    const responses = await lastValueFrom(this.initData());
+    this.famousBirths = responses.famousBirths[`${this.dateObj.month}-${this.dateObj.day}`];
+    this.presidents = responses.presidents;
+    this.histEvents = responses.histEvents;
 
     let randEventIndex = Math.floor(Math.random() * this.histEvents.length);
     let randomHistEvent = this.histEvents[randEventIndex];
@@ -54,7 +59,7 @@ export class FrontFeatureComponent {
 
     const celeb = this.famousBirths[0];
     this.celebImg = celeb.image;
-    this.celebName = celeb.personLabel;
+    this.celebName = celeb.name;
 
     const president = this.presidentByYear(this.presidents, this.dateObj.year);
     this.presidentPortrait = president.portraitURL;
@@ -65,7 +70,8 @@ export class FrontFeatureComponent {
   public initData(){
     const observable = combineLatest({
       histEvents: this.service.getEvents(this.dateObj.date),
-      famousBirths: this.service.getFamousPeopleByDate(this.dateObj.month, this.dateObj.day, "", 20),
+      famousBirths: this.service.getCelebrityBirths(new Date(), true),
+      //famousBirths: this.service.getFamousPeopleByDate(this.dateObj.month, this.dateObj.day, "", 20),
       presidents: this.service.getPresidents()
     });
 
@@ -83,6 +89,7 @@ export class FrontFeatureComponent {
 
   private presidentByYear(presArr: IPresident[], year: string): IPresident{
     const todayDate = new Date();
+    todayDate.setHours(0, 0, 0, 0);
     let month = (todayDate.getMonth() + 1).toString();
     let day = (todayDate.getDate()).toString();
     
@@ -102,54 +109,56 @@ export class FrontFeatureComponent {
 
   }
 
-  public async getResponses(){
-    const dateISO: string = new Date().toISOString().split("T")[0];
-    if(localStorage.getItem("featureDateISO")){
-      const localDateISO = JSON.parse(localStorage.getItem("featureDateISO"));
-      const isEqualDates = JSON.stringify(dateISO) === JSON.stringify(localDateISO);
-      if(isEqualDates){
-        let f = localStorage.getItem("famousBirths");
-        let p = localStorage.getItem("presidents");
-        let h = localStorage.getItem("histEvents");
-        if((f && f !== 'null') && (p && p !== 'null') && (h && h !== 'null')){
-          this.famousBirths = JSON.parse(f);
-          this.presidents = JSON.parse(p);
-          this.histEvents = JSON.parse(h);
-        }else{
-          const responses = await lastValueFrom(this.initData());  
+  // public async getResponses(){
+  //   const date = new Date();
+  //   date.setHours(0, 0, 0, 0);
+  //   const dateISO: string = date.toISOString().split("T")[0];
+  //   if(localStorage.getItem("featureDateISO")){
+  //     const localDateISO = JSON.parse(localStorage.getItem("featureDateISO"));
+  //     const isEqualDates = JSON.stringify(dateISO) === JSON.stringify(localDateISO);
+  //     if(isEqualDates){
+  //       let f = localStorage.getItem("famousBirths");
+  //       let p = localStorage.getItem("presidents");
+  //       let h = localStorage.getItem("histEvents");
+  //       if((f && f !== 'null') && (p && p !== 'null') && (h && h !== 'null')){
+  //         this.famousBirths = JSON.parse(f);
+  //         this.presidents = JSON.parse(p);
+  //         this.histEvents = JSON.parse(h);
+  //       }else{
+  //         const responses = await lastValueFrom(this.initData());  
           
-          this.famousBirths = responses.famousBirths;
-          this.presidents = responses.presidents;
-          this.histEvents = responses.histEvents;
+  //         this.famousBirths = responses.famousBirths;
+  //         this.presidents = responses.presidents;
+  //         this.histEvents = responses.histEvents;
 
-          localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
-          localStorage.setItem("presidents", JSON.stringify(responses.presidents));
-          localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
-        }
-      }else{
-        localStorage.setItem("featureDateISO", JSON.stringify(dateISO));
-        const responses = await lastValueFrom(this.initData());
+  //         localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
+  //         localStorage.setItem("presidents", JSON.stringify(responses.presidents));
+  //         localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
+  //       }
+  //     }else{
+  //       localStorage.setItem("featureDateISO", JSON.stringify(dateISO));
+  //       const responses = await lastValueFrom(this.initData());
 
-        this.famousBirths = responses.famousBirths;
-        this.presidents = responses.presidents;
-        this.histEvents = responses.histEvents;
+  //       this.famousBirths = responses.famousBirths;
+  //       this.presidents = responses.presidents;
+  //       this.histEvents = responses.histEvents;
 
-        localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
-        localStorage.setItem("presidents", JSON.stringify(responses.presidents));
-        localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
-      }
-    }else{
-      localStorage.setItem("featureDateISO", JSON.stringify(dateISO));
-      const responses = await lastValueFrom(this.initData());
-      this.histEvents = responses.histEvents;
-      this.famousBirths = responses.famousBirths;
-      this.presidents = responses.presidents;
+  //       localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
+  //       localStorage.setItem("presidents", JSON.stringify(responses.presidents));
+  //       localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
+  //     }
+  //   }else{
+  //     localStorage.setItem("featureDateISO", JSON.stringify(dateISO));
+  //     const responses = await lastValueFrom(this.initData());
+  //     this.histEvents = responses.histEvents;
+  //     this.famousBirths = responses.famousBirths;
+  //     this.presidents = responses.presidents;
 
-      localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
-      localStorage.setItem("presidents", JSON.stringify(responses.presidents));
-      localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
-    }
-  }
+  //     localStorage.setItem("famousBirths", JSON.stringify(responses.famousBirths));
+  //     localStorage.setItem("presidents", JSON.stringify(responses.presidents));
+  //     localStorage.setItem("histEvents", JSON.stringify(responses.histEvents));
+  //   }
+  // }
 
   public whichChildBtnWasClicked(componentPath: string){
     if(componentPath === '/celebrity'){
