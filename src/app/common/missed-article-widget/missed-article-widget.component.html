@@ -1,0 +1,10 @@
+<div id="in-case-you-missed">
+  <div><h3 class="h3-styles">In Case You Missed These Articles</h3></div>
+  <div class="missed-articles">
+    <div *ngFor="let miss of inCaseYouMissedArr" class="missed-article-wrapper">
+      <div class="missed-pic" [ngStyle]="{'background-image': 'url(' + miss.excerptImage + ')'}"></div>
+      <p class="missed-header">{{miss.excerptTitle}}</p>
+      <p class="missed-content">{{miss.excerptDesc}}</p>
+    </div>
+  </div>
+</div>

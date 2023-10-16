@@ -46,9 +46,7 @@ export class CelebrityComponent {
     this.tomorrowCelebCards = this.createDummyCards(8, "small", 8);
     this.yesterdayCelebCards = this.createDummyCards(8, "small", 8);
 
-    //await this.getResponses(date1, date2, date3, 80);
     this.famousPeopleResp = await this.service.getCelebrityBirths(this.dateObj.date, true).toPromise() as { [date: string]: ICelebrity[] };
-    console.log("famousPeopleResp", this.famousPeopleResp);
 
     this.todayCelebCards = [];
     this.tomorrowCelebCards = [];

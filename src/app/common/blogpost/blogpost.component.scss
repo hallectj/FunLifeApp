@@ -148,7 +148,6 @@
         background-repeat: no-repeat;
         background-size: 340px;
         background-position: center;
-        background-image: url('../../../assets/me.jpg');
       }
     }
   }
@@ -171,22 +170,6 @@
 
     #blogBothSides{
       display: block;
-    }
-
-    #in-case-you-missed{
-      display: block;
-     
-      .missed-articles{
-        display: block;
-
-        .missed-article-wrapper{
-          width: 40%;
-        }
-      }
-
-      .missed-pic{
-        background-size: 350px;
-      }
     }
 
     .ad_block_250x250{

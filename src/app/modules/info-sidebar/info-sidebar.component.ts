@@ -37,6 +37,7 @@ export class InfoSidebarComponent {
     this.displayToy = this.toyByYear(+this.randomYear);
 
     const quote = await this.generalService.getRandomQuote().toPromise();
+    console.log("quote", quote)
     if(quote && quote?.data && quote?.data.length > 0){
       this.famousQuote = quote.data[0];
     }

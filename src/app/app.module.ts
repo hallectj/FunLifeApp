@@ -25,6 +25,7 @@ import { RibbonComponent } from './common/ribbon/ribbon.component';
 import { BlogpostComponent } from './common/blogpost/blogpost.component';
 import { PageComponent } from './common/page/page.component';
 import { DynamicContentComponent } from './common/blogpost/dynamic-content/dynamic-content.component';
+import { MissedArticleWidgetComponent } from './common/missed-article-widget/missed-article-widget.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: PageComponent },
@@ -59,6 +60,7 @@ const routes: Routes = [
     BlogpostComponent,
     PageComponent,
     DynamicContentComponent,
+    MissedArticleWidgetComponent,
   ],
   imports: [
     BrowserModule,
