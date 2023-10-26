@@ -32,11 +32,16 @@ export interface Inflation {
 export interface IPresident{
   number: string,
   name: string,
-  startDate: Date,
-  endDate: Date,
+  startDate: string,
+  endDate: string,
   portraitURL: string,
   portraitDesc: string,
-  portraitSource: string
+  portraitSource: string,
+  party: string,
+  birthCity: string,
+  birthStateAbbr: string,
+  birthdate: string,
+  spouses: string[]
 }
 
 export interface IHistEvent{
@@ -73,6 +78,20 @@ export interface IMovie{
   startDate: Date,
   endDate: Date,
   youtubeId: string
+}
+
+export interface IBiographicalInfo {
+  spouses: string[],
+  occupations: string[],
+  family: string,
+  familyDesc: string,
+  citizenship: string,
+  birthPlace: string,
+  image: string,
+  name: string,
+  birthDate: Date,
+  followers: string,
+  qid: string
 }
 
 export interface ISport {

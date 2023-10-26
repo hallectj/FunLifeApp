@@ -1,4 +1,8 @@
+import { Location } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { slugify } from 'src/app/common/Toolbox/util';
+import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
   selector: 'celeb-card',
@@ -17,9 +21,13 @@ export class CelebCardComponent {
     occupations: []
   }
 
-  constructor(){}
+  constructor(public router: Router, public service: GeneralService, public location: Location){}
 
   public ngOnInit(){
 
+  }
+
+  public navigateToCelebrityPage(celebInfo: {name: string, age: number, occupations: string[]}){
+    this.router.navigate(['/celebrity/' + slugify(celebInfo.name)])
   }
 }

@@ -26,6 +26,8 @@ export class FrontFeatureCardComponent {
   public navigateToPath(){
     if(this.routePath === "/celebrity"){
       this.featureBtnClickEvent.emit(this.routePath);
+    }else if(this.routePath === "/president"){
+      this.featureBtnClickEvent.emit(this.routePath)
     }
   }
 }

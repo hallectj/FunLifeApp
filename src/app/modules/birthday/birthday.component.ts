@@ -1,5 +1,7 @@
 import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { slugify } from 'src/app/common/Toolbox/util';
 import { LOADINGSPINNER } from 'src/app/common/base64Assests';
 import { ICelebCard, ICelebrity, IHistEvent, IMovie, IPostExcerpt, IPresident, ISong, ISport } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
@@ -45,11 +47,16 @@ export class BirthdayComponent {
   public currentPresident: IPresident = {
     number: '',
     name: '',
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: '',
+    endDate: '',
     portraitURL: '',
     portraitDesc: '',
-    portraitSource: ''
+    portraitSource: '',
+    party: '',
+    birthCity: '',
+    birthStateAbbr: '',
+    birthdate: '',
+    spouses: []
   }
 
   public cards: ICelebCard[] = [];
@@ -84,7 +91,7 @@ export class BirthdayComponent {
   
   @ViewChildren('sportCards') sportCards!: QueryList<ElementRef<HTMLElement>>;
 
-  constructor(public service: GeneralService, public sanitizer: DomSanitizer){}
+  constructor(public service: GeneralService, public sanitizer: DomSanitizer, private router: Router){}
   
   public isLeapYear(year: number){
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
@@ -262,8 +269,8 @@ export class BirthdayComponent {
 
   private findObjectByDate(array: IPresident[], dateToFind: Date) {
     for (const obj of array) {
-      const startDate = obj.startDate;
-      const endDate = obj.endDate;
+      const startDate = new Date(obj.startDate);
+      const endDate = new Date(obj.endDate);
   
       if (dateToFind >= startDate && dateToFind <= endDate) {
         return obj;
@@ -295,5 +302,10 @@ export class BirthdayComponent {
     }
     
     return age;
+  }
+
+  public goToPresidentPage(){
+    let sluggedPresident = slugify(this.currentPresident.name);
+    this.router.navigate(['/president/' + sluggedPresident])
   }
 }

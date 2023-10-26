@@ -3,6 +3,9 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { IPostExcerpt } from 'src/app/models/shared-models';
 import { PostService } from 'src/app/services/post.service';
+import { deslugify } from '../Toolbox/util';
+import { Subscription } from 'rxjs';
+import { ReloadService } from 'src/app/services/reload.service';
 
 @Component({
   selector: 'blogpost',
@@ -17,25 +20,28 @@ export class BlogpostComponent {
     excerptTitle: "",
     isFeaturePost: false
   }
+  public subscription: Subscription = new Subscription();
   public isContentLoaded: boolean = false;
 
   @ViewChild('postContent', { static: true }) postContent: ElementRef;
 
-  constructor(private route: ActivatedRoute, public postService: PostService, public sanitize: DomSanitizer){}
+  constructor(private route: ActivatedRoute, public postService: PostService, public reloadService: ReloadService, public sanitize: DomSanitizer){}
 
   public async ngOnInit(){
     this.route.paramMap.subscribe((params) => {
-      this.blogTitle = this.deslugify(params.get('postTitle'));
+      this.blogTitle = deslugify(params.get('postTitle'));
       this.postExcerpt = this.postService.getPostExcerpt(this.blogTitle)
     })
+
+    this.subscription.add(this.reloadService.getReloadTrigger().subscribe((postExcerpt: IPostExcerpt) => {
+      this.route.paramMap.subscribe(async (params) => {
+        this.blogTitle = deslugify(params.get('postTitle'));
+        this.postExcerpt = postExcerpt;
+      })
+    }));
   }
 
-  private deslugify(title: string){
-    let s = title.split("-").map(v => v.charAt(0).toUpperCase() + v.slice(1)).join("-");
-    return s.replace(/-/g, " ");
-  }
-
-  public isDynamicContentLoaded(isContentLoaded: boolean){
-    this.isContentLoaded = isContentLoaded;
+  public ngOnDestroy(){
+    this.subscription.unsubscribe();
   }
 }

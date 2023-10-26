@@ -1,0 +1,57 @@
+<div id="celebrity-page-wrapper">
+  <section class="leftSection">
+    <div class="celeb-image-container">
+      <figure class="item">
+        <div class="polaroid"><img [src]="president.portraitURL" alt="photo"></div>
+      </figure>
+    </div>
+    <div class="biographical-info">
+      <div class="biography">    
+        <div class="info-row">
+            <div class="info">
+              <p class="label">Presidential Term</p>
+              <p>{{president.startDate}} to {{president.endDate}}</p>
+            </div>
+            <div class="info">
+                <p class="label">Date of Birth</p>
+                <p>{{president.birthdate}}</p>
+            </div>
+            <div class="info">
+                <p class="label">Place of Birth</p>
+                <p>{{president.birthCity}} {{president.birthStateAbbr}}</p>
+            </div>
+        </div>
+    
+        <div class="info-row">
+            <div class="info">
+                <p class="label">Political Party</p>
+                <p>{{president.party}}</p>
+            </div>
+            <div class="info">
+              <p class="label">Spouse or Former Spouses</p>
+              <p>{{president.spouses.join(", ")}}</p>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="goBack mt-2">
+      <button class="w-100 btn btn-lg btn-outline-primary" (click)="back()">Go Back</button>
+    </div>
+  </section>
+  <section class="rightSection">
+    <div class="excerpt">
+      <h1>{{president.number}} President of the United States {{president.name}}</h1>
+      <div [innerHTML]="wrappedText"></div>
+
+      <div><span><a [href]="wikiURL" target="_blank">Read More about {{president.name}} on Wikipedia</a></span></div>
+    </div>
+
+    <div class="ad-section">
+      <svg width="100%" height="80" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100%" height="100%" fill="lightgray" />
+        <text x="50%" y="50%" text-anchor="middle" fill="black" font-size="36" font-family="Arial" dy=".3em">Ad</text>
+      </svg>      
+    </div>
+  </section>
+</div>
+

@@ -132,9 +132,9 @@
         <div class="president-card full">
           <div class="president-content">
             <h1>{{currentPresident.name}}</h1>
-            <p class="copy">President From {{currentPresident.startDate.toDateString()}} to {{currentPresident.endDate.toDateString()}}</p>
+            <p class="copy">President From {{currentPresident.startDate}} to {{currentPresident.endDate}}</p>
           </div>
-          <div class="image">
+          <div (click)="goToPresidentPage()" class="image">
             <img [src]="currentPresident.portraitURL" alt="President of the United State" />
           </div>
         </div>

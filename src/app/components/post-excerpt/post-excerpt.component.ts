@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { slugify } from 'src/app/common/Toolbox/util';
 import { IPostExcerpt } from 'src/app/models/shared-models';
 import { PostService } from 'src/app/services/post.service';
 
@@ -18,8 +20,7 @@ export class PostExcerptComponent {
   constructor(public service: PostService, public router: Router ){}
 
   public getPost(post: IPostExcerpt){
-    //this.postExcerptEvent.emit(post);
-    //this.service.notifyPostBlogComponentOfPost(post); 
-    this.router.navigate(['/post/' + this.service.slugify(this.postExcerpt.excerptTitle)])
+    let correctRoute = ['/post/' + slugify(this.postExcerpt.excerptTitle)];
+    this.router.navigate(correctRoute)
   }
 }

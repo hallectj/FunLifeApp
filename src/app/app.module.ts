@@ -26,6 +26,9 @@ import { BlogpostComponent } from './common/blogpost/blogpost.component';
 import { PageComponent } from './common/page/page.component';
 import { DynamicContentComponent } from './common/blogpost/dynamic-content/dynamic-content.component';
 import { MissedArticleWidgetComponent } from './common/missed-article-widget/missed-article-widget.component';
+import { CelebrityPageComponent } from './modules/celebrity/celebrity-page/celebrity-page.component';
+import { CelebrityExistsResolver } from './common/resolvers/celebrity-exists.resolver';
+import { PresidentComponent } from './modules/president/president.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: PageComponent },
@@ -34,7 +37,20 @@ const routes: Routes = [
   { path: 'post/:postTitle', component: BlogpostComponent },
   { path: 'birthday', component: BirthdayComponent },
   { path: 'day-in-history', component: DayInHistoryComponent },
+  { 
+    path: 'celebrity/:celebName', 
+    component: CelebrityPageComponent, 
+    data: {paramName: 'celebName', resolveFunction: 'getTrueCelebName'}, 
+    resolve: {exists: CelebrityExistsResolver}
+  },
+  {
+    path: 'president/:presidentName',
+    component: PresidentComponent,
+    data: {paramName: 'presidentName', resolveFunction: 'getTruePresidentName'},
+    resolve: {exists: CelebrityExistsResolver}
+  },
   { path: 'celebrity', component: CelebrityComponent },
+  { path: '404', component: NotFoundComponent },
   { path: '**', component: NotFoundComponent }
 ];
 
@@ -61,6 +77,8 @@ const routes: Routes = [
     PageComponent,
     DynamicContentComponent,
     MissedArticleWidgetComponent,
+    CelebrityPageComponent,
+    PresidentComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,7 +88,7 @@ const routes: Routes = [
     FormsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [CelebrityExistsResolver],
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })

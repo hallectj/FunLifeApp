@@ -4,7 +4,7 @@
     <div><span>{{celebPopularity}}</span></div>
   </div>
   <div class="bulk-content">
-    <div class="inner-card" [ngStyle]="{'background-image': 'url(' + image + ')'}"></div>
+    <div (click)="navigateToCelebrityPage(celebInfo)"  class="inner-card" [ngStyle]="{'background-image': 'url(' + image + ')'}"></div>
     <div class="skills">
       <div class="cust-card-title"><h4>{{celebInfo.name}}, {{celebInfo.age}}</h4></div> 
       <ul *ngIf="showSkills">

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { GENERAL_URL, ICelebrity, IDateObj, IHistEvent, IMovie, IPresident, ISong, ISport, IToy } from '../models/shared-models';
+import { GENERAL_URL, IBiographicalInfo, ICelebrity, IDateObj, IHistEvent, IMovie, IPresident, ISong, ISport, IToy } from '../models/shared-models';
+import { findMatchingName } from '../common/Toolbox/util';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,7 @@ import { GENERAL_URL, ICelebrity, IDateObj, IHistEvent, IMovie, IPresident, ISon
 export class GeneralService {
   private sparqlEndpoint = 'https://query.wikidata.org/sparql';
   public coreWikiURL = 'https://en.wikipedia.org/w/api.php';
+  public wikidataApiUrl = 'https://www.wikidata.org/w/api.php';
   private celebritySubject: Subject<any> = new Subject<any>();
 
   constructor(private http: HttpClient) {}
@@ -58,9 +60,15 @@ export class GeneralService {
           }
         }else if(response && response.dataset === "presidents"){
           const presidents: IPresident[] = response.presidents.map((president: IPresident) => {
-            const startDate = new Date(president.startDate);
-            const endDate = new Date(president.endDate);
-            return { ...president, startDate, endDate };
+            const startDate = new Date(president.startDate).toISOString().split("T")[0];
+            let endDate: string = "";
+            if(president.endDate === "present"){
+              endDate = new Date().toISOString().split("T")[0];
+            }else{
+              endDate = new Date(president.endDate).toISOString().split("T")[0];
+            }
+            const birthDate = new Date(president.birthdate).toISOString().split("T")[0];
+            return { ...president, startDate, endDate, birthDate };
           });
           return presidents as T;
         }else if(response && response.dataset === "movies"){
@@ -142,6 +150,111 @@ export class GeneralService {
     return this.celebDataBirthsFunc("celebrityBirthdays.json", date, isAllThreeDates);
   }
 
+  public getTruePresidentName(name: string): Observable<string[]>{
+    return this.getPresidents().pipe(
+      map((presidents: IPresident[]) => {
+        const strArr: string[] = [];
+        const value = findMatchingName(name, presidents.map(v => v.name));
+        if(!!value){
+          strArr.push(value);
+        }
+        return strArr;
+      })
+    )
+  }
+
+  public getTrueCelebName(name: string): Observable<string[]>{
+    const endpoint = "celebrityBirthdays.json";
+    const filePath = `${GENERAL_URL}/${endpoint}`;
+
+    return this.http.get(filePath).pipe(
+      map(response => {
+        // Assuming the response structure is the same as your JSON example
+        const data = response;
+        //will ever only be one element or no elements
+        const strArr: string[] = [];
+
+        for (const key in data) {
+          if (key !== "dataset") {
+            const arr: ICelebrity[] = data[key];
+            const value = findMatchingName(name, arr.map(v => v.name));
+            if(!!value){
+              strArr.push(value);
+              break;
+            }
+          }
+        }
+
+        return strArr;
+      })
+    )
+  }
+
+  public checkIfCelebrityExist(name: string): Observable<boolean>{
+    const endpoint = "celebrityBirthdays.json";
+    const filePath = `${GENERAL_URL}/${endpoint}`;
+
+    const d = this.http.get(filePath).pipe(
+      map(response => {
+        // Assuming the response structure is the same as your JSON example
+        const data = response;
+        //will ever only be one element or no elements
+        const strArr: string[] = [];
+
+        for (const key in data) {
+          if (key !== "dataset") {
+            const arr: ICelebrity[] = data[key];
+            const value = findMatchingName(name, arr.map(v => v.name));
+            if(!!value){
+              return true;
+            }
+          }
+        }
+
+        return false;
+      })
+      
+    )
+    return d;
+  }
+
+  public async getCorrectedWikiTitle(qid: string): Promise<string>  {
+    const wikidataParams = {
+      action: 'wbgetentities',
+      format: 'json',
+      origin: '*',
+      props: 'sitelinks',
+      ids: qid,
+      sitefilter: 'wiki',
+    };
+  
+    // Query Wikidata to get the site links
+    const wikidataResponse = await this.http
+      .get<any>(this.wikidataApiUrl, { params: wikidataParams })
+      .toPromise();
+  
+    // Extract the Wikipedia title for the rapper
+    const correctTitle = wikidataResponse?.entities[qid]?.sitelinks?.enwiki?.title;
+    return (!!correctTitle) ? correctTitle : "";
+  }
+
+  public callWikiAPIPerson(value: string){
+    const params = {
+      action: 'query',
+      format: 'json',
+      prop: 'extracts|pageimages|info',
+      piprop: 'original|name',
+      exintro: '',
+      inprop: 'url',
+      explaintext: '',
+      origin: '*',
+      titles: value,
+      redirects: 1, // Enable redirects
+    }
+
+    return this.http.get<any>(this.coreWikiURL, {params})
+  }
+
   public callWikiAPI(date: Date, dataCategory: string): Observable<any>{
     if(date && date instanceof Date){
       let d = date.getDate();
@@ -178,7 +291,6 @@ export class GeneralService {
         // Now, call the Wikipedia API to get the author's image
         return this.http.get(this.coreWikiURL, {params}).pipe(
           map((wikiResponse: any) => {
-            console.log("wikiResponse", wikiResponse);
             // Extract the author's image URL from the Wikipedia response
             const pages = wikiResponse?.query?.pages;
             let pageId = -1;
@@ -221,57 +333,49 @@ export class GeneralService {
     )
   }
 
-  public getFamousPeopleByThreeDates(date1: string, date2: string, date3: string, limit: number): Observable<ICelebrity[]>{
-    const sparqlQuery = `PREFIX wd: <http://www.wikidata.org/entity/>
-    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-    PREFIX wikibase: <http://wikiba.se/ontology#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    
-    # Results for birthdates matching any of the specified dates with unique persons
-    SELECT DISTINCT ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel (GROUP_CONCAT(DISTINCT ?occupationLabel; separator=", ") as ?occupations)
+  public getBiographicalInformation(person_name: string){
+    let sparqlQuery = `
+    SELECT ?person ?personLabel ?countryLabel ?birthdate (GROUP_CONCAT(DISTINCT ?occupationLabel_en; separator=", ") as ?occupations) ?birthPlaceLabel 
+    ?image (GROUP_CONCAT(DISTINCT ?spouseLabel_en; separator=", ") as ?spouses) 
+    ?familyLabel ?familyDescription ?followers ?qid
     WHERE {
-      VALUES ?country {wd:Q30 wd:Q145}
-      {
-        ?person wdt:P31 wd:Q5 ;  # Instance of human
-          wdt:P569 ?birthdate ;  # Date of birth
-          wdt:P27 ?country ;  # Citizenship
-          wdt:P8687 ?followers; # Social Media Followers 
-          wdt:P106 ?occupation ;  # Occupation
-          wdt:P18 ?uniqueImage .  # Image
+      ?person wdt:P31 wd:Q5. # Select instances of humans
+      ?person rdfs:label "${person_name}"@en.
     
-        FILTER(CONTAINS(STR(?birthdate), "${date1}"))
+      OPTIONAL { 
+         ?person p:P569 ?statement .
+         ?statement a wikibase:BestRank ;
+             ps:P569 ?birthdate ;
+             psv:P569/wikibase:timePrecision ?precision .
+         FILTER (?precision >= 11)
       }
-      UNION
-      {
-        ?person wdt:P31 wd:Q5 ;  # Instance of human
-          wdt:P569 ?birthdate ;  # Date of birth
-          wdt:P27 ?country ;  # Citizenship
-          wdt:P8687 ?followers; # Social Media Followers 
-          wdt:P106 ?occupation ;  # Occupation
-          wdt:P18 ?uniqueImage .  # Image
-    
-        FILTER(CONTAINS(STR(?birthdate), "${date2}"))
-      }
-      UNION
-      {
-        ?person wdt:P31 wd:Q5 ;  # Instance of human
-          wdt:P569 ?birthdate ;  # Date of birth
-          wdt:P27 ?country ;  # Citizenship
-          wdt:P8687 ?followers; # Social Media Followers 
-          wdt:P106 ?occupation ;  # Occupation
-          wdt:P18 ?uniqueImage .  # Image
-    
-        FILTER(CONTAINS(STR(?birthdate), "${date3}"))
+      
+      OPTIONAL { ?person wdt:P106 ?occupation. 
+        OPTIONAL {
+          ?occupation rdfs:label ?occupationLabel_en.
+          FILTER(LANG(?occupationLabel_en) = "en")
+        }
       }
     
-      FILTER(LANG(?occupationLabel) = "en")
-      ?occupation rdfs:label ?occupationLabel .
+      OPTIONAL { ?person wdt:P19 ?birthPlace. }  # Retrieve place of birth  
+      OPTIONAL { ?person wdt:P27 ?country . }    # Citizenship
+      OPTIONAL { ?person wdt:P18 ?image. }       # Retrieve image
+      OPTIONAL { ?person wdt:P8687 ?followers. } # Social Media Followers
     
+      OPTIONAL {
+        ?person wdt:P26 ?spouse.
+        ?spouse rdfs:label ?spouseLabel_en.
+        FILTER(LANG(?spouseLabel_en) = "en")
+      }
+      
+      OPTIONAL { ?person wdt:P22 ?family. } # Retrieve family info 
+      BIND(STR(?person) AS ?qid)
       SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
     }
-    GROUP BY ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel
+    GROUP BY ?person ?personLabel ?countryLabel ?followers ?birthdate ?birthPlaceLabel ?image ?familyLabel ?familyDescription ?qid
     ORDER BY DESC(?followers)
-    LIMIT  ${limit}`;
+    LIMIT 1
+    `
 
     const headers = {
       'Accept': 'application/sparql-results+json'
@@ -282,53 +386,7 @@ export class GeneralService {
     return this.http.get<any>(this.sparqlEndpoint, {
       params: params,
       headers: headers
-    }).pipe(map(this.mapResponseToIFamousBirths));
-  }
-
-  public getFamousPeopleByDate(month: string, day: string, year: string, limit: number): Observable<ICelebrity[]> {
-    let sparqlQuery = `PREFIX wd: <http://www.wikidata.org/entity/>
-    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-    PREFIX wikibase: <http://wikiba.se/ontology#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-    SELECT DISTINCT ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel (GROUP_CONCAT(DISTINCT ?occupationLabel; separator=", ") as ?occupations)
-    WHERE {
-      VALUES ?country {wd:Q30 wd:Q145}
-      ?person wdt:P31 wd:Q5 ;  # Instance of human
-        wdt:P569 ?birthdate ;  # Date of birth
-        wdt:P27 ?country ;  # Citizenship
-        wdt:P8687 ?followers; # Social Media Followers 
-        wdt:P106 ?occupation ;  # Occupation
-        wdt:P18 ?uniqueImage .  # Image`;
-
-    if (!!year) {
-      sparqlQuery += `
-        FILTER(CONTAINS(STR(?birthdate), "${year}-${month}-${day}"))`;
-    } else {
-      sparqlQuery += `
-        FILTER(CONTAINS(STR(?birthdate), "${month}-${day}"))`;
-    }
-
-    sparqlQuery += `
-      FILTER(LANG(?occupationLabel) = "en")
-      ?occupation rdfs:label ?occupationLabel .
-
-      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-    }
-    GROUP BY ?person ?personLabel ?birthdate ?followers ?uniqueImage ?countryLabel
-    ORDER BY DESC(?followers)
-    LIMIT ${limit}`;
-
-    const headers = {
-      'Accept': 'application/sparql-results+json'
-    };
-
-    const params = new HttpParams().set('query', sparqlQuery);
-
-    return this.http.get<any>(this.sparqlEndpoint, {
-      params: params,
-      headers: headers
-    }).pipe(map(this.mapResponseToIFamousBirths));
+    }).pipe(map(this.mapResponseToBiographicalInfo));
   }
   
   
@@ -372,6 +430,32 @@ export class GeneralService {
 
   public subscribeToCelebInfo(){
     return this.celebritySubject.asObservable();
+  }
+
+  private mapResponseToBiographicalInfo(response: any): IBiographicalInfo{
+    const binding = response.results.bindings[0];
+
+    const qidURL = binding?.qid?.value;
+    let qid = "";
+    if(!!qidURL){
+      qid = qidURL.substring(qidURL.lastIndexOf("/")+1, qidURL.length).trim();
+    }
+
+    const bioObj: IBiographicalInfo = {
+      name: (binding?.personLabel?.value),
+      spouses: binding?.spouses?.value.split(','),
+      occupations: binding?.occupations?.value.split(','),
+      family: binding?.familyLabel?.value,
+      familyDesc: binding?.familyDescription?.value,
+      citizenship: binding?.countryLabel?.value,
+      birthPlace: binding?.birthPlaceLabel?.value,
+      image: binding?.image?.value,
+      birthDate:  new Date(binding?.birthdate?.value),
+      followers: binding?.followers?.value,
+      qid: qid
+    }
+    
+    return bioObj;
   }
 
   private mapResponseToIFamousBirths(response: any): ICelebrity[] {

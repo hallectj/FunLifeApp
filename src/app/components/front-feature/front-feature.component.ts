@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { combineLatest, lastValueFrom, map } from 'rxjs';
+import { slugify } from 'src/app/common/Toolbox/util';
 import { IDateObj, ICelebrity, IHistEvent, IPresident, Inflation } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
@@ -14,6 +15,21 @@ export class FrontFeatureComponent {
   public celebName: string = "";
   public histEvtImg: string = "";
   public presidentPortrait: string = "";
+  public selectedPresidentNameSlugged: string = "";
+  public selectedPresident: IPresident = {
+    number: "",
+    name: "",
+    startDate: "",
+    endDate: "",
+    portraitURL: "",
+    portraitDesc: "",
+    portraitSource: "",
+    party: "",
+    birthCity: "",
+    birthStateAbbr: "",
+    birthdate: "",
+    spouses: []
+  }
   public loading: boolean = true;
 
   public famousBirths: ICelebrity[];
@@ -62,6 +78,8 @@ export class FrontFeatureComponent {
     this.celebName = celeb.name;
 
     const president = this.presidentByYear(this.presidents, this.dateObj.year);
+    this.selectedPresident = president;
+    this.selectedPresidentNameSlugged = slugify(president.name);
     this.presidentPortrait = president.portraitURL;
     this.loading = false;
     
