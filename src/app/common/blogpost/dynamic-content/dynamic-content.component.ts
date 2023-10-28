@@ -15,22 +15,23 @@ export class DynamicContentComponent {
   public contentIsLoading: boolean = false;
   public subscription: Subscription = new Subscription();
   @Input() isContentLoaded: boolean = false;
+  @Input() postId: number = -1;
+  @Output() postIdChange: EventEmitter<number> = new EventEmitter<number>();
   @Output() isContentLoadedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @ViewChild('postContent', { static: true }) postContent: ElementRef;
 
   constructor(public service: PostService, public reloadService: ReloadService){}
 
   public async ngOnInit(){
-    await this.loadArticle(false);
-
     this.subscription.add(this.reloadService.getReloadTrigger().subscribe(async (postExcerpt: IPostExcerpt) => {
-      await this.loadArticle(true);
+      await this.loadArticle(postExcerpt.postID);
     }));
   }
 
-  public async loadArticle(useOtherArticle: boolean){
+  public async loadArticle(postId: number){
     this.contentIsLoading = true;
-    this.exampleHTML = await this.service.getPost(useOtherArticle).toPromise();
+    const content = await this.service.getPost(postId).toPromise();
+    this.exampleHTML = content.id.toString() + " | " + content.body;
     this.contentIsLoading = false;
   }
 

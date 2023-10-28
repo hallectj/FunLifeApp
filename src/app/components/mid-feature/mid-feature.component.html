@@ -8,7 +8,7 @@
     <h6 class="hist-box-header">Top Movie in {{randomYear}}</h6>
     <div class="movie-wrapper">
       <div class="video-container">
-        <iframe [src]="youTubeURL" allow="autoplay; encrypted-media" width="640" height="480" frameborder="0">
+        <iframe [src]="youTubeURL | safeResourceUrl" allow="autoplay; encrypted-media" width="640" height="480" frameborder="0">
         </iframe>
       </div>
     </div>

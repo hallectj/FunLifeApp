@@ -11,8 +11,10 @@ import { ReloadService } from 'src/app/services/reload.service';
   styleUrls: ['./missed-article-widget.component.scss']
 })
 export class MissedArticleWidgetComponent {
+  public dummyPostsExcerpts: IPostExcerpt[] = [];
   public inCaseYouMissedArr: IPostExcerpt[] = [];
   public selectedArticle: IPostExcerpt = {
+    postID: -1,
     excerptImage: "",
     excerptTitle: "",
     excerptDesc: "",
@@ -21,24 +23,23 @@ export class MissedArticleWidgetComponent {
   constructor(public postService: PostService, public reloadService: ReloadService, private router: Router){}
 
   public async ngOnInit(){
-    await this.populateInCaseYouMissed();
+    this.dummyPostsExcerpts = await this.postService.getDummyPostsExcerpts().toPromise();
+    this.populateInCaseYouMissed();
   }
 
   public goToPost(article: IPostExcerpt){
     this.selectedArticle = article;
     this.router.navigate(['/post/' + slugify(this.selectedArticle.excerptTitle)]);
-    this.reloadService.triggerReload(this.selectedArticle);
+    this.populateInCaseYouMissed();
   }
 
-  public async populateInCaseYouMissed(){
-    let posts = await this.postService.getDummyPosts().toPromise();
-    const randLen = (posts.length >= 3) ? 3 : posts.length;
+  public populateInCaseYouMissed(){
+    const randLen = (this.dummyPostsExcerpts.length >= 3) ? 3 : this.dummyPostsExcerpts.length;
     this.inCaseYouMissedArr = [];
 
     for (let i = 0; i < randLen; i++) {
-      let idx = Math.floor(Math.random() * posts.length);
-      this.inCaseYouMissedArr.push(posts[idx]);
-      posts.splice(idx, 1);
+      let idx = Math.floor(Math.random() * this.dummyPostsExcerpts.length);
+      this.inCaseYouMissedArr.push(this.dummyPostsExcerpts[idx]);
     }    
   }
 }

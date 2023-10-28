@@ -1,13 +1,13 @@
 <div class="excerpt-rectangle">
   <div class="excerpt-image-div"><img width="295" [src]="postExcerpt.excerptImage" alt="Image"></div>
-  <div (click)="getPost(postExcerpt)" class="excerpt-content">
+  <div class="excerpt-content">
     <h2>{{postExcerpt.excerptTitle}}</h2>
     <p [ngStyle]="{'margin-right':useRibbonYear ? '50px' : '10px' }">{{postExcerpt.excerptDesc}}   
     </p>
   </div>
   <div *ngIf="useRibbonYear" class="ribbon down">
     <div class="content">
-      <span style="writing-mode: vertical-rl; text-orientation: upright;">{{year}}</span>
+      <span style="writing-mode: vertical-rl; text-orientation: upright;">{{ribbonYear}}</span>
     </div>
   </div>
 </div>

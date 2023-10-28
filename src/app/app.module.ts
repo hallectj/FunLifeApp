@@ -29,6 +29,8 @@ import { MissedArticleWidgetComponent } from './common/missed-article-widget/mis
 import { CelebrityPageComponent } from './modules/celebrity/celebrity-page/celebrity-page.component';
 import { CelebrityExistsResolver } from './common/resolvers/celebrity-exists.resolver';
 import { PresidentComponent } from './modules/president/president.component';
+import { HistoryPostComponent } from './modules/day-in-history/history-post/history-post.component';
+import { SafeResourceUrlPipe } from './common/pipes/safe-resource-url.pipe';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: PageComponent },
@@ -36,6 +38,7 @@ const routes: Routes = [
   { path: 'page/:pageId/:postTitle', component: BlogpostComponent },
   { path: 'post/:postTitle', component: BlogpostComponent },
   { path: 'birthday', component: BirthdayComponent },
+  { path: 'day-in-history/:historyTitle', component: HistoryPostComponent },
   { path: 'day-in-history', component: DayInHistoryComponent },
   { 
     path: 'celebrity/:celebName', 
@@ -74,11 +77,13 @@ const routes: Routes = [
     CelebCardComponent,
     RibbonComponent,
     BlogpostComponent,
+    HistoryPostComponent,
     PageComponent,
     DynamicContentComponent,
     MissedArticleWidgetComponent,
     CelebrityPageComponent,
     PresidentComponent,
+    SafeResourceUrlPipe,
   ],
   imports: [
     BrowserModule,

@@ -15,6 +15,7 @@ import { ReloadService } from 'src/app/services/reload.service';
 export class BlogpostComponent {
   public blogTitle: string = "";
   public postExcerpt: IPostExcerpt = {
+    postID: -1,
     excerptDesc: "",
     excerptImage: "",
     excerptTitle: "",
@@ -22,23 +23,24 @@ export class BlogpostComponent {
   }
   public subscription: Subscription = new Subscription();
   public isContentLoaded: boolean = false;
+  public allExcerpts: IPostExcerpt[] = [];
 
   @ViewChild('postContent', { static: true }) postContent: ElementRef;
 
   constructor(private route: ActivatedRoute, public postService: PostService, public reloadService: ReloadService, public sanitize: DomSanitizer){}
 
   public async ngOnInit(){
-    this.route.paramMap.subscribe((params) => {
-      this.blogTitle = deslugify(params.get('postTitle'));
-      this.postExcerpt = this.postService.getPostExcerpt(this.blogTitle)
-    })
+    this.allExcerpts = await this.postService.getDummyPostsExcerpts().toPromise();
 
-    this.subscription.add(this.reloadService.getReloadTrigger().subscribe((postExcerpt: IPostExcerpt) => {
-      this.route.paramMap.subscribe(async (params) => {
-        this.blogTitle = deslugify(params.get('postTitle'));
-        this.postExcerpt = postExcerpt;
-      })
-    }));
+    this.route.paramMap.subscribe(async (params) => {
+      this.blogTitle = deslugify(params.get('postTitle'));
+      const idx = this.allExcerpts.findIndex(v => v.excerptTitle === this.blogTitle);
+      if(idx !== -1){
+        this.postExcerpt = this.allExcerpts[idx];
+        window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+        this.reloadService.triggerReload(this.postExcerpt);        
+      }
+    })
   }
 
   public ngOnDestroy(){

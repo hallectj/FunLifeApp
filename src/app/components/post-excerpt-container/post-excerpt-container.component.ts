@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { slugify } from 'src/app/common/Toolbox/util';
 import { IPostExcerpt } from 'src/app/models/shared-models';
 import { PostService } from 'src/app/services/post.service';
 
@@ -10,15 +12,15 @@ import { PostService } from 'src/app/services/post.service';
 export class PostExcerptContainerComponent {
   //TODO once backend is added, page number will determine what post the container has
   //for now fake post
-  public dummyPosts: IPostExcerpt[] = [];
+  public dummyPostsExcerpts: IPostExcerpt[] = [];
   @Input() pageNumber: number = 1;
   @Input() postsPerPage: number = 0;
   public postExcerpt: IPostExcerpt;
   
-  constructor(public postService: PostService){}
+  constructor(public postService: PostService, private router: Router){}
   
   public async ngOnInit(){
-    this.dummyPosts = await this.postService.getDummyPosts().toPromise();  
+    this.dummyPostsExcerpts = await this.postService.getDummyPostsExcerpts().toPromise();  
   }
 
   get startIndex(): number {
@@ -29,8 +31,9 @@ export class PostExcerptContainerComponent {
     return this.startIndex + this.postsPerPage;
   }
 
-  public getPost(post: IPostExcerpt){
-    this.postExcerpt = post;
-    this.postService.notifyPostBlogComponentOfPost(post);    
+  public getPost(postExcerpt: IPostExcerpt){
+    let correctRoute = ['/post/' + slugify(postExcerpt.excerptTitle)];
+    this.router.navigate(correctRoute)
   }
+
 }

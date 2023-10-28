@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { lastValueFrom } from 'rxjs';
 import { IMovie } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
@@ -11,7 +11,8 @@ import { GeneralService } from 'src/app/services/general.service';
 })
 export class MidFeatureComponent {
   public popularMovie: IMovie = null;
-  public youTubeURL: SafeResourceUrl;
+  public youTubeURL: string = "";
+  public youTubeURLSafe: SafeResourceUrl = "";
 
   @Input() randomYear: string = "";
 
@@ -21,7 +22,15 @@ export class MidFeatureComponent {
     const movies = await lastValueFrom(this.service.getMovies());
 
     this.popularMovie = this.getMostPopularMovieByYear(movies, +this.randomYear);
-    this.youTubeURL = this.sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/" + this.popularMovie.youtubeId);
+    this.getMovie();
+  }
+
+  /** Have place this in a separate function, because calling directly in ngOnInit for
+   * some reason causes the YouTube API to keep calling itself.
+   */
+  public getMovie(){
+    this.youTubeURL = "https://www.youtube.com/embed/" + this.popularMovie.youtubeId;
+    return;
   }
 
   private getMostPopularMovieByYear(movies: IMovie[], year: number) {

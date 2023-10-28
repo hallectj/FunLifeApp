@@ -1,5 +1,5 @@
 import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { slugify } from 'src/app/common/Toolbox/util';
 import { LOADINGSPINNER } from 'src/app/common/base64Assests';
@@ -32,13 +32,21 @@ export class BirthdayComponent {
   public showSports: boolean = false;
   public birthdayDateStr: string = "";
 
-  public youTubeSongURL: SafeResourceUrl = "";
-  public youTubeMovieURL: SafeResourceUrl = "";
+  public youTubeSongURL: string = "";
+  public youTubeMovieURL: string = "";
 
   public songs: ISong[] = [];
   public movies: IMovie[] = [];
 
   public historyEvents: IHistEvent[] = [];
+  public selectedHistoryEvent: IHistEvent = {
+    description: "",
+    year: 100, 
+    imageURL: "",
+    wikiURL: "",
+    title: "",
+    noImageFound: true    
+  }
   public famousBirths: ICelebrity[] = [];
   public sports: ISport[] = [];
 
@@ -103,6 +111,12 @@ export class BirthdayComponent {
     this.movies = await this.service.getMovies().toPromise();
   }
 
+  public goToHistoryEventPage(post: {post: IPostExcerpt, useRibbon: boolean, year: number}){
+    this.selectedHistoryEvent = this.historyEvents.find(v => v.title === post.post.excerptTitle);
+    let route = ['/day-in-history/' + slugify(this.selectedHistoryEvent.title)];
+    this.router.navigate(route);
+  }
+
   public getMonth(){
     let idx = this.monthNames.findIndex(v => v === this.selectedMonth);
     if(idx !== -1){
@@ -155,8 +169,6 @@ export class BirthdayComponent {
 
     const dateStr = this.selectedMonth + " " + this.selectedDay + ", " + this.selectedYear;
 
-    const dd = this.selectedDay.toString().padStart(2, "0"), yyyy = this.selectedYear.toString().padStart(2, "0");
-
     const birthDate = new Date(this.formatDateToMMDDYYYY(dateStr));
     const mm = (birthDate.getMonth() + 1).toString().padStart(2, "0");
     this.birthdayDateStr = dateStr;
@@ -168,9 +180,8 @@ export class BirthdayComponent {
 
     if(songObj && movieObj){
       this.birthDaySong = songObj;
-      this.youTubeSongURL = this.sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/" + songObj.youtubeId);
       this.birthDayMovie = movieObj;
-      this.youTubeMovieURL = this.sanitizer.bypassSecurityTrustResourceUrl("https://www.youtube.com/embed/" + movieObj.youtubeId);
+      this.getYouTubeURLs();
     }else{
       this.birthDaySong = {songTitle: "", artist: "", youtubeId: "", startDate: new Date(), endDate: new Date()};
     }
@@ -183,6 +194,7 @@ export class BirthdayComponent {
     this.dispHistory = this.historyEvents.map((v: IHistEvent) => (
       {
         post: {
+          postID: -1,
           excerptDesc: v.description,
           excerptImage: v.imageURL, 
           excerptTitle: v.title,
@@ -236,6 +248,12 @@ export class BirthdayComponent {
       element.style.setProperty('--bg-image', `url(${this.sportImages[i]})`);
     }
 
+  }
+
+  public getYouTubeURLs(){
+    this.youTubeSongURL = "https://www.youtube.com/embed/" + this.birthDaySong.youtubeId;
+    this.youTubeMovieURL = "https://www.youtube.com/embed/" + this.birthDayMovie.youtubeId;
+    return;
   }
 
   private createDummyCards(len: number, size: string, dispAmt: number) : ICelebCard[] {

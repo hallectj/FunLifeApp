@@ -1,13 +1,7 @@
 <div id="post-excerpt-wrapper">
-  <ng-container *ngFor="let post of dummyPosts.slice(startIndex, endIndex)">
+  <ng-container *ngFor="let excerpts of dummyPostsExcerpts.slice(startIndex, endIndex)">
     <div>
-      <post-excerpt (postExcerptEvent)="getPost(post)" [postExcerpt]="post"></post-excerpt>
+      <post-excerpt [postExcerpt]="excerpts"></post-excerpt>
     </div>
   </ng-container>
-  <div class="ad-section">
-    <svg width="100%" height="100" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100%" height="100%" fill="lightgray" />
-      <text x="50%" y="50%" text-anchor="middle" fill="black" font-size="36" font-family="Arial" dy=".3em">Ad</text>
-    </svg>    
-  </div>
 </div>

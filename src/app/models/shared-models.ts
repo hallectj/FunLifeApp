@@ -6,6 +6,7 @@ type DataResponse<T> = {
 };
 
 export interface IPostExcerpt {
+  postID: number,
   excerptImage: string,
   excerptTitle: string,
   excerptDesc: string,
@@ -42,6 +43,13 @@ export interface IPresident{
   birthStateAbbr: string,
   birthdate: string,
   spouses: string[]
+}
+
+export interface IPost{
+  userId: number,
+  id: number,
+  title: string,
+  body: string
 }
 
 export interface IHistEvent{

@@ -35,7 +35,7 @@
           <p>By: {{birthDaySong.artist}}</p>
         </div>
         <div *ngIf="showMedia; else noMedia" class="video-wrapper">
-          <iframe [src]="youTubeSongURL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe [src]="youTubeSongURL | safeResourceUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
         <ng-template #noMedia>
           <div class="img-fluid default-img-div">
@@ -54,7 +54,7 @@
           <h1>{{birthDayMovie.movieTitle}}</h1>
         </div>
         <div *ngIf="showMedia; else noMedia" class="video-wrapper">
-          <iframe [src]="youTubeMovieURL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe [src]="youTubeMovieURL  | safeResourceUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
         <ng-template #noMedia>
           <div class="img-fluid default-img-div">
@@ -75,8 +75,8 @@
 <section *ngIf="showHistEvents" class="section events-section">
   <ribbon [ribbonWidth]="'100%'" [ribbonTitle]="'This day in world history ' + lockedInMonthAndDay">
     <div class="event-holder">
-      <div *ngFor="let histEvt of dispHistory" class="event-post-excerpt">
-        <post-excerpt [postExcerpt]="histEvt.post" [useRibbonYear]="true" [year]="histEvt.year"></post-excerpt>
+      <div *ngFor="let histEvt of dispHistory" class="event-post-excerpt" (click)="goToHistoryEventPage(histEvt)">
+        <post-excerpt [postExcerpt]="histEvt.post" [useRibbonYear]="true" [ribbonYear]="histEvt.year"></post-excerpt>
       </div>
     </div>
   </ribbon>
