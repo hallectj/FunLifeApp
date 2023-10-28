@@ -15,7 +15,6 @@ import { TvEffectComponentComponent } from './components/tv-effect-component/tv-
 import { FooterComponent } from './common/footer/footer.component';
 import { PostExcerptComponent } from './components/post-excerpt/post-excerpt.component';
 import { MidFeatureComponent } from './components/mid-feature/mid-feature.component';
-import { PostExcerptContainerComponent } from './components/post-excerpt-container/post-excerpt-container.component';
 import { PaginationComponent } from './common/pagination/pagination.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './common/not-found/not-found.component';
@@ -38,8 +37,8 @@ const routes: Routes = [
   { path: 'page/:pageId/:postTitle', component: BlogpostComponent },
   { path: 'post/:postTitle', component: BlogpostComponent },
   { path: 'birthday', component: BirthdayComponent },
-  { path: 'day-in-history/:historyTitle', component: HistoryPostComponent },
-  { path: 'day-in-history', component: DayInHistoryComponent },
+  { path: 'day-in-history/:month/:day/:historyTitle', component: HistoryPostComponent },
+  { path: 'day-in-history/:month/:day', component: DayInHistoryComponent },
   { 
     path: 'celebrity/:celebName', 
     component: CelebrityPageComponent, 
@@ -71,7 +70,6 @@ const routes: Routes = [
     FooterComponent,
     PostExcerptComponent,
     MidFeatureComponent,
-    PostExcerptContainerComponent,
     PaginationComponent,
     NotFoundComponent,
     CelebCardComponent,

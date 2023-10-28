@@ -4,7 +4,14 @@
       <front-feature [randomYear]="randomYear"></front-feature>
       <mid-feature [randomYear]="randomYear"></mid-feature>
     </ng-container>
-    <post-excerpt-container [pageNumber]="pageNumber" [postsPerPage]="pageNumber === 1 ? 5 : 8"></post-excerpt-container>
+    <div id="post-excerpt-wrapper">
+      <ng-container *ngFor="let excerpts of postExcerpts.slice(startIndex, endIndex)">
+        <div (click)="getPost(excerpts)">
+          <post-excerpt [postExcerpt]="excerpts"></post-excerpt>
+        </div>
+      </ng-container>
+    </div>
+    
     <div class="ad-section">
       <svg width="100%" height="100" xmlns="http://www.w3.org/2000/svg">
         <rect width="100%" height="100%" fill="lightgray" />

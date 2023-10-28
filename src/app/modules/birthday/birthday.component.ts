@@ -113,7 +113,8 @@ export class BirthdayComponent {
 
   public goToHistoryEventPage(post: {post: IPostExcerpt, useRibbon: boolean, year: number}){
     this.selectedHistoryEvent = this.historyEvents.find(v => v.title === post.post.excerptTitle);
-    let route = ['/day-in-history/' + slugify(this.selectedHistoryEvent.title)];
+    const historyRoutePathEnd = this.selectedMonth + "/" + this.selectedDay + "/" + slugify(this.selectedHistoryEvent.title); 
+    let route = ['/day-in-history/' + historyRoutePathEnd];
     this.router.navigate(route);
   }
 

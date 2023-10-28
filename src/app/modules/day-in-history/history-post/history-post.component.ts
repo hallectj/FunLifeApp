@@ -11,8 +11,10 @@ export class HistoryPostComponent {
 
   ngOnInit(){
     this.route.paramMap.subscribe(async (params) => {
-      const histEvtTitle = params.get("historyTitle");
-      console.log(histEvtTitle);
+      const histDay = params.get("day");
+      const histMonth = params.get("month");
+      const histTitle = params.get("historyTitle");
+      console.log(histDay, histMonth, histTitle);
     });
   }
 }

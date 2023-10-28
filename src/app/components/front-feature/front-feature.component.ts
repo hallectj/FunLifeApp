@@ -14,6 +14,7 @@ export class FrontFeatureComponent {
   public celebImg: string = "";
   public celebName: string = "";
   public histEvtImg: string = "";
+  public historyRoutePath = ""
   public presidentPortrait: string = "";
   public selectedPresidentNameSlugged: string = "";
   public selectedPresident: IPresident = {
@@ -47,6 +48,8 @@ export class FrontFeatureComponent {
     date.setHours(0, 0, 0, 0);
     date.setFullYear(+this.randomYear, date.getMonth(), date.getDate());
     this.dateObj = this.service.populateDateObj(date);
+
+    this.historyRoutePath = "/day-in-history/" + this.dateObj.monthName + "/" + this.dateObj.day 
   
     //await this.getResponses();
     const responses = await lastValueFrom(this.initData());

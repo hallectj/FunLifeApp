@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPostExcerpt } from 'src/app/models/shared-models';
+import { PostService } from 'src/app/services/post.service';
+import { slugify } from '../Toolbox/util';
 
 @Component({
   selector: 'app-page',
@@ -12,10 +14,11 @@ export class PageComponent {
   public pageNumber: number = 1;
   public postExcerpts: IPostExcerpt[] = [];
 
-  constructor(private route: ActivatedRoute, private router: Router){}
+  constructor(private route: ActivatedRoute, private router: Router, public postService: PostService){}
 
-  ngOnInit(){
-    this.randomYear = this.getRandomYear(1941, 2020).toString();  
+  public async ngOnInit(){
+    this.randomYear = this.getRandomYear(1941, 2020).toString();
+    this.postExcerpts = await this.postService.getDummyPostsExcerpts().toPromise();    
     this.route.paramMap.subscribe(params => {
       const pageId = +params.get('pageId');
       this.pageNumber = pageId;
@@ -26,6 +29,21 @@ export class PageComponent {
         this.router.navigate(['/page/' + this.pageNumber])
       }      
     });
+  }
+
+  get startIndex(): number {
+    const postsPerPage = this.pageNumber === 1 ? 5 : 8;
+    return (this.pageNumber - 1) * postsPerPage;
+  }
+
+  get endIndex(): number {
+    const postsPerPage = this.pageNumber === 1 ? 5 : 8;
+    return this.startIndex + postsPerPage;
+  }
+
+  public getPost(postExcerpt: IPostExcerpt){
+    let correctRoute = ['/post/' + slugify(postExcerpt.excerptTitle)];
+    this.router.navigate(correctRoute)
   }
 
   public getPageNumber(pageNumber: number){
