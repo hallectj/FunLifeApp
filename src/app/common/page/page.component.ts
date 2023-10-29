@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPostExcerpt } from 'src/app/models/shared-models';
 import { PostService } from 'src/app/services/post.service';
-import { slugify } from '../Toolbox/util';
+import { isValidDate, slugify } from '../Toolbox/util';
 
 @Component({
   selector: 'app-page',
@@ -17,9 +17,11 @@ export class PageComponent {
   constructor(private route: ActivatedRoute, private router: Router, public postService: PostService){}
 
   public async ngOnInit(){
-    this.randomYear = this.getRandomYear(1941, 2020).toString();
-    this.postExcerpts = await this.postService.getDummyPostsExcerpts().toPromise();    
-    this.route.paramMap.subscribe(params => {
+    this.randomYear = this.getRandomYear(1941, 2020).toString();   
+    //console.log(isValidDate("October", "2"));
+    //console.log(isValidDate("October", "23"));
+    //console.log(isValidDate("October", "67"));
+    this.route.paramMap.subscribe(async params => {
       const pageId = +params.get('pageId');
       this.pageNumber = pageId;
       if(this.pageNumber < 1) this.pageNumber = 1;
@@ -27,7 +29,8 @@ export class PageComponent {
         this.pageNumber = 1;
       }else{
         this.router.navigate(['/page/' + this.pageNumber])
-      }      
+      }
+      this.postExcerpts = await this.postService.getDummyPostsExcerpts().toPromise();       
     });
   }
 

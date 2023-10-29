@@ -18,7 +18,7 @@
           <a routerLink="/celebrity">👱‍♀️Celebrity Birthdays</a>
         </li>
         <li class="cust-nav-item">
-          <a routerLink="/day-in-history">🏛️This Day in History</a>
+          <a [routerLink]="'day-in-history/' + monthName + '/' + strDateNum">🏛️This Day in History</a>
         </li>
         <li class="cust-nav-item">
           <a href="#">📈Trending</a>

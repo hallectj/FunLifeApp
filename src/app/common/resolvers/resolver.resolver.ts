@@ -1,11 +1,12 @@
 import { Inject, Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, ResolveFn, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable, map } from 'rxjs';
+import { of } from 'rxjs';
 import { GeneralService } from '../../services/general.service'; // Replace with your actual service
-import { deslugify } from '../Toolbox/util';
+import { deslugify, isValidDate } from '../Toolbox/util';
 
 @Injectable()
-export class CelebrityExistsResolver {
+export class SingleRouteResolver {
   constructor(private service: GeneralService, private router: Router) {}
   resolve: ResolveFn<boolean> = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
     const parm = route.data['paramName'] || "";
@@ -22,4 +23,20 @@ export class CelebrityExistsResolver {
       })
     );
   };
+}
+
+@Injectable()
+export class DateRouteResolver {
+  constructor(private service: GeneralService, private router: Router) {}
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    const month = route.paramMap.get('month');
+    const day = route.paramMap.get('day');
+
+    if (isValidDate(month, day, false, true)) {
+      return of(true);
+    } else {
+      this.router.navigate(['/404']);
+      return of(false);
+    }
+  }
 }

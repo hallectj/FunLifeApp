@@ -5,9 +5,9 @@
       <mid-feature [randomYear]="randomYear"></mid-feature>
     </ng-container>
     <div id="post-excerpt-wrapper">
-      <ng-container *ngFor="let excerpts of postExcerpts.slice(startIndex, endIndex)">
-        <div (click)="getPost(excerpts)">
-          <post-excerpt [postExcerpt]="excerpts"></post-excerpt>
+      <ng-container *ngFor="let excerpt of postExcerpts.slice(startIndex, endIndex)">
+        <div (click)="getPost(excerpt)">
+          <post-excerpt [postExcerpt]="excerpt"></post-excerpt>
         </div>
       </ng-container>
     </div>

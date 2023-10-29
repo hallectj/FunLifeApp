@@ -46,7 +46,7 @@ export class PresidentComponent {
 
       this.president.number = this.addNumberSuffix(+this.president.number)
 
-      const response = await this.service.callWikiAPIPerson(this.president.name).toPromise();
+      const response = await this.service.callWikiAPITopic(this.president.name).toPromise();
       const keys = Object.keys(response.query.pages)
       let paragraphs = []
 

@@ -1,0 +1,91 @@
+.main_event{
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  background-color: #fff;
+
+  .left-side{
+    max-width: 385px;
+    max-height: 300px;
+    min-width: 350px;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    flex: 1;
+
+    figure, figcaption {
+      display: block;
+    }
+
+    #polaroid{
+      width:100%;
+      padding:0px 10px;
+      margin:auto;
+      text-align: center;
+    }
+
+    #polaroid img{
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+    }
+    #polaroid figure{
+      position:relative;
+      width: 100%;
+      padding: 6px 8px 10px 8px;
+      display:inline-block;
+      box-shadow: 4px 4px 8px -4px rgba(0, 0, 0, .75);
+      background-color: #eee6d8;
+      transform: rotate(-1deg);
+    }
+
+    #polaroid figure:before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 5px;
+      top: -10px;
+      width: 75px;
+      height: 25px;
+      z-index: 1;
+      background-color: rgba(222,220,198,0.7);
+      transform: rotate(-12deg);
+    }
+  
+    img{
+      width: 100%;
+      height: 100%;
+      max-width: 215px;
+      max-height: 215px;
+      object-fit: contain;
+    }
+  }
+
+  .right-side{
+    flex: 1;
+    min-width: 550px;
+
+    .main_event_heading{
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      
+      div:first-child{
+        margin-right: 20px;
+      }
+
+      .year_div{
+        background-color: #44B1DC;
+        color: white;
+        margin-right: 10px;
+        letter-spacing: 4px;
+        padding: 5px;
+
+        h4{
+          padding: 0;
+          margin: 0;
+        }
+      }
+    }
+  }
+}

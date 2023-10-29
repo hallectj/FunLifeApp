@@ -14,6 +14,7 @@ export class PostExcerptComponent {
   @Input() postExcerpt: IPostExcerpt;
   @Input() useRibbonYear: boolean = false;
   @Input() ribbonYear: number = 0;
+  @Input() cursor: string = "pointer";
   @Output() postExcerptEvent: EventEmitter<IPostExcerpt> = new EventEmitter<IPostExcerpt>();
 
   constructor(public service: PostService, public router: Router ){}

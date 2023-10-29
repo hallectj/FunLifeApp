@@ -238,19 +238,34 @@ export class GeneralService {
     return (!!correctTitle) ? correctTitle : "";
   }
 
-  public callWikiAPIPerson(value: string){
-    const params = {
-      action: 'query',
-      format: 'json',
-      prop: 'extracts|pageimages|info',
-      piprop: 'original|name',
-      exintro: '',
-      inprop: 'url',
-      explaintext: '',
-      origin: '*',
-      titles: value,
-      redirects: 1, // Enable redirects
-    }
+  public callWikiAPITopic(value: string){
+    const params = new HttpParams()
+      .set('action', 'query')
+      .set('format', 'json')
+      .set('prop', 'extracts|pageimages|info')
+      .set('piprop', 'original|name')
+      .set('exintro', '')
+      .set('inprop', 'url')
+      .set('explaintext', '')
+      .set('origin', '*')
+      .set('titles', value)
+      .set('redirects', '1'); // Enable redirects
+
+    return this.http.get<any>(this.coreWikiURL, {params})
+  }
+
+  public callWikiAPIMultipleTopics(values: string[]){
+    const params = new HttpParams()
+      .set('action', 'query')
+      .set('format', 'json')
+      .set('prop', 'extracts|pageimages|info')
+      .set('piprop', 'original|name')
+      .set('exintro', '')
+      .set('inprop', 'url')
+      .set('explaintext', '')
+      .set('origin', '*')
+      .set('titles', values.join("|"))
+      .set('redirects', '1'); // Enable redirects
 
     return this.http.get<any>(this.coreWikiURL, {params})
   }
@@ -314,6 +329,7 @@ export class GeneralService {
   public getEvents(date: Date): Observable<IHistEvent[]>{
     return this.callWikiAPI(date, 'events').pipe(
       map((response) => {
+        console.log("THE RESPONSE", response)
         const events: IHistEvent[] = response.events.map((v: any) => {
           let image = (v.pages[0]?.originalimage?.source) ? v.pages[0]?.originalimage?.source : "";
           let wikiURL = (v.pages[0]?.content_urls?.desktop?.page) ? v.pages[0]?.content_urls?.desktop?.page : "";

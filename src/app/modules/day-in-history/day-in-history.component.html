@@ -1,10 +1,54 @@
 <div id="day-in-history-wrapper">
   <div class="top-banner">
-    <div><span>October 27</span></div>
+    <div><span>{{currentMonth}} {{currentDay}}</span></div>
     <div>This Day In History</div>
     <div class="date-controls">
-      <div class="date-direction date-prev"><span><i class="fa-solid fa-chevron-left"></i>Oct 26</span></div>
-      <div class="date-direction date-next"><span>Oct 28<i class="fa-solid fa-chevron-right"></i></span></div>
+      <div class="date-direction date-prev" (click)="getPreviousHistoryDayEvent()"><span><i class="fa-solid fa-chevron-left"></i>{{previousMonth}} {{previousDay}}</span></div>
+      <div class="date-direction date-next" (click)="getNextHistoryDayEvent()"><span>{{nextMonth}} {{nextDay}}<i class="fa-solid fa-chevron-right"></i></span></div>
+    </div>
+  </div>
+
+  <div class="thisDay">
+    <div><h2>Historical Events on {{currentMonth}} {{currentDay}}</h2></div>
+    <div><button class="accordion-button" id="accordionBtn" (click)="toggleAccordian()">Calendar</button></div>
+  </div>
+
+  <div #calendar class="accordion-content" id="accordionContent">
+    <div><h4>{{currentMonth}}</h4></div>
+    <div class="date-ranger">
+      <span (click)="pickTheDate(i+1)" [ngStyle]="applyStyles(i)" *ngFor="let d of datesRange; let i = index" class="date-span">{{d}}</span>
+    </div>
+  </div>
+
+  <div class="historical_events">
+    <div><hr /></div>
+    <div class="other_event">
+      <div class="event-holder">
+        <div *ngFor="let histEvt of dispHistory; let i = index;" class="event-post-excerpt">
+          <div *ngIf="((i) % 5 !== 0); else useMain">
+            <post-excerpt [postExcerpt]="histEvt.post" [useRibbonYear]="true" [ribbonYear]="histEvt.year" [cursor]="'default'"></post-excerpt>
+          </div>
+          <ng-template #useMain>
+            <div *ngIf="isHistoryLoading; else fishedLoading">
+              <history-main 
+                [histDescription]="'Loading...'"
+                [histTitle]="'Loading...'"
+                [histImage]="loadingImg"
+                [histYear]="'100'"
+              ></history-main>
+            </div>
+            <ng-template #fishedLoading>
+              <history-main 
+                [histDescription]="histEvt.post.excerptDesc"
+                [histTitle]="histEvt.post.excerptTitle"
+                [histImage]="histEvt.post.excerptImage"
+                [histYear]="histEvt.year.toString()"
+              ></history-main>
+            </ng-template>
+          </ng-template>
+
+        </div>
+      </div>
     </div>
   </div>
 </div>

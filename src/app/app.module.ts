@@ -26,10 +26,10 @@ import { PageComponent } from './common/page/page.component';
 import { DynamicContentComponent } from './common/blogpost/dynamic-content/dynamic-content.component';
 import { MissedArticleWidgetComponent } from './common/missed-article-widget/missed-article-widget.component';
 import { CelebrityPageComponent } from './modules/celebrity/celebrity-page/celebrity-page.component';
-import { CelebrityExistsResolver } from './common/resolvers/celebrity-exists.resolver';
+import { DateRouteResolver, SingleRouteResolver } from './common/resolvers/resolver.resolver';
 import { PresidentComponent } from './modules/president/president.component';
-import { HistoryPostComponent } from './modules/day-in-history/history-post/history-post.component';
 import { SafeResourceUrlPipe } from './common/pipes/safe-resource-url.pipe';
+import { HistoryMainComponent } from './modules/day-in-history/history-main/history-main.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: PageComponent },
@@ -37,19 +37,24 @@ const routes: Routes = [
   { path: 'page/:pageId/:postTitle', component: BlogpostComponent },
   { path: 'post/:postTitle', component: BlogpostComponent },
   { path: 'birthday', component: BirthdayComponent },
-  { path: 'day-in-history/:month/:day/:historyTitle', component: HistoryPostComponent },
-  { path: 'day-in-history/:month/:day', component: DayInHistoryComponent },
+  { 
+    path: 'day-in-history/:month/:day',
+    component: DayInHistoryComponent,
+    resolve: {
+      dateData: DateRouteResolver
+    }
+  },
   { 
     path: 'celebrity/:celebName', 
     component: CelebrityPageComponent, 
     data: {paramName: 'celebName', resolveFunction: 'getTrueCelebName'}, 
-    resolve: {exists: CelebrityExistsResolver}
+    resolve: {exists: SingleRouteResolver}
   },
   {
     path: 'president/:presidentName',
     component: PresidentComponent,
     data: {paramName: 'presidentName', resolveFunction: 'getTruePresidentName'},
-    resolve: {exists: CelebrityExistsResolver}
+    resolve: {exists: SingleRouteResolver}
   },
   { path: 'celebrity', component: CelebrityComponent },
   { path: '404', component: NotFoundComponent },
@@ -75,13 +80,14 @@ const routes: Routes = [
     CelebCardComponent,
     RibbonComponent,
     BlogpostComponent,
-    HistoryPostComponent,
+    //HistoryPostComponent,
     PageComponent,
     DynamicContentComponent,
     MissedArticleWidgetComponent,
     CelebrityPageComponent,
     PresidentComponent,
     SafeResourceUrlPipe,
+    HistoryMainComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,7 +97,7 @@ const routes: Routes = [
     FormsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [CelebrityExistsResolver],
+  providers: [SingleRouteResolver, DateRouteResolver ],
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })

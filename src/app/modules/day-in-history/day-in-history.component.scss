@@ -8,7 +8,7 @@
     width: 100%;
     background-color: #1F2226;
     color: #fff;
-    font-size: 1.2em;
+    font-size: 1.0em;
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     text-transform: uppercase;
@@ -44,7 +44,7 @@
       .date-direction{
         display: flex;
         justify-content: center;
-        width: 130px;
+        width: 180px;
         border: 2px solid #fff;
         padding: 5px;
         margin: 0px 10px;
@@ -67,5 +67,55 @@
         }
       }
     }
+  }
+
+  .thisDay{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    background: #1F2226;
+    color: white;
+    padding: 5px;
+    align-items: center;
+
+    .accordion-button {
+       background-color: #3498db;
+       color: #fff;
+       padding: 10px 20px;
+       border: none;
+       cursor: pointer;
+    }
+  }
+
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease-in-out;
+    padding: 0px;
+    background-color: #f1f1f1;
+
+    &>div:first-child{
+      color: white;
+      text-align: center;
+      background-color: #3E454D;
+    }
+
+    .date-ranger{
+      display: inline-flex;
+      justify-content: space-between;
+      width: 100%;
+      background-color: #F2F3F7;
+      border: 1px solid #1F2226;
+
+      span{
+        margin: 0px 4px;
+        color: blue;
+        cursor: pointer;
+      }
+    }
+  }
+  
+  .active {
+    max-height: 500px; /* Adjust the max-height to fit your content */
   }
 }

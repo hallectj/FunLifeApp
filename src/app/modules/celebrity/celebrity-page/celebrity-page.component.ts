@@ -56,7 +56,7 @@ export class CelebrityPageComponent {
       wikiSearchTerm = (correctedTitle !== "") ? correctedTitle : bioResponse.name; 
       this.bioGraphObj.name = wikiSearchTerm;
 
-      const response = await this.service.callWikiAPIPerson(wikiSearchTerm).toPromise();
+      const response = await this.service.callWikiAPITopic(wikiSearchTerm).toPromise();
       const keys = Object.keys(response.query.pages)
       let paragraphs = []
 
