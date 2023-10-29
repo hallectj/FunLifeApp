@@ -100,6 +100,62 @@
       background-color: #3E454D;
     }
 
+    .date-dropdown {
+      display: none;
+      position: relative;
+      width: 90%;
+      margin: 0px auto;
+      font-family: Arial, sans-serif;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      overflow: hidden;
+      background-color: #fff;
+    }
+
+    .custom-select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      padding: 10px;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      background-color: #3E454D;
+      color: white;
+      font-size: 16px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .date-dropdown::after {
+      content: '\25BC'; /* Down arrow character */
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      font-size: 18px;
+      pointer-events: none;
+    }
+
+    #date-dropown-select option {
+      background-color: #fff;
+      color: #333;
+    }
+
+    #date-dropown-select:focus {
+      outline: none;
+      border-color: #007BFF;
+    }
+
+    #date-dropown-select option:hover {
+      background-color: #007BFF;
+      color: #fff;
+    }
+
+    #date-dropown-select option:checked {
+      background-color: #007BFF; /* Add your desired selected color */
+      color: #fff;
+    }
+
     .date-ranger{
       display: inline-flex;
       justify-content: space-between;
@@ -117,5 +173,19 @@
   
   .active {
     max-height: 500px; /* Adjust the max-height to fit your content */
+  }
+}
+
+@media screen and (max-width: 720px) {
+  #day-in-history-wrapper {
+    .accordion-content{
+      .date-ranger{
+        display: none;
+      }
+
+      .date-dropdown{
+        display: block;
+      }
+    }   
   }
 }

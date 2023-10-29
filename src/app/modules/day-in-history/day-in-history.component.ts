@@ -148,7 +148,7 @@ export class DayInHistoryComponent {
       this.calendar.nativeElement.style.maxHeight = '0';
       this.calendar.nativeElement.classList.remove('active');
     } else {
-      this.calendar.nativeElement.style.maxHeight = (this.calendar.nativeElement.scrollHeight + 10) + 'px';
+      this.calendar.nativeElement.style.maxHeight = (this.calendar.nativeElement.scrollHeight + 20) + 'px';
       this.calendar.nativeElement.classList.add('active');
     }
   }

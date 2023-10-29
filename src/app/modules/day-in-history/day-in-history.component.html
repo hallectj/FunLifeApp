@@ -18,6 +18,11 @@
     <div class="date-ranger">
       <span (click)="pickTheDate(i+1)" [ngStyle]="applyStyles(i)" *ngFor="let d of datesRange; let i = index" class="date-span">{{d}}</span>
     </div>
+    <div class="date-dropdown">
+      <select class="custom-select" name="dates" id="date-dropown-select">
+        <option [selected]="i + 1 === +this.currentDay" *ngFor="let d of datesRange; let i = index" (click)="pickTheDate(i+1)" [value]="d">{{d}}</option>
+      </select>
+    </div>
   </div>
 
   <div class="historical_events">
@@ -46,7 +51,6 @@
               ></history-main>
             </ng-template>
           </ng-template>
-
         </div>
       </div>
     </div>

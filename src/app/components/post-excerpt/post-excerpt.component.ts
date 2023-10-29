@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { slugify } from 'src/app/common/Toolbox/util';
+import { IMAGE_NOT_FOUND } from 'src/app/common/base64Assests';
 import { IHistEvent, IPostExcerpt } from 'src/app/models/shared-models';
 import { PostService } from 'src/app/services/post.service';
 
@@ -16,6 +17,8 @@ export class PostExcerptComponent {
   @Input() ribbonYear: number = 0;
   @Input() cursor: string = "pointer";
   @Output() postExcerptEvent: EventEmitter<IPostExcerpt> = new EventEmitter<IPostExcerpt>();
+
+  public noImageFound: string = IMAGE_NOT_FOUND;
 
   constructor(public service: PostService, public router: Router ){}
 }

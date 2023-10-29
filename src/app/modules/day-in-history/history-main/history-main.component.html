@@ -2,7 +2,7 @@
   <div class="left-side">
     <div id="polaroid">
       <figure>
-        <img [src]="histImage"/>
+        <img [src]="(!!histImage) ? histImage : noImageFound"/>
       </figure>
     </div>
   </div>

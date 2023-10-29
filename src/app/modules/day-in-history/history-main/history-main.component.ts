@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { IMAGE_NOT_FOUND } from 'src/app/common/base64Assests';
 import { IPostExcerpt } from 'src/app/models/shared-models';
 
 @Component({
@@ -7,12 +8,10 @@ import { IPostExcerpt } from 'src/app/models/shared-models';
   styleUrls: ['./history-main.component.scss']
 })
 export class HistoryMainComponent {
+  public noImageFound: string = IMAGE_NOT_FOUND;
+
   @Input() histDescription: string = "";
   @Input() histImage: string = "";
   @Input() histYear: string = "";
   @Input() histTitle: string = "";
-
-  ngOnInit(){
-
-  }
 }
