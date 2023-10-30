@@ -339,7 +339,6 @@ export class GeneralService {
   public getEvents(date: Date): Observable<IHistEvent[]>{
     return this.callWikiAPI(date, 'events').pipe(
       map((response) => {
-        console.log("THE RESPONSE", response)
         const events: IHistEvent[] = response.events.map((v: any) => {
           let image = (v.pages[0]?.originalimage?.source) ? v.pages[0]?.originalimage?.source : "";
           let wikiURL = (v.pages[0]?.content_urls?.desktop?.page) ? v.pages[0]?.content_urls?.desktop?.page : "";

@@ -18,9 +18,6 @@ export class PageComponent {
 
   public async ngOnInit(){
     this.randomYear = this.getRandomYear(1941, 2020).toString();   
-    //console.log(isValidDate("October", "2"));
-    //console.log(isValidDate("October", "23"));
-    //console.log(isValidDate("October", "67"));
     this.route.paramMap.subscribe(async params => {
       const pageId = +params.get('pageId');
       this.pageNumber = pageId;
