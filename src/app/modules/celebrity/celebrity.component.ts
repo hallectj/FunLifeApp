@@ -32,12 +32,15 @@ export class CelebrityComponent {
   public initCelebCardsLen: number = 6;
   public restOfTodayCelebsLength: number = 0;
   public isExpanded: boolean = false;
+  public randomYear: string = "1999";
   @ViewChild('expandButton') public expandButton: ElementRef<HTMLDivElement>;
 
   public async ngOnInit(){
     this.yesterday.setHours(0, 0, 0, 0);
     this.tomorrow.setHours(0, 0, 0, 0);
     this.today.setHours(0, 0, 0, 0);
+
+    this.randomYear = (Math.floor(Math.random() * (2020 - 1942 + 1) + 1942)).toString();
 
     this.dateObjTomorow = this.service.populateDateObj(this.tomorrow);
     this.dateObjYesterday = this.service.populateDateObj(this.yesterday);

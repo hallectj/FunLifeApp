@@ -10,6 +10,9 @@ export interface IPostExcerpt {
   excerptImage: string,
   excerptTitle: string,
   excerptDesc: string,
+  author: string,
+  dateWritten: Date,
+  lastUpdated: Date,
   isFeaturePost: boolean
 }
 
@@ -97,7 +100,7 @@ export interface IBiographicalInfo {
   birthPlace: string,
   image: string,
   name: string,
-  birthDate: Date,
+  birthDate: string,
   followers: string,
   qid: string
 }

@@ -13,8 +13,18 @@ export class GeneralService {
   public coreWikiURL = 'https://en.wikipedia.org/w/api.php';
   public wikidataApiUrl = 'https://www.wikidata.org/w/api.php';
   private celebritySubject: Subject<any> = new Subject<any>();
+  private birthdateSession: Date = new Date();
+  public hasBirthdayBtnClickedBefore: boolean = false;
 
   constructor(private http: HttpClient) {}
+
+  public setBirthDate(birthDate: Date){
+    this.birthdateSession = birthDate;
+  }
+  
+  public getBirthDate(){
+    return this.birthdateSession;
+  }
 
   private calculateDays(startDate: Date, endDate: Date): number {
     const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
@@ -466,7 +476,7 @@ export class GeneralService {
       citizenship: binding?.countryLabel?.value,
       birthPlace: binding?.birthPlaceLabel?.value,
       image: binding?.image?.value,
-      birthDate:  new Date(binding?.birthdate?.value),
+      birthDate: binding?.birthdate?.value,
       followers: binding?.followers?.value,
       qid: qid
     }

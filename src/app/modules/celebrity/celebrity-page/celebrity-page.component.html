@@ -10,7 +10,7 @@
         <div class="info-row">
             <div class="info">
                 <p class="label">Date of Birth</p>
-                <p *ngIf="!!bioGraphObj.birthDate">{{bioGraphObj.birthDate | date}}</p>
+                <p *ngIf="!!bioGraphObj.birthDate">{{bioGraphObj.birthDate.split("T")[0]}}</p>
             </div>
             <div class="info">
                 <p class="label">Place of Birth</p>

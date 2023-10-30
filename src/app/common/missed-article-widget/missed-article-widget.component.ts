@@ -18,6 +18,9 @@ export class MissedArticleWidgetComponent {
     excerptImage: "",
     excerptTitle: "",
     excerptDesc: "",
+    author: "",
+    dateWritten: null,
+    lastUpdated: null,
     isFeaturePost: false
   }
   constructor(public postService: PostService, public reloadService: ReloadService, private router: Router){}

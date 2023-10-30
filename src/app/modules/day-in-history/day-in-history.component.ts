@@ -110,7 +110,10 @@ export class DayInHistoryComponent {
           excerptDesc: v.description,
           excerptImage: v.imageURL, 
           excerptTitle: v.title,
-          isFeaturePost: false
+          isFeaturePost: false,
+          author: "",
+          lastUpdated: null,
+          dateWritten: null
         }, 
         useRibbon: true,
         year: v.year

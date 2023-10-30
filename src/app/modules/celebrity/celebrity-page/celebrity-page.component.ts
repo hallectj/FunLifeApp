@@ -20,7 +20,7 @@ export class CelebrityPageComponent {
     citizenship: "",
     birthPlace: "",
     image: "",
-    birthDate:  new Date(),
+    birthDate:  "",
     followers: "0",
     qid: ""
   }

@@ -6,11 +6,15 @@
           <h1>{{postExcerpt.excerptTitle}}</h1>
           <div class="info_block">
             <div class="author-date">
-              <span>Written by &nbsp;</span><span class="author-name">Joe Smith</span>&nbsp; 
-              <span class="article-date">August 22, 2023</span> | <span class="read-time">8min read</span>
+              <span>Written by &nbsp;</span><span class="author-name">{{postExcerpt.author}}</span>&nbsp; 
+              <span class="article-date">{{postExcerpt.dateWritten | date : "longDate"}}</span>
           </div>
           </div> 
-          <div><p class="last_update">Last updated September 27, 2023</p></div>
+          <div>
+            <ng-container *ngIf="!!postExcerpt.lastUpdated">
+              <p class="last_update">Last Updated {{postExcerpt.lastUpdated | date : "longDate"}}</p>
+            </ng-container>
+          </div>
         </header>
         
         <div id="main_img_wrapper">
@@ -29,7 +33,7 @@
         </svg>
       </div>
       
-      <info-sidebar [randomYear]="'1999'"></info-sidebar>
+      <info-sidebar [randomYear]="randomYear"></info-sidebar>
 
       <div></div>
 

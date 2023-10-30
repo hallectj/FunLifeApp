@@ -77,6 +77,8 @@ export class BirthdayComponent {
     youtubeId: ""
   }
 
+  public birthdate: Date = new Date();
+
   public birthDayMovie: IMovie = {
     endDate: new Date(),
     movieTitle: "",
@@ -106,16 +108,16 @@ export class BirthdayComponent {
   }
 
   public async ngOnInit(){
-    //this.cards = this.createDummyCards(3, "large", 3);
     this.songs = await this.service.getSongs().toPromise();
     this.movies = await this.service.getMovies().toPromise();
-  }
 
-  public goToHistoryEventPage(post: {post: IPostExcerpt, useRibbon: boolean, year: number}){
-    this.selectedHistoryEvent = this.historyEvents.find(v => v.title === post.post.excerptTitle);
-    const historyRoutePathEnd = this.selectedMonth + "/" + this.selectedDay + "/" + slugify(this.selectedHistoryEvent.title); 
-    let route = ['/day-in-history/' + historyRoutePathEnd];
-    this.router.navigate(route);
+    this.birthdate = this.service.getBirthDate();
+    if(!!this.birthdate && this.service.hasBirthdayBtnClickedBefore){
+      this.selectedMonth = this.monthNames[this.birthdate.getMonth()]; 
+      this.selectedDay = this.birthdate.getDate(); 
+      this.selectedYear = this.birthdate.getFullYear();
+      await this.callAPIs(this.birthdate);
+    }
   }
 
   public getMonth(){
@@ -167,15 +169,18 @@ export class BirthdayComponent {
     this.showPresident = false;
     this.showHistEvents = false;
     this.showSports = false;
-
     const dateStr = this.selectedMonth + " " + this.selectedDay + ", " + this.selectedYear;
-
     const birthDate = new Date(this.formatDateToMMDDYYYY(dateStr));
-    const mm = (birthDate.getMonth() + 1).toString().padStart(2, "0");
+    this.service.setBirthDate(birthDate);
+    this.service.hasBirthdayBtnClickedBefore = true;
+
+    await this.callAPIs(birthDate)
+  }
+
+  public async callAPIs(birthDate: Date){
+    const dateStr = this.selectedMonth + " " + this.selectedDay + ", " + this.selectedYear;
     this.birthdayDateStr = dateStr;
-
     this.lockedInMonthAndDay = this.selectedMonth + ' ' + this.selectedDay;
-
     const songObj: ISong = this.findMediaByDate<ISong>(this.songs, birthDate);
     const movieObj: IMovie = this.findMediaByDate<IMovie>(this.movies, birthDate);
 
@@ -199,7 +204,11 @@ export class BirthdayComponent {
           excerptDesc: v.description,
           excerptImage: v.imageURL, 
           excerptTitle: v.title,
-          isFeaturePost: false
+          isFeaturePost: false,
+          author: "",
+          dateWritten: null,
+          lastUpdated: null
+
         }, 
         useRibbon: true,
         year: v.year
@@ -248,7 +257,6 @@ export class BirthdayComponent {
       const element = sArr[i].nativeElement as HTMLElement;
       element.style.setProperty('--bg-image', `url(${this.sportImages[i]})`);
     }
-
   }
 
   public getYouTubeURLs(){

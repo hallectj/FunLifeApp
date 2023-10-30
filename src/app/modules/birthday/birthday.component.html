@@ -75,7 +75,7 @@
 <section *ngIf="showHistEvents" class="section events-section">
   <ribbon [ribbonWidth]="'100%'" [ribbonTitle]="'This day in world history ' + lockedInMonthAndDay">
     <div class="event-holder">
-      <div *ngFor="let histEvt of dispHistory" class="event-post-excerpt" (click)="goToHistoryEventPage(histEvt)">
+      <div *ngFor="let histEvt of dispHistory" class="event-post-excerpt">
         <post-excerpt [postExcerpt]="histEvt.post" [useRibbonYear]="true" [ribbonYear]="histEvt.year"></post-excerpt>
       </div>
     </div>

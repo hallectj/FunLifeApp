@@ -30,6 +30,7 @@ import { DateRouteResolver, SingleRouteResolver } from './common/resolvers/resol
 import { PresidentComponent } from './modules/president/president.component';
 import { SafeResourceUrlPipe } from './common/pipes/safe-resource-url.pipe';
 import { HistoryMainComponent } from './modules/day-in-history/history-main/history-main.component';
+import { DATE_PIPE_DEFAULT_OPTIONS } from '@angular/common';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: PageComponent },
@@ -97,7 +98,10 @@ const routes: Routes = [
     FormsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [SingleRouteResolver, DateRouteResolver ],
+  providers: [SingleRouteResolver, DateRouteResolver, {     
+     provide: DATE_PIPE_DEFAULT_OPTIONS,
+     useValue: { dateFormat: "longDate" }
+  }],
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })
