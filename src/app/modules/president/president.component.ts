@@ -76,6 +76,8 @@ export class PresidentComponent {
       }).join('\n');
       
       this.wrappedText = wrappedText;
+
+      const presidents2 = await this.service.getPresidents().toPromise()
     });
   }
 

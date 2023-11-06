@@ -16,6 +16,8 @@ export class GeneralService {
   private birthdateSession: Date = new Date();
   public hasBirthdayBtnClickedBefore: boolean = false;
 
+  public server_url = "http://localhost:5000";
+
   constructor(private http: HttpClient) {}
 
   public setBirthDate(birthDate: Date){
@@ -38,6 +40,25 @@ export class GeneralService {
     const videoId = youtubeId.match('[\\?&]v=([^&#]*)');
     const video = videoId ? videoId[1] : youtubeId;
     return `http://img.youtube.com/vi/${video}/2.jpg`;
+  }
+
+  public getPresidents(): Observable<IPresident[]>{
+    return this.http.get<any>(this.server_url + '/presidents').pipe(
+      map((response) => {
+        const presidents: IPresident[] = response.map((president: IPresident) => {
+          const startDate = new Date(president.startDate).toISOString().split("T")[0];
+          let endDate: string = "";
+          if(president.endDate === "present"){
+            endDate = new Date().toISOString().split("T")[0];
+          }else{
+            endDate = new Date(president.endDate).toISOString().split("T")[0];
+          }
+          const birthDate = new Date(president.birthdate).toISOString().split("T")[0];
+          return { ...president, startDate, endDate, birthDate };
+        });
+        return presidents as IPresident[];
+      })
+    )
   }
 
   private getData<T>(endpoint: string, year?: string): Observable<T> {
@@ -107,10 +128,6 @@ export class GeneralService {
     return this.getData<ISport[]>('sports.json', year);
   }
   
-  public getPresidents(): Observable<IPresident[]>{
-    return this.getData<IPresident[]>('presidents.json')
-  }
-
   public getMovies(): Observable<IMovie[]>{
     return this.getData<IMovie[]>("topMovies.json");
   }
