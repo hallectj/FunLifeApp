@@ -6,6 +6,10 @@ const port = process.env.PORT || 3000;
 const BASE_URL = `http://localhost:${port}`;
 const pool = require('./pool');
 const presidentsRouter = require('./routes/presidents');
+const topSongsRouter = require('./routes/top_songs');
+const artistRouter = require('./routes/artist');
+const songInfoRouter = require('./routes/song_info');
+const fetch = require("node-fetch-commonjs")
 
 app.use(cors());
 
@@ -18,6 +22,10 @@ pool.query('SELECT NOW()', (err, result) => {
 });
 
 app.use('/presidents', presidentsRouter);
+app.use('/top-songs', topSongsRouter);
+app.use('/artist', artistRouter);
+app.use('/song-info', songInfoRouter);
+
 
 app.listen(port, () => {
   console.log(BASE_URL);

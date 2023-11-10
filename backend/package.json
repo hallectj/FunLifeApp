@@ -5,7 +5,10 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "mongodb": "^6.2.0",
-    "pg": "^8.11.3"
+    "node-fetch": "^3.3.2",
+    "node-fetch-commonjs": "^3.3.2",
+    "pg": "^8.11.3",
+    "unidecode": "^0.1.8"
   },
   "scripts": {
     "start": "node server.js"
