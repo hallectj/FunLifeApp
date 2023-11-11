@@ -9,6 +9,7 @@ const presidentsRouter = require('./routes/presidents');
 const topSongsRouter = require('./routes/top_songs');
 const artistRouter = require('./routes/artist');
 const songInfoRouter = require('./routes/song_info');
+const celebrityRouter = require('./routes/celebrities');
 const fetch = require("node-fetch-commonjs")
 
 app.use(cors());
@@ -25,7 +26,7 @@ app.use('/presidents', presidentsRouter);
 app.use('/top-songs', topSongsRouter);
 app.use('/artist', artistRouter);
 app.use('/song-info', songInfoRouter);
-
+app.use('/celebrities', celebrityRouter);
 
 app.listen(port, () => {
   console.log(BASE_URL);
