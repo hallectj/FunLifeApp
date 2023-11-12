@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv').config()
 const app = express();
@@ -10,9 +11,12 @@ const topSongsRouter = require('./routes/top_songs');
 const artistRouter = require('./routes/artist');
 const songInfoRouter = require('./routes/song_info');
 const celebrityRouter = require('./routes/celebrities');
+const numberOneHitsRouter = require('./routes/number_one_songs');
 const fetch = require("node-fetch-commonjs")
 
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json())
 
 pool.query('SELECT NOW()', (err, result) => {
   if (err) {
@@ -27,6 +31,7 @@ app.use('/top-songs', topSongsRouter);
 app.use('/artist', artistRouter);
 app.use('/song-info', songInfoRouter);
 app.use('/celebrities', celebrityRouter);
+app.use('/number-one-hits', numberOneHitsRouter);
 
 app.listen(port, () => {
   console.log(BASE_URL);

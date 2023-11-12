@@ -52,7 +52,7 @@ export class FrontFeatureComponent {
     this.historyRoutePath = "/day-in-history/" + this.dateObj.monthName + "/" + this.dateObj.day 
   
     const responses = await lastValueFrom(this.initData());
-    this.famousBirths = responses.famousBirths[`${this.dateObj.month}-${this.dateObj.day}`];
+    this.famousBirths = responses.famousBirths;
     this.presidents = responses.presidents;
     this.histEvents = responses.histEvents;
 
@@ -90,7 +90,7 @@ export class FrontFeatureComponent {
   public initData(){
     const observable = combineLatest({
       histEvents: this.service.getEvents(this.dateObj.date),
-      famousBirths: this.service.getCelebrityBirths(new Date(), true),
+      famousBirths: this.service.getCelebrityByDateSet(this.dateObj.month + '-' + this.dateObj.day),
       presidents: this.service.getPresidents()
     });
 
@@ -126,12 +126,5 @@ export class FrontFeatureComponent {
   
     return null;
 
-  }
-
-  public whichChildBtnWasClicked(componentPath: string){
-    if(componentPath === '/celebrity'){
-
-      this.service.sendCelebInfo(this.famousBirths);
-    }
   }
 }

@@ -83,6 +83,25 @@ export interface ISong{
   youtubeThumb?: string
 }
 
+export interface ISongInfoObj{
+  artist: string,
+  song: string,
+  highest_peak_date: string,
+  peak_position: number,
+  weeks_on_chart: number
+}
+
+export interface ISong2{
+  position: number,
+  artist: string,
+  song: string,
+  year: number,
+  //songId: string,
+  //songInfoObj?: ISongInfoObj,
+  youtubeThumb?: string,
+  videoId?: string
+}
+
 export interface IMovie{
   ticketPrice: number,
   movieTitle: string,

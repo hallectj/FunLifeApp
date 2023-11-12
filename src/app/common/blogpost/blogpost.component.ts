@@ -34,7 +34,7 @@ export class BlogpostComponent {
   constructor(private route: ActivatedRoute, public postService: PostService, public reloadService: ReloadService, public sanitize: DomSanitizer){}
 
   public async ngOnInit(){
-    this.randomYear = (Math.floor(Math.random() * (2020 - 1942 + 1) + 1942)).toString();  
+    this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();  
     this.allExcerpts = await this.postService.getDummyPostsExcerpts().toPromise();
 
     this.route.paramMap.subscribe(async (params) => {

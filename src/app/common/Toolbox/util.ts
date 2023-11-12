@@ -1,3 +1,6 @@
+import Fuse from "fuse.js";
+import { ISong2 } from "src/app/models/shared-models";
+
 export function slugify(str: string) {
   const sluggedStr = String(str)
     .normalize('NFKD')
@@ -19,17 +22,38 @@ export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function performFuzzySearch(values: string[], searchTerm: string) {
+  let fuse = new Fuse(values, {
+    threshold: 0.3, 
+  });
+  const results = fuse.search(searchTerm);
+  return results.map(result => result.item);
+}
+
+export function searchSongArtistPairs(songData: any[], query: string): ISong2[] {
+  const fuseOptions = {
+    keys: ['song', 'artist'], // Specify the properties to search on
+    includeScore: true, // Include a score for each match
+    threshold: 0.3, // Adjust the matching threshold as needed
+  };
+
+  // Initialize the Fuse instance with your song data
+  const fuse = new Fuse(songData, fuseOptions);
+  const results = fuse.search(query);
+  return results.map((result) => result.item);
+}
+
 export function findMatchingName(input: string, values: string[]): string {
   const normalizedInput = input.normalize("NFD").replace(/[^a-zA-Z0-9\s]/g, '').toLowerCase();
-
-  for (const v of values) {
-    const normalizedName = v.normalize("NFD").replace(/[^a-zA-Z0-9\s]/g, '').toLowerCase();
-    if (normalizedName === normalizedInput) {
-      return v;
-    }
-  }
-  
-  return "";
+  const fuzzyResults = performFuzzySearch(values, normalizedInput);
+  //Keep this code commented out in case I need to go back to this
+  //for (const v of values) {
+    //const normalizedName = v.normalize("NFD").replace(/[^a-zA-Z0-9\s]/g, '').toLowerCase();
+    //if (normalizedName === normalizedInput) {
+      //return v;
+    //}
+  //}
+  return fuzzyResults[0];
 }
 
 export function isValidDate(month: string, day: string, regardLeapYear: boolean, includeFeb29: boolean) {

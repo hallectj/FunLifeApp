@@ -17,7 +17,7 @@ export class PageComponent {
   constructor(private route: ActivatedRoute, private router: Router, public postService: PostService){}
 
   public async ngOnInit(){
-    this.randomYear = this.getRandomYear(1941, 2020).toString();   
+    this.randomYear = this.getRandomYear(1950, 2020).toString();   
     this.route.paramMap.subscribe(async params => {
       const pageId = +params.get('pageId');
       this.pageNumber = pageId;

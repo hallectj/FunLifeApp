@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { IFamousQuote, ISong, IToy } from 'src/app/models/shared-models';
+import { IFamousQuote, ISong, ISong2, IToy } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { GeneralService } from 'src/app/services/general.service';
 
 export class InfoSidebarComponent {
   //ALL songs
-  public songs: ISong[] = [];
+  public songs: ISong2[] = [];
   public toys: IToy[] = [];
   public displayToy: IToy = {toy: "", image: "", image_source: "", image_source_url: "", year: 1999, description: "", price: 0};
   public famousQuote: IFamousQuote = {
@@ -22,16 +22,17 @@ export class InfoSidebarComponent {
     quoteText: ""
   }
   //Songs filtered by year and longest number one song
-  public songsByYearArr: ISong[] = [];
+  public songsByYearArr: ISong2[] = [];
 
   @Input() randomYear: string = "1990";
   
   constructor(public generalService: GeneralService){}
 
   public async ngOnInit(){
-    const response: ISong[] | undefined = await this.generalService.getSongs().toPromise();
-    this.songs = response as ISong[];
-    this.songsByYearArr = this.generalService.findLongestNumberOneSongs(this.songs, +this.randomYear, 10);
+    const response2: ISong2[] = await this.generalService.getSongs(+this.randomYear, 10).toPromise();
+
+    this.songs = response2;
+    this.songsByYearArr = response2;
 
     this.toys = await this.generalService.getToys().toPromise();
     this.displayToy = this.toyByYear(+this.randomYear);

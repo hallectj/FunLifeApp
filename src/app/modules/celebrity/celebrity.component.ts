@@ -28,7 +28,6 @@ export class CelebrityComponent {
   public todayCelebBirths: ICelebrity[] = [];
   public tomorrowCelebBirths: ICelebrity[] = [];
   public yesterdayCelebBirths: ICelebrity[] = [];
-  public famousPeopleResp: { [date: string]: ICelebrity[] } | ICelebrity[];
   public initCelebCardsLen: number = 6;
   public restOfTodayCelebsLength: number = 0;
   public isExpanded: boolean = false;
@@ -40,7 +39,7 @@ export class CelebrityComponent {
     this.tomorrow.setHours(0, 0, 0, 0);
     this.today.setHours(0, 0, 0, 0);
 
-    this.randomYear = (Math.floor(Math.random() * (2020 - 1942 + 1) + 1942)).toString();
+    this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();
 
     this.dateObjTomorow = this.service.populateDateObj(this.tomorrow);
     this.dateObjYesterday = this.service.populateDateObj(this.yesterday);
@@ -49,18 +48,25 @@ export class CelebrityComponent {
     this.tomorrowCelebCards = this.createDummyCards(8, "small", 8);
     this.yesterdayCelebCards = this.createDummyCards(8, "small", 8);
 
-    this.famousPeopleResp = await this.service.getCelebrityBirths(this.dateObj.date, true).toPromise() as { [date: string]: ICelebrity[] };
 
     this.todayCelebCards = [];
     this.tomorrowCelebCards = [];
     this.yesterdayCelebCards = [];
+    
+    const datesets = [
+      this.dateObjYesterday.month + "-" + this.dateObjYesterday.day,
+      this.dateObj.month + "-" + this.dateObj.day,
+      this.dateObjTomorow.month + "-" + this.dateObjTomorow.day,
+    ]
 
-    const keys = Object.keys(this.famousPeopleResp);
+    const yesterdayCelebs: ICelebrity[] = await this.service.getCelebrityByDateSet(datesets[0]).toPromise();
+    const todayCelebs: ICelebrity[] = await this.service.getCelebrityByDateSet(datesets[1]).toPromise();
+    const tomorrowCelebs: ICelebrity[] = await this.service.getCelebrityByDateSet(datesets[2]).toPromise();
 
     const famousBirths: {yesterday: ICelebrity[], today: ICelebrity[], tomorrow: ICelebrity[]} = {
-      yesterday: this.famousPeopleResp[keys[0]],
-      today: this.famousPeopleResp[keys[1]],
-      tomorrow: this.famousPeopleResp[keys[2]]
+      yesterday: yesterdayCelebs,
+      today: todayCelebs,
+      tomorrow: tomorrowCelebs
     }
 
     this.todayCelebBirths = this.mapICelebrity(famousBirths, "today");

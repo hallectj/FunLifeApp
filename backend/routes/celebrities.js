@@ -1,6 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../pool')
+const Fuse = require('fuse.js'); // Import the fuse.js library
+
+// Route for fetching an array of celebrities names
+router.get('/', (req, res) => {
+  const query = `SELECT * FROM public."Celebrities" ORDER BY name`;
+
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error('Error executing SQL query:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      const names = result.rows.map(row => row.name);
+      res.json(names);
+    }
+  });
+});
 
 // Route for fetching all celebrities
 router.get('/:dateset', (req, res) => {
@@ -29,7 +45,7 @@ router.get('/celeb/:name', (req, res) => {
   const name = req.params.name;
 
   const query = {
-    text: 'SELECT * FROM public."Celebrities" WHERE name = $1',
+    text: 'SELECT * FROM public."Celebrities" WHERE name ILIKE $1',
     values: [name],
   };
 

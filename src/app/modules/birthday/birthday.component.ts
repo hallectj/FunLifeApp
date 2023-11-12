@@ -3,7 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { slugify } from 'src/app/common/Toolbox/util';
 import { LOADINGSPINNER } from 'src/app/common/base64Assests';
-import { ICelebCard, ICelebrity, IHistEvent, IMovie, IPostExcerpt, IPresident, ISong, ISport } from 'src/app/models/shared-models';
+import { ICelebCard, ICelebrity, IHistEvent, IMovie, IPostExcerpt, IPresident, ISong, ISong2, ISport } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 @Component({
   selector: 'birthday',
@@ -108,7 +108,7 @@ export class BirthdayComponent {
   }
 
   public async ngOnInit(){
-    this.songs = await this.service.getSongs().toPromise();
+    this.songs = await this.service.getNumberOneHitSongs().toPromise();
     this.movies = await this.service.getMovies().toPromise();
 
     this.birthdate = this.service.getBirthDate();
@@ -179,6 +179,7 @@ export class BirthdayComponent {
 
   public async callAPIs(birthDate: Date){
     const dateStr = this.selectedMonth + " " + this.selectedDay + ", " + this.selectedYear;
+    const dateset = (birthDate.getMonth() + 1).toString().padStart(2, "0") + "-" + (birthDate.getDate()).toString().padStart(2, "0");
     this.birthdayDateStr = dateStr;
     this.lockedInMonthAndDay = this.selectedMonth + ' ' + this.selectedDay;
     const songObj: ISong = this.findMediaByDate<ISong>(this.songs, birthDate);
@@ -229,7 +230,9 @@ export class BirthdayComponent {
 
     this.showPresident = true;
 
-    this.famousBirths = await this.service.getCelebrityBirths(new Date(birthDate), false).toPromise() as ICelebrity[];
+    //this.famousBirths = await this.service.getCelebrityBirths(new Date(birthDate), false).toPromise() as ICelebrity[];
+
+    this.famousBirths = await this.service.getCelebrityByDateSet(dateset).toPromise();
 
     this.famousBirths = this.famousBirths.filter((v: ICelebrity) =>
       v.occupations.every((occ) => !this.service.containsBadWord(occ)));

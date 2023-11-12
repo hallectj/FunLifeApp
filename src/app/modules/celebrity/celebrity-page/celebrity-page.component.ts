@@ -36,14 +36,17 @@ export class CelebrityPageComponent {
       const celebName = deslugify(params.get('celebName'));
 
       let arr = await this.service.getTrueCelebName(celebName).toPromise();
-      const trueCelebName = (arr.length > 0) ? arr[0] : celebName;
+      const trueCelebName = ((arr.length > 0) && arr[0]) ? arr[0] : celebName;
 
       //It's possible the celeb name has quotes in it, ie 'Evander "the real deal" Holyfield'
       let escapedCelebName = trueCelebName.replace(/"/g, '\\"');
 
       const bioResponse = await this.service.getBiographicalInformation(escapedCelebName).toPromise();
-      this.bioGraphObj = bioResponse;
+      if(!bioResponse){
+        return;
+      }
 
+      this.bioGraphObj = bioResponse;
       let wikiSearchTerm = "";
       let qid = "";
       if(!!bioResponse?.qid){

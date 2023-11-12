@@ -1,9 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { GENERAL_URL, IBiographicalInfo, ICelebrity, IDateObj, IHistEvent, IMovie, IPresident, ISong, ISport, IToy } from '../models/shared-models';
+import { Observable, Subject, forkJoin, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { GENERAL_URL, IBiographicalInfo, ICelebrity, IDateObj, IHistEvent, IMovie, IPresident, ISong, ISong2, ISongInfoObj, ISport, IToy } from '../models/shared-models';
 import { findMatchingName } from '../common/Toolbox/util';
+import Fuse from 'fuse.js';
+import { ErrorHandlerService } from '../services/error-handler.service'
+
+// Define a Fuse configuration for fuzzy matching
+const fuseOptions = {
+  keys: ['song', 'artist'], // Define the keys to search for
+  includeScore: true,
+  threshold: 0.7, // Adjust the threshold as needed
+};
 
 @Injectable({
   providedIn: 'root',
@@ -12,13 +21,12 @@ export class GeneralService {
   private sparqlEndpoint = 'https://query.wikidata.org/sparql';
   public coreWikiURL = 'https://en.wikipedia.org/w/api.php';
   public wikidataApiUrl = 'https://www.wikidata.org/w/api.php';
-  private celebritySubject: Subject<any> = new Subject<any>();
   private birthdateSession: Date = new Date();
   public hasBirthdayBtnClickedBefore: boolean = false;
 
   public server_url = "http://localhost:5000";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private errorHandler: ErrorHandlerService) {}
 
   public setBirthDate(birthDate: Date){
     this.birthdateSession = birthDate;
@@ -65,16 +73,7 @@ export class GeneralService {
     const filePath = `${GENERAL_URL}/${endpoint}`;
     return this.http.get<any>(filePath).pipe(
       map((response) => {
-        if (response && response.dataset === 'songs' && response.songs) {
-          const songs: ISong[] = response.songs.map((song: any) => {
-            const startDate = new Date(song.startDate);
-            const endDate = new Date(song.endDate);
-            const days = this.calculateDays(startDate, endDate);
-            const youtubeThumb = this.getYoutubeThumbnailUrl(song.youtubeId);
-            return { ...song, days, youtubeThumb };
-          });
-          return songs as T;
-        }else if(response && response.dataset === "sports"){
+        if(response && response.dataset === "sports"){
           const yearData = response?.year?.[year];
           if (yearData) {
             const sportsArray: ISport[] = [];
@@ -89,19 +88,6 @@ export class GeneralService {
           } else {
             return null;
           }
-        }else if(response && response.dataset === "presidents"){
-          const presidents: IPresident[] = response.presidents.map((president: IPresident) => {
-            const startDate = new Date(president.startDate).toISOString().split("T")[0];
-            let endDate: string = "";
-            if(president.endDate === "present"){
-              endDate = new Date().toISOString().split("T")[0];
-            }else{
-              endDate = new Date(president.endDate).toISOString().split("T")[0];
-            }
-            const birthDate = new Date(president.birthdate).toISOString().split("T")[0];
-            return { ...president, startDate, endDate, birthDate };
-          });
-          return presidents as T;
         }else if(response && response.dataset === "movies"){
           const movies: IMovie[] = response.movies.map((movie: IMovie) => {
             const startDate = new Date(movie.startDate);
@@ -120,8 +106,39 @@ export class GeneralService {
     );
   }
 
-  public getSongs(): Observable<ISong[]> {
-    return this.getData<ISong[]>('topSongs.json');
+
+  public getSongs(year: number, spliceAmount: number = 0): Observable<ISong2[]> {
+    return this.http.get<ISong2[]>(this.server_url + '/top-songs/' + year.toString()).pipe(
+      map((response) => {
+        const songObjects: ISong2[] = response.map((songObj: ISong2) => {
+          songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
+          return { ...songObj };
+        });
+        if (spliceAmount > 0) {
+          return songObjects.slice(0, spliceAmount);
+        } else {
+          return songObjects;
+        }
+      })
+    );
+  }
+
+  public getNumberOneHitSongs(): Observable<ISong[]>{
+    const apiURL = this.server_url + "/" + "number-one-hits";
+    return this.http.get<any>(apiURL);
+  }
+
+  public fetchSongInfoObject(songobj: ISong2): Observable<ISongInfoObj | null>{
+    const apiUrl = this.server_url + "/song-info/song/" + songobj.song + "/" + songobj.artist;
+    return this.http.get<any>(apiUrl).pipe(
+      catchError((error) => this.errorHandler.handleError(error))
+    )
+  }
+
+  private fetchSongObjects(songArtists: any[]): Observable<any[]> {
+    const apiUrl = this.server_url + "/song-info/songs"; // Replace with your actual API endpoint
+    const requestBody = { pairs: songArtists };
+    return this.http.post<any>(apiUrl, requestBody);
   }
 
   public getSportsByYear(year: string): Observable<ISport[]>{
@@ -136,45 +153,22 @@ export class GeneralService {
     return this.getData<IToy[]>("topToys.json");
   }
 
-  private celebDataBirthsFunc(endpoint: string, date: Date, isAllThreeDates: boolean): Observable<{ [date: string]: ICelebrity[] } | ICelebrity[]> {
-    const filePath = `${GENERAL_URL}/${endpoint}`;
-  
-    // Calculate yesterday, today, and tomorrow dates
-    const yesterday = new Date(date);
-    yesterday.setDate(date.getDate() - 1);
-  
-    const tomorrow = new Date(date);
-    tomorrow.setDate(date.getDate() + 1);
-  
-    const formattedDates = [
-      this.formatDate(yesterday),
-      this.formatDate(date),
-      this.formatDate(tomorrow)
-    ];
-  
-    // Make an HTTP GET request to fetch the JSON data
-    return this.http.get<{ [date: string]: ICelebrity[] }>(filePath).pipe(
+  public getCelebrityByDateSet(dateset: string):  Observable<ICelebrity[]>{
+    const url = this.server_url + "/celebrities/" + dateset;
+    return this.http.get<any>(url).pipe(
       map((response) => {
-        // Filter and construct the response based on the calculated dates
-        const result: { [date: string]: ICelebrity[] } = {};
-  
-        formattedDates.forEach((formattedDate) => {
-          if (response[formattedDate]) {
-            result[formattedDate] = response[formattedDate];
-          }
+        const celebs: ICelebrity[] = response.map((celeb: ICelebrity) => {
+          const birthDate = new Date(celeb.birthdate).toISOString().split("T")[0];
+          return { ...celeb, birthDate };
         });
-
-        if (isAllThreeDates) {
-          return result;
-        } else {
-          return result[formattedDates[1]] || [];
-        }
+        return celebs as ICelebrity[];
       })
-    );
+    )
   }
 
-  public getCelebrityBirths(date: Date, isAllThreeDates: boolean = false){
-    return this.celebDataBirthsFunc("celebrityBirthdays.json", date, isAllThreeDates);
+  public getCelebrityByName(celebName: string): Observable<ICelebrity>{
+    const url = this.server_url + "/celebrities/celeb/" + celebName;
+    return this.http.get<any>(url);
   }
 
   public getTruePresidentName(name: string): Observable<string[]>{
@@ -191,58 +185,15 @@ export class GeneralService {
   }
 
   public getTrueCelebName(name: string): Observable<string[]>{
-    const endpoint = "celebrityBirthdays.json";
-    const filePath = `${GENERAL_URL}/${endpoint}`;
-
-    return this.http.get(filePath).pipe(
+    const url = this.server_url + "/celebrities"; 
+    return this.http.get<any>(url).pipe(
       map(response => {
-        // Assuming the response structure is the same as your JSON example
         const data = response;
         //will ever only be one element or no elements
-        const strArr: string[] = [];
-
-        for (const key in data) {
-          if (key !== "dataset") {
-            const arr: ICelebrity[] = data[key];
-            const value = findMatchingName(name, arr.map(v => v.name));
-            if(!!value){
-              strArr.push(value);
-              break;
-            }
-          }
-        }
-
-        return strArr;
+        const value = findMatchingName(name, data);
+        return [value];
       })
     )
-  }
-
-  public checkIfCelebrityExist(name: string): Observable<boolean>{
-    const endpoint = "celebrityBirthdays.json";
-    const filePath = `${GENERAL_URL}/${endpoint}`;
-
-    const d = this.http.get(filePath).pipe(
-      map(response => {
-        // Assuming the response structure is the same as your JSON example
-        const data = response;
-        //will ever only be one element or no elements
-        const strArr: string[] = [];
-
-        for (const key in data) {
-          if (key !== "dataset") {
-            const arr: ICelebrity[] = data[key];
-            const value = findMatchingName(name, arr.map(v => v.name));
-            if(!!value){
-              return true;
-            }
-          }
-        }
-
-        return false;
-      })
-      
-    )
-    return d;
   }
 
   public async getCorrectedWikiTitle(qid: string): Promise<string>  {
@@ -430,20 +381,6 @@ export class GeneralService {
       headers: headers
     }).pipe(map(this.mapResponseToBiographicalInfo));
   }
-  
-  
-  
-  
-  public findLongestNumberOneSongs(songs: ISong[], year: number, count: number): ISong[] {
-    const filteredSongs = songs.filter((song) => {
-      const startDateYear = new Date(song.startDate).getFullYear();
-      return startDateYear === year;
-    });
-
-    filteredSongs.sort((a, b) => (b.days || 0) - (a.days || 0));
-
-    return filteredSongs.slice(0, count);
-  }
 
   public populateDateObj(d?: Date): IDateObj {
     let date: Date = null;
@@ -466,15 +403,10 @@ export class GeneralService {
     return {date, day, month, monthName, year}
   }
 
-  public sendCelebInfo(celebObj: any){
-    this.celebritySubject.next(celebObj);
-  }
-
-  public subscribeToCelebInfo(){
-    return this.celebritySubject.asObservable();
-  }
-
   private mapResponseToBiographicalInfo(response: any): IBiographicalInfo{
+    if(response.results.bindings.length === 0){
+      return null;
+    }
     const binding = response.results.bindings[0];
 
     const qidURL = binding?.qid?.value;

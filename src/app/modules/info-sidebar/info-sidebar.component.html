@@ -1,6 +1,6 @@
 <div id="sidebarDivWrapper">
   <header>
-    <h1>Songs that topped the charts in {{randomYear}}</h1>
+    <h1>Top {{songsByYearArr.length}} of the Hot 100 Songs of {{randomYear}}</h1>
   </header>
   <div  id="song-list-wrapper">
     
@@ -9,9 +9,9 @@
           <a href="#"><img [src]="song?.youtubeThumb" /></a>
         </div>
         <div class="song-div-right">
-         <p class="song-title m-0"> {{song.songTitle}}</p>
+         <p class="song-title m-0"> {{song.song}}</p>
          <p class="song-singer m-0"> {{song.artist}} </p>
-         <div><span>{{song?.days}} days at #1</span></div>
+         <div><span>#{{song.position}} in {{song.year}}</span></div>
         </div>
       </div>
     
