@@ -69,9 +69,9 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'hot-hundred-songs', pathMatch: 'full' },
       { path: 'hot-hundred-songs', component: HotHundredCardsComponent},
-      { path: 'hot-hundred-songs/:year', component: HotHundredYearComponent },
-      { path: 'hot-hundred-songs/:artist', component: HotHundredArtistComponent },
       { path: 'hot-hundred-songs/:year/song/:song', component: HotHundredSongComponent },
+      { path: 'hot-hundred-songs/:year', component: HotHundredYearComponent },
+      { path: 'hot-hundred-songs/artist/:artist', component: HotHundredArtistComponent },
     ],
   },
   { path: 'celebrity', component: CelebrityComponent },
