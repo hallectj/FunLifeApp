@@ -32,6 +32,11 @@ import { SafeResourceUrlPipe } from './common/pipes/safe-resource-url.pipe';
 import { HistoryMainComponent } from './modules/day-in-history/history-main/history-main.component';
 import { DATE_PIPE_DEFAULT_OPTIONS } from '@angular/common';
 import { ErrorHandlerService } from './services/error-handler.service';
+import { HotHundredMainComponent } from './modules/hot-hundred-main/hot-hundred-main.component';
+import { HotHundredSongComponent } from './modules/hot-hundred-main/hot-hundred-song/hot-hundred-song.component';
+import { HotHundredArtistComponent } from './modules/hot-hundred-main/hot-hundred-artist/hot-hundred-artist.component';
+import { HotHundredCardsComponent } from './modules/hot-hundred-main/hot-hundred-cards/hot-hundred-cards.component';
+import { HotHundredYearComponent } from './modules/hot-hundred-main/hot-hundred-year/hot-hundred-year.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: PageComponent },
@@ -57,6 +62,17 @@ const routes: Routes = [
     component: PresidentComponent,
     data: {paramName: 'presidentName', resolveFunction: 'getTruePresidentName'},
     resolve: {exists: SingleRouteResolver}
+  },
+  {
+    path: 'charts',
+    component: HotHundredMainComponent,
+    children: [
+      { path: '', redirectTo: 'hot-hundred-songs', pathMatch: 'full' },
+      { path: 'hot-hundred-songs', component: HotHundredCardsComponent},
+      { path: 'hot-hundred-songs/:year', component: HotHundredYearComponent },
+      { path: 'hot-hundred-songs/:artist', component: HotHundredArtistComponent },
+      { path: 'hot-hundred-songs/:year/song/:song', component: HotHundredSongComponent },
+    ],
   },
   { path: 'celebrity', component: CelebrityComponent },
   { path: '404', component: NotFoundComponent },
@@ -90,6 +106,11 @@ const routes: Routes = [
     PresidentComponent,
     SafeResourceUrlPipe,
     HistoryMainComponent,
+    HotHundredMainComponent,
+    HotHundredSongComponent,
+    HotHundredArtistComponent,
+    HotHundredCardsComponent,
+    HotHundredYearComponent,
   ],
   imports: [
     BrowserModule,
