@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+#main_wrapper{
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+h2 {
+  font-size: 42px;
+  color: #F1F1F1;
+  text-align: center;
+}
+
+.main-upper{
+  .years-navigation{
+    display: block;
+
+    .nav{
+      background: #212223;
+    }
+    
+    .sub-menu {
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+    }
+    
+    .sub-menu a {
+      font-size: 16px;
+      min-width: 90px;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      transition: all .5s;
+      font-family: 'Roboto', sans-serif;
+    }
+    
+    .active {
+      background: #2C3E50;
+    }
+    
+    .sub-menu-nav {
+      overflow: hidden;
+    }
+    
+    .sub-menu-nav .nav-btn {
+      cursor:pointer;
+      min-width: 90px;
+      font-size: 16px;  
+      border: none;
+      outline: none;
+      color: white;
+      padding: 12px 8px;
+      background-color: inherit;
+      font-family: inherit;
+      margin: 0;
+      transition: all .5s;
+    }
+    
+    .sub-menu a:hover, .sub-menu-nav:hover .nav-btn {
+      background-color: #000;
+      color: #edbf00;
+    }
+    
+    .sub-menu-alt {
+      display: none;
+      position: absolute;
+      background-color: #212223;
+      z-index: 1;
+    }
+    
+    .inner-years{
+      display: flex;
+
+
+      .left-years, .right-years{
+        .year{
+          padding: 5px;
+          width: 90px;
+          color: white;
+          text-align: center;
+          cursor: pointer;
+
+          &:hover{
+            background-color: #000;
+          }
+        }
+      }
+    }
+    
+    .sub-menu-alt a {
+      min-width: 88px;
+      float: left;
+      color: white;
+      text-decoration: none;
+    }
+    
+    .sub-menu-alt a:hover {
+      background-color: #000;
+      color: #fff;
+    }
+    
+    .sub-menu-nav:hover .sub-menu-alt {
+      display: block;
+    }
+  }
+
+  .date-dropdown {
+    display: none;
+    position: relative;
+    width: 90%;
+    margin: 0px auto;
+    font-family: Arial, sans-serif;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #fff;
+  }
+
+  .custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    background-color: #212223;
+    color: white;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .date-dropdown::after {
+    content: '\25BC'; /* Down arrow character */
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    pointer-events: none;
+    color: #fff;
+  }
+
+  #date-dropown-select option {
+    background-color: #fff;
+    color: #333;
+  }
+
+  #date-dropown-select:focus {
+    outline: none;
+    border-color: #007BFF;
+  }
+
+  #date-dropown-select option:hover {
+    background-color: #007BFF;
+    color: #fff;
+  }
+
+  #date-dropown-select option:checked {
+    background-color: #007BFF; /* Add your desired selected color */
+    color: #fff;
+  }
+
+  .date-ranger{
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #F2F3F7;
+    border: 1px solid #1F2226;
+
+    span{
+      margin: 0px 4px;
+      color: blue;
+      cursor: pointer;
+    }
+  }
+}
+
+#main-area{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 2px;
+
+  #child-component{
+    max-width: 700px;
+    width: 100%;
+  }
+
+  #sidebar{
+    max-width: 350px;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 875px) {
+  #main_wrapper{
+
+    .years-navigation{
+      display: none;
+    }
+
+    .date-dropdown{
+      display: block;
+      width: 100%;
+    }
+
+    #main-area{
+      display: block;
+
+      #child-component{
+        max-width: unset;
+        width: 100%;     
+      }
+
+      #sidebar{
+        width: 100%;
+        max-width: unset;
+      }
+    }
+  }
+
+  .sub-menu {
+    flex-direction: column;
+  }
+  .sub-menu-nav {
+    text-align:center;
+    width:100%;
+  }
+  .nav-btn {
+    width:100%;
+  }
+}

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, Subject, forkJoin, of } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, forkJoin, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { GENERAL_URL, IBiographicalInfo, ICelebrity, IDateObj, IHistEvent, IMovie, IPresident, ISong, ISong2, ISongInfoObj, ISport, IToy } from '../models/shared-models';
-import { findMatchingName } from '../common/Toolbox/util';
+import { findMatchingName, slugify } from '../common/Toolbox/util';
 import Fuse from 'fuse.js';
 import { ErrorHandlerService } from '../services/error-handler.service'
 
@@ -23,6 +23,10 @@ export class GeneralService {
   public wikidataApiUrl = 'https://www.wikidata.org/w/api.php';
   private birthdateSession: Date = new Date();
   public hasBirthdayBtnClickedBefore: boolean = false;
+
+  private sidebarSubject: Subject<number> = new Subject<number>();
+  private yearSubject: Subject<number> = new Subject<number>();
+  private mainSongPageTitleSubject: Subject<string> = new Subject<string>();
 
   public server_url = "http://localhost:5000";
 
@@ -106,9 +110,34 @@ export class GeneralService {
     );
   }
 
+  public sendYearToChild(year: number){
+    this.yearSubject.next(year);
+  }
 
-  public getSongs(year: number, spliceAmount: number = 0): Observable<ISong2[]> {
-    return this.http.get<ISong2[]>(this.server_url + '/top-songs/' + year.toString()).pipe(
+  public subscribeToYearChange(){
+    return this.yearSubject.asObservable();
+  }
+
+  public refreshSidebarSongs(year: number){
+    this.sidebarSubject.next(year);
+  }
+
+  public subscribeToSidebarRefresh(){
+    return this.sidebarSubject.asObservable();
+  }
+
+  public updateMainSongPageTitle(title: string){
+    this.mainSongPageTitleSubject.next(title);
+  }
+
+  public subscribeToMainSongPageTitle(){
+    return this.mainSongPageTitleSubject.asObservable();
+  }
+
+
+  public getSongs(year: number, orderByPosition: string = "position", spliceAmount: number = 0): Observable<ISong2[]> {
+    const headers = new HttpHeaders().set('X-Order-By', orderByPosition); 
+    return this.http.get<ISong2[]>(this.server_url + '/top-songs/' + year.toString(), { headers }).pipe(
       map((response) => {
         const songObjects: ISong2[] = response.map((songObj: ISong2) => {
           songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
@@ -128,14 +157,69 @@ export class GeneralService {
     return this.http.get<any>(apiURL);
   }
 
-  public fetchSongInfoObject(songobj: ISong2): Observable<ISongInfoObj | null>{
-    const apiUrl = this.server_url + "/song-info/song/" + songobj.song + "/" + songobj.artist;
-    return this.http.get<any>(apiUrl).pipe(
-      catchError((error) => this.errorHandler.handleError(error))
-    )
+  public getSongFromPosition(year: number, position: number){
+    const apiURL = this.server_url + "/top-songs/" + year + "/" + position;
+    return this.http.get<any>(apiURL);
   }
 
-  private fetchSongObjects(songArtists: any[]): Observable<any[]> {
+
+  public fetchSongInfoObject(songobj: ISong2): Observable<ISongInfoObj | null> {
+    const apiUrl = this.server_url + "/song-info/song/" + songobj.song + "/" + songobj.artist;
+    return this.http.get<ISongInfoObj>(apiUrl).pipe(
+      map(response => {
+        if (response && response['error']) {
+          return null;
+        }
+        return response;
+      }),
+      catchError((error) => {
+        if (error && error['error']) {
+          return null;
+        }
+        return this.errorHandler.handleError(error);
+      })
+    );
+  }
+
+  public getSongWithInfo(year: number, position: number): Observable<{ songObj: ISong2, infoObj: ISongInfoObj | null }> {
+    const emptyISong2: ISong2 = {
+      position: -1,
+      artist: "",
+      song: "",
+      year: 1990,
+      youtubeThumb: "",
+      videoId: ""
+    };
+
+    const emptyInfoObj: ISongInfoObj = {
+      artist: "",
+      song: "",
+      highest_peak_date: "",
+      peak_position: -1,
+      weeks_on_chart: -1
+    }
+    return this.getSongObj(year, position).pipe(
+      switchMap((songObj: ISong2) => {
+        return this.fetchSongInfoObject(songObj).pipe(
+          map((infoObj: ISongInfoObj) => ({ songObj, infoObj })),
+          catchError((error) => {
+            // Handle error if needed
+            console.error('Error in fetchSongInfoObject:', error);
+            // You can return a default value or throw the error again if needed
+            return of({ songObj, infoObj: emptyInfoObj });
+          })
+        );
+      }),
+      catchError((error) => {
+        // Handle error if needed
+        console.error('Error in getSongObj:', error);
+        // You can return a default value or throw the error again if needed
+        return of({ songObj: emptyISong2, infoObj: emptyInfoObj });
+      })
+    );
+  }
+
+  private fetchSongObjects(songArtists: any[]): Observable<ISongInfoObj[]> {
     const apiUrl = this.server_url + "/song-info/songs"; // Replace with your actual API endpoint
     const requestBody = { pairs: songArtists };
     return this.http.post<any>(apiUrl, requestBody);
@@ -192,6 +276,27 @@ export class GeneralService {
         //will ever only be one element or no elements
         const value = findMatchingName(name, data);
         return [value];
+      })
+    )
+  }
+
+  //public getSongObj(year: string, artist: string, song: string): Observable<ISong2>{
+    //const url = this.server_url + "/top-songs/" + year + "/" + (artist) + "/" + (song);
+    //return this.http.get<any>(url);
+  //}
+
+  public getSongObj(year: number, position: number): Observable<ISong2>{
+    const url = this.server_url + "/top-songs/" + year + "/" + position;
+    return this.http.get<any>(url);
+  }
+
+  public getTrueSongInfo(year: number, song: string, artist: string): Observable<{artist: string, song: string}>{
+    const url = this.server_url + "/top-songs/" + year.toString();
+    return this.http.get<any>(url).pipe(
+      map((response: ISong2[]) => {
+        const foundSong = findMatchingName(song, response.map(v => v.song));
+        const foundArtist = findMatchingName(artist, response.map(v => v.artist));
+        return { artist: foundArtist, song: foundSong };
       })
     )
   }

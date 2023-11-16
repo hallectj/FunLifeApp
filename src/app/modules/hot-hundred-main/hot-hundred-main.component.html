@@ -1,8 +1,53 @@
-<div>
-  SIDEBAR
-</div>
-<div>
-  <p>CHILD COMPONENTS WILL BE DISPLAYED HERE</p>
-  <router-outlet></router-outlet>
+<div id="main_wrapper">
+  <div class="main-upper">
+    <div class="main-heading">
+      <h1>{{headline}}</h1>
+    </div>
+    <div class="years-navigation">
+      <nav class="nav">
+        <div class="sub-menu">
+          <div class="sub-menu-nav" *ngFor="let decade of decades; let i = index">
+            <button class="nav-btn">{{ decade.startYear}}s</button>
+            <div class="sub-menu-alt">
+              <div class="inner-years">
+                <div class="left-years">
+                  <div *ngFor="let year of decades[i].even_years">
+                    <div (click)="pickTheYear(year)" class="year">{{year}}</div>
+                  </div>
+                </div>
+                <div class="right-years">
+                  <div *ngFor="let year of decades[i].odd_years">
+                    <div (click)="pickTheYear(year)" class="year">{{year}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="date-dropdown">
+      <select class="custom-select" name="dates" id="date-dropown-select">
+        <option (click)="pickTheYear(year)" *ngFor="let year of yearsRange; let i = index" [value]="year">{{year}}</option>
+      </select>
+    </div>
+  </div>
+
+  <main id="main-area">
+    <!-- Child component goes here -->
+    <div class="main-inner-div" id="child-component">
+      <router-outlet></router-outlet>
+    </div>
+    <div class="main-inner-div" id="sidebar">
+      <info-sidebar 
+        [randomYear]="selectedYear"
+        [isRandomPositions]="true"
+        [hideQuote]="true"
+        [hideToys]="true"
+        [orderByPosition]="'random'"
+        [showAlternateTitle]="true"
+      ></info-sidebar></div>
+  </main>
 </div>
 

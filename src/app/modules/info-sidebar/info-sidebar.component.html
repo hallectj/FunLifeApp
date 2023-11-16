@@ -1,23 +1,22 @@
 <div id="sidebarDivWrapper">
   <header>
-    <h1>Top {{songsByYearArr.length}} of the Hot 100 Songs of {{randomYear}}</h1>
+    <h1 *ngIf="!showAlternateTitle">Top {{songsByYearArr.length}} of the Hot 100 Songs of {{randomYear}}</h1>
+    <h1 *ngIf="showAlternateTitle">Some of {{randomYear}}'s hottest hit songs of the era</h1>
   </header>
   <div  id="song-list-wrapper">
-    
-      <div *ngFor="let song of songsByYearArr; let i = index" class="song-wrapper">
-        <div class="song-div-left">
-          <a href="#"><img [src]="song?.youtubeThumb" /></a>
-        </div>
-        <div class="song-div-right">
-         <p class="song-title m-0"> {{song.song}}</p>
-         <p class="song-singer m-0"> {{song.artist}} </p>
-         <div><span>#{{song.position}} in {{song.year}}</span></div>
-        </div>
+    <div (click)="onClickedSong(song)" *ngFor="let song of songsByYearArr; let i = index" class="song-wrapper">
+      <div class="song-div-left">
+        <div><img [src]="song?.youtubeThumb" /></div>
       </div>
-    
+      <div class="song-div-right">
+        <p class="song-title m-0"> {{song.song}}</p>
+        <p class="song-singer m-0"> {{song.artist}} </p>
+        <div><span>#{{song.position}} in {{song.year}}</span></div>
+      </div>
+    </div>
   </div>
   
-  <div class="toy-card">
+  <div *ngIf="!hideToys" class="toy-card">
     <h1 class="card-toy-year">Most Popular Toy in {{displayToy.year}}</h1>
     <div class="toy-card-img">
       <img [src]="displayToy.image">
@@ -29,7 +28,7 @@
     </div>
   </div>
 
-  <div class="quote-section">
+  <div *ngIf="!hideQuote" class="quote-section">
     <h3>Famous Quote</h3>
     <div class="card card-quote">
       <div class="card-body">

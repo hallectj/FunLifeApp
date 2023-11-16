@@ -46,13 +46,6 @@ export function searchSongArtistPairs(songData: any[], query: string): ISong2[] 
 export function findMatchingName(input: string, values: string[]): string {
   const normalizedInput = input.normalize("NFD").replace(/[^a-zA-Z0-9\s]/g, '').toLowerCase();
   const fuzzyResults = performFuzzySearch(values, normalizedInput);
-  //Keep this code commented out in case I need to go back to this
-  //for (const v of values) {
-    //const normalizedName = v.normalize("NFD").replace(/[^a-zA-Z0-9\s]/g, '').toLowerCase();
-    //if (normalizedName === normalizedInput) {
-      //return v;
-    //}
-  //}
   return fuzzyResults[0];
 }
 

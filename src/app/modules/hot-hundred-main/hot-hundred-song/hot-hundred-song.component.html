@@ -1,1 +1,29 @@
-<p>hot-hundred-song works!</p>
+<div id="song-component-wrapper">
+  <div class="header" *ngIf="!!songInfoObj.songObj">
+    <h2>{{songInfoObj.songObj.song}} <span>by</span><span class="color-1"> {{songInfoObj.songObj.artist}}</span></h2>
+    <div>position #{{songInfoObj.songObj.position}} in <span style="cursor: pointer;" (click)="goToYear(songInfoObj.songObj)" class="color-1">{{songInfoObj.songObj.year}}</span></div>
+  </div>
+
+  <div *ngIf="!!songInfoObj.songObj" class="movie-wrapper">
+    <div class="video-container">
+      <iframe [src]="youTubeURL | safeResourceUrl" allow="autoplay; encrypted-media" width="640" height="480" frameborder="0">
+      </iframe>
+    </div>
+  </div>
+
+  <div *ngIf="!!songInfoObj.songObj && songInfoObj.songObj.position !== -1">
+    <div class="song-info-box">
+      <p><b>The song {{songInfoObj.songObj.song}}</b> was ranked #{{songInfoObj.songObj.position}} in {{songInfoObj.songObj.year}}. The song was performed by {{songInfoObj.songObj.artist}}</p>
+      <p *ngIf="!!songInfoObj.infoObj && songInfoObj.infoObj.peak_position !== -1">The song's highest peak was #{{songInfoObj.infoObj.peak_position}} which was obtained on {{songInfoObj.infoObj.highest_peak_date}}. It stayed at on the hot 100 charts for {{songInfoObj.infoObj.weeks_on_chart}} weeks.</p>
+    </div>
+  </div>
+
+  <div *ngIf="!!songInfoObj.songObj && songInfoObj.songObj.position !== -1">
+    <div class="ad-box">
+      <svg width="100%" height="100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100%" height="100%" fill="lightgray" />
+        <text x="50%" y="50%" text-anchor="middle" fill="black" font-size="36" font-family="Arial" dy=".3em">Ad</text>
+      </svg> 
+    </div>
+  </div>
+</div>

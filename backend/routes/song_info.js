@@ -52,7 +52,7 @@ router.get('/song/:songName/:artist', async (req, res) => {
     if (matchingSongs.length > 0 && songObjIdx !== -1) {
       res.json(songObj);
     } else {
-      res.status(404).json({ error: 'Song with artist not found.' });
+      res.status(206).json({ error: 'Song with artist not found.' });
     }
   } catch (error) {
     console.error('Error fetching data:', error);

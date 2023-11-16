@@ -1,1 +1,7 @@
-<p>hot-hundred-cards works!</p>
+<div class="header">
+  <h4>Click on a card below to see the top songs of that year</h4>
+</div>
+
+<div class="allYears">
+  <div (click)="selectMyYear(year)" *ngFor="let year of yearsRange" class="yearBox">{{year}}<span>Chart</span></div>
+</div>
