@@ -10,7 +10,7 @@
     <tbody>
       <tr *ngFor="let obj of hotHundredSongs; let i = index">
         <td scope="row"><span>{{ obj.position }}</span></td>
-        <td class="artist"><span>{{ obj.artist }}</span></td>
+        <td class="artist" (click)="onClickedArtist(obj)"><span>{{ obj.artist }}</span></td>
         <td class="song" (click)="onClickedSong(obj)">
           <i class="fa fa-duotone fa-circle-play"></i><span>{{ obj.song }}</span>
         </td>

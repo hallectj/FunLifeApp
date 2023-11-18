@@ -26,6 +26,25 @@ export class SingleRouteResolver {
 }
 
 @Injectable()
+export class ArtistRouteResolver {
+  constructor(private service: GeneralService, private router: Router) {}
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
+    const artist = route.paramMap.get('artist');
+    const resolveFunctionName = route.data['resolveFunction'];
+    return this.service[resolveFunctionName](artist).pipe(
+      map((exists: string[]) => {
+        if (exists.length > 0 && !!exists[0]) {
+          return true; // Celebrity exists, resolve the route
+        } else {
+          this.router.navigate(['/404']); // Redirect to the 404 route if the celebrity doesn't exist
+          return false; // Don't resolve the route
+        }
+      })
+    );
+  }
+}
+
+@Injectable()
 export class DateRouteResolver {
   constructor(private service: GeneralService, private router: Router) {}
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {

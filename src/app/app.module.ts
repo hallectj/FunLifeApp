@@ -26,7 +26,7 @@ import { PageComponent } from './common/page/page.component';
 import { DynamicContentComponent } from './common/blogpost/dynamic-content/dynamic-content.component';
 import { MissedArticleWidgetComponent } from './common/missed-article-widget/missed-article-widget.component';
 import { CelebrityPageComponent } from './modules/celebrity/celebrity-page/celebrity-page.component';
-import { DateRouteResolver, SingleRouteResolver } from './common/resolvers/resolver.resolver';
+import { ArtistRouteResolver, DateRouteResolver, SingleRouteResolver } from './common/resolvers/resolver.resolver';
 import { PresidentComponent } from './modules/president/president.component';
 import { SafeResourceUrlPipe } from './common/pipes/safe-resource-url.pipe';
 import { HistoryMainComponent } from './modules/day-in-history/history-main/history-main.component';
@@ -71,7 +71,12 @@ const routes: Routes = [
       { path: 'hot-hundred-songs', component: HotHundredCardsComponent},
       { path: 'hot-hundred-songs/:year/:position/artist/:artist/song/:song', component: HotHundredSongComponent },
       { path: 'hot-hundred-songs/:year', component: HotHundredYearComponent },
-      { path: 'hot-hundred-songs/artist/:artist', component: HotHundredArtistComponent },
+      { 
+        path: 'hot-hundred-songs/artist/:artist', 
+        component: HotHundredArtistComponent,
+        data: {paramName: 'artist', resolveFunction: 'getTrueArtistName'},
+        resolve: {exist: ArtistRouteResolver} 
+      },
     ],
   },
   { path: 'celebrity', component: CelebrityComponent },
@@ -120,7 +125,7 @@ const routes: Routes = [
     FormsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [ErrorHandlerService, SingleRouteResolver, DateRouteResolver, {     
+  providers: [ErrorHandlerService, SingleRouteResolver, DateRouteResolver, ArtistRouteResolver, {     
      provide: DATE_PIPE_DEFAULT_OPTIONS,
      useValue: { dateFormat: "longDate" }
   }],

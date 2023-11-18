@@ -5,10 +5,11 @@ const pool = require('../pool')
 
 // Route for fetching all hot songs by a given artist
 router.get('/:artist', (req, res) => {
-  const artist = req.params.artist;
+  //const artist = req.params.artist;
+  const artist = req.params.artist.replace(/-/g, ' ').toLowerCase();
 
   const query = {
-    text: 'SELECT * FROM public."TopSongs" WHERE artist ILIKE $1 ORDER BY position',
+    text: 'SELECT * FROM public."TopSongs" WHERE LOWER(artist) ILIKE $1 ORDER BY position',
     values: [`%${artist}%`],
   };
 

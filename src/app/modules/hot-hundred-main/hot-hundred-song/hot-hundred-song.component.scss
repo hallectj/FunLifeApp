@@ -1,5 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
 
+@keyframes loader {
+  0% {
+    stroke-dashoffset: 1;
+    stroke-dasharray: 1 1000;
+  }
+
+  100% {
+    stroke-dashoffset: calc(45px * -2 * 3.1415);
+    stroke-dasharray: calc(100px * 2 * 3.1415) 1000;
+  }
+}
+
+@keyframes spin {
+  0% {rotate: 0deg;}
+  100% {rotate: 360deg;}
+}
+
+.circle-container{
+  height: 200px;
+  position: relative;
+
+  .circle-container-inner{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+
+    .circle-container-msg{
+      margin-bottom: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+  }
+
+  .circle-svg {
+    width: 100px;
+    height: 100px;
+    stroke: teal;
+    stroke-width: 10px;
+    stroke-dashoffset: 1;
+    stroke-dasharray: 1 1000;
+    animation: loader 1500ms infinite linear, spin 3000ms infinite linear;
+  }
+}
+
+
 #song-component-wrapper{
   .header{
     font-family: 'Russo One', sans-serif;
@@ -16,6 +65,10 @@
     .color-1{
       color: #2c667a;
     }
+
+    .artist-span{
+      margin-left: 5px;
+    }
   }
 
   .song-info-box{
@@ -31,6 +84,69 @@
   }
 }
 
+.select-control-div{
+  display: flex;
+  align-items: center;
+
+  &>div{
+    margin-right: 10px;
+  }
+
+  .position-dropdown {
+    position: relative;
+    width: 80px;
+    font-family: Arial, sans-serif;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #fff;
+  }
+  
+  .custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 2px;
+    padding-left: 8px;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    background-color: #3E454D;
+    color: white;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .position-dropdown::after {
+    content: '\25BC'; /* Down arrow character */
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    pointer-events: none;
+  }
+}
+
+.position-dropdown-select option {
+  background-color: #fff;
+  color: #333;
+}
+
+.position-dropown-select:focus {
+  outline: none;
+  border-color: #007BFF;
+}
+
+.position-dropown-select option:hover {
+  background-color: #007BFF;
+  color: #fff;
+}
+
+.position-dropown-select option:checked {
+  background-color: #007BFF; /* Add your desired selected color */
+  color: #fff;
+}
 
 .movie-wrapper{
   width: 100%;

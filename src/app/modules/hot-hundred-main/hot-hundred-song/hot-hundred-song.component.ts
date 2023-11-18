@@ -5,6 +5,7 @@ import { deslugify } from 'src/app/common/Toolbox/util';
 import { ISong2, ISongInfoObj } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
+
 @Component({
   selector: 'app-hot-hundred-song',
   templateUrl: './hot-hundred-song.component.html',
@@ -19,6 +20,11 @@ export class HotHundredSongComponent {
 
   public isSongError = true;
   public youTubeURL: string = "";
+  public ranks = [];
+  public currentRank = -1;
+  public currentYear = 1990;
+
+  public loading: boolean = true;
 
   constructor(public service: GeneralService, private route: ActivatedRoute, private router: Router){}
 
@@ -30,8 +36,12 @@ export class HotHundredSongComponent {
       let position = params["position"];
 
       const year = params["year"];
+      this.currentRank = +position;
+      this.currentYear = +year;
       artist = deslugify(artist);
       song = deslugify(song);
+
+      this.ranks = [...Array(this.getLimit(year)).keys()].map(num => num + 1);
 
       this.service.sendYearToChild(year);
       this.service.updateMainSongPageTitle(" ");
@@ -44,14 +54,42 @@ export class HotHundredSongComponent {
         this.youTubeURL = "https://www.youtube.com/embed/" + this.songInfoObj.songObj.videoId;
       }
 
+      this.loading = false;
+
       if(!!this.songInfoObj.songObj){
         this.isSongError = false;
       }
     })
   }
 
+  public async selectPosition(position: number){
+    this.loading = true;
+    this.currentRank = position;
+    this.songInfoObj = await this.service.getSongWithInfo(this.currentYear, this.currentRank).toPromise();
+    this.loading = false;
+    this.youTubeURL = "https://www.youtube.com/embed/" + this.songInfoObj.songObj.videoId;
+  }
+
   public goToYear(songObj: ISong2){
     const route = ["/charts/hot-hundred-songs/" + songObj.year];
     this.router.navigate(route);
+  }
+
+  public onClickArtist(songObj: ISong2){
+    const route = ["/charts/hot-hundred-songs/artist/" + songObj.artist];
+    this.router.navigate(route);
+  }
+
+  public getLimit(year: number): number {
+    switch (true) {
+      case (year >= 1950 && year <= 1955):
+          return 30;
+      case (year >= 1956 && year <= 1959):
+          return 50;
+      case (year >= 1960 && year <= 2021):
+          return 100;
+      default:
+          return -1;
+    }
   }
 }

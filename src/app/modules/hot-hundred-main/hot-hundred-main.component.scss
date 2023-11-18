@@ -192,6 +192,7 @@ h2 {
   #sidebar{
     max-width: 350px;
     width: 100%;
+    margin-left: 20px;
   }
 }
 
@@ -218,6 +219,8 @@ h2 {
       #sidebar{
         width: 100%;
         max-width: unset;
+        margin-left: 0px;
+        margin-top: 20px;
       }
     }
   }

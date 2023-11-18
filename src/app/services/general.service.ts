@@ -280,10 +280,33 @@ export class GeneralService {
     )
   }
 
-  //public getSongObj(year: string, artist: string, song: string): Observable<ISong2>{
-    //const url = this.server_url + "/top-songs/" + year + "/" + (artist) + "/" + (song);
-    //return this.http.get<any>(url);
-  //}
+  public getSongsByArtist(artist: string, includeSorting: boolean): Observable<ISong2[]>{
+    const url = this.server_url + "/artist/" + artist;
+    return this.http.get<any>(url).pipe(
+      map((response: ISong2[]) => {
+        const songObjects: ISong2[] = response.map((songObj: ISong2) => {
+          songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
+          return { ...songObj };
+        });
+        if(includeSorting){
+          return songObjects.sort((a, b) => a.year - b.year);
+        }else{
+          return songObjects;
+        }
+      })
+    )
+  }
+
+  public getTrueArtistName(artist: string): Observable<string[]>{
+    const url = this.server_url + "/artist/" + artist;
+    return this.http.get<any>(url).pipe(
+      map((response: ISong2[]) => {
+        const data = response;
+        const value = findMatchingName(artist, data.map(v => v.artist));
+        return [value];
+      })
+    )
+  }
 
   public getSongObj(year: number, position: number): Observable<ISong2>{
     const url = this.server_url + "/top-songs/" + year + "/" + position;

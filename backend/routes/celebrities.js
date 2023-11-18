@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
       console.error('Error executing SQL query:', err);
       res.status(500).send('Internal Server Error');
     } else {
-      const names = result.rows.map(row => row.name);
+      const names = result.rows.filter(row => !hasRestrictedOccupation(row.occupations)).map(row => row.name);
       res.json(names);
     }
   });
@@ -35,7 +35,8 @@ router.get('/:dateset', (req, res) => {
       console.error('Error executing SQL query:', err);
       res.status(500).send('Internal Server Error');
     } else {
-      res.json(result.rows);
+      const filteredRows = result.rows.filter(row => !hasRestrictedOccupation(row.occupations));
+      res.json(filteredRows);
     }
   });
 });
@@ -62,5 +63,10 @@ router.get('/celeb/:name', (req, res) => {
     }
   });
 });
+
+function hasRestrictedOccupation(occupations) {
+  const restrictedOccupations = ['pornographic actor', 'erotic photography model', 'stripper'];
+  return occupations.some(occupation => restrictedOccupations.includes(occupation));
+}
 
 module.exports = router;

@@ -30,6 +30,12 @@ function performFuzzySearch(values: string[], searchTerm: string) {
   return results.map(result => result.item);
 }
 
+export function isValidArtist(){
+  
+}
+
+
+
 export function searchSongArtistPairs(songData: any[], query: string): ISong2[] {
   const fuseOptions = {
     keys: ['song', 'artist'], // Specify the properties to search on
