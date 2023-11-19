@@ -30,11 +30,27 @@ export class HotHundredYearComponent {
     this.router.navigate(route);
   }
 
-  public async onClickedArtist(songObj: ISong2){
+  public async onClickedArtist(songObj: ISong2, artist: string){
     //artist name isn't always accurate after desluggifying, so make another call to get artist
-    const response = await this.service.getSongObj(+this.selectedYear, songObj.position).toPromise();
-    const artist = (!!response && !!response.artist) ? response.artist : songObj.artist;
+    //const response = await this.service.getSongObj(+this.selectedYear, songObj.position).toPromise();
+    //const artist = (!!response && !!response.artist) ? response.artist : songObj.artist;
     const route = ['charts/hot-hundred-songs/artist/' + artist];
     this.router.navigate(route);
+  }
+
+  public extractArtists(inputString: string): string[] {
+    const featuringIndex = inputString.toLowerCase().indexOf("featuring");
+  
+    if (featuringIndex !== -1) {
+      // "featuring" is present in the string
+      const artistsString = inputString.substring(0, featuringIndex).trim();
+      const featuringPart = inputString.substring(featuringIndex + "featuring".length).trim();
+  
+      const artistsArray = [...artistsString.split(/\band\b/i), ...featuringPart.split(/\band\b/i)].map(artist => artist.trim());
+      return artistsArray;
+    } else {
+      // "featuring" is not present in the string
+      return [inputString.trim()];
+    }
   }
 }

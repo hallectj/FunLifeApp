@@ -193,6 +193,17 @@ h2 {
     max-width: 350px;
     width: 100%;
     margin-left: 20px;
+
+    .ad_block_250x250{
+      display: block;
+      width: 100%;
+  
+      img, svg{
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+      }
+    }
   }
 }
 
@@ -221,6 +232,10 @@ h2 {
         max-width: unset;
         margin-left: 0px;
         margin-top: 20px;
+
+        .ad_block_250x250{
+          display: none;
+        }
       }
     }
   }

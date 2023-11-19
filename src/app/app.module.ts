@@ -26,7 +26,7 @@ import { PageComponent } from './common/page/page.component';
 import { DynamicContentComponent } from './common/blogpost/dynamic-content/dynamic-content.component';
 import { MissedArticleWidgetComponent } from './common/missed-article-widget/missed-article-widget.component';
 import { CelebrityPageComponent } from './modules/celebrity/celebrity-page/celebrity-page.component';
-import { ArtistRouteResolver, DateRouteResolver, SingleRouteResolver } from './common/resolvers/resolver.resolver';
+import { ArtistRouteResolver, DateRouteResolver, SingleRouteResolver, SongRouteResolver } from './common/resolvers/resolver.resolver';
 import { PresidentComponent } from './modules/president/president.component';
 import { SafeResourceUrlPipe } from './common/pipes/safe-resource-url.pipe';
 import { HistoryMainComponent } from './modules/day-in-history/history-main/history-main.component';
@@ -69,7 +69,12 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'hot-hundred-songs', pathMatch: 'full' },
       { path: 'hot-hundred-songs', component: HotHundredCardsComponent},
-      { path: 'hot-hundred-songs/:year/:position/artist/:artist/song/:song', component: HotHundredSongComponent },
+      { 
+        path: 'hot-hundred-songs/:year/:position/artist/:artist/song/:song', 
+        component: HotHundredSongComponent,
+        //data: {paramNames: ["year", "position"], resolveFunction: 'getTrueSongName'},
+        //resolve: {exist: SongRouteResolver}  
+      },
       { path: 'hot-hundred-songs/:year', component: HotHundredYearComponent },
       { 
         path: 'hot-hundred-songs/artist/:artist', 
@@ -125,7 +130,7 @@ const routes: Routes = [
     FormsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [ErrorHandlerService, SingleRouteResolver, DateRouteResolver, ArtistRouteResolver, {     
+  providers: [ErrorHandlerService, SingleRouteResolver, DateRouteResolver, ArtistRouteResolver, SongRouteResolver, {     
      provide: DATE_PIPE_DEFAULT_OPTIONS,
      useValue: { dateFormat: "longDate" }
   }],

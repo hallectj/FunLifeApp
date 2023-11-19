@@ -7,10 +7,10 @@ const pool = require('../pool')
 router.get('/:artist', (req, res) => {
   //const artist = req.params.artist;
   const artist = req.params.artist.replace(/-/g, ' ').toLowerCase();
-
+  
   const query = {
-    text: 'SELECT * FROM public."TopSongs" WHERE LOWER(artist) ILIKE $1 ORDER BY position',
-    values: [`%${artist}%`],
+    text: 'SELECT * FROM public."TopSongs" WHERE artist ~* $1 ORDER BY year, position;',
+    values: ['\\m' + artist.replace(/[.+]/g, (match) => '\\' + match) + '\\M'],
   };
 
   pool.query(query, (err, result) => {

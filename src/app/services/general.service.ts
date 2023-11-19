@@ -313,6 +313,30 @@ export class GeneralService {
     return this.http.get<any>(url);
   }
 
+/**
+ * 
+  public getTrueArtistName(artist: string): Observable<string[]>{
+    const url = this.server_url + "/artist/" + artist;
+    return this.http.get<any>(url).pipe(
+      map((response: ISong2[]) => {
+        const data = response;
+        const value = findMatchingName(artist, data.map(v => v.artist));
+        return [value];
+      })
+    )
+  }
+ */
+
+  public getTrueSongName(year: number, position: number, song: string, artist: string): Observable<{artist: string, song: string}[]>{
+    return this.getSongObj(year, position).pipe(
+      map((response: ISong2) => {
+        const foundSong = findMatchingName(song, [response.song]);
+        const foundArtist = findMatchingName(artist, [response.artist]);
+        return [{ artist: foundArtist, song: foundSong }]
+      })
+    )
+  }
+
   public getTrueSongInfo(year: number, song: string, artist: string): Observable<{artist: string, song: string}>{
     const url = this.server_url + "/top-songs/" + year.toString();
     return this.http.get<any>(url).pipe(
