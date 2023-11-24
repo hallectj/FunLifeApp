@@ -29,6 +29,10 @@ $snow: snow;
   flex-direction: column;
   gap: 2.4rem;
 
+  .source{
+    font-size: 0.6em;
+  }
+
   h1 {
     font-family: $font-heading;
     font-size: $size-header;

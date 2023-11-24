@@ -25,7 +25,7 @@ export class PostService {
           if (error.status === 404) {
             return of(null);
           }
-          return throwError(error);
+          return of(error);
         })
       );
     }
@@ -36,7 +36,7 @@ export class PostService {
         if (error.status === 404) {
           return of(null);
         }
-        return throwError(error);
+        return of(error);
       })
     );
   }

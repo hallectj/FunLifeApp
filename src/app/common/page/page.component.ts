@@ -27,7 +27,9 @@ export class PageComponent {
       }else{
         this.router.navigate(['/page/' + this.pageNumber])
       }
-      this.postExcerpts = await this.postService.getAllPosts().toPromise();      
+      this.postExcerpts = await this.postService.getAllPosts().toPromise(); 
+      //if the database has ', it escapes it with '' which somehow gets translated to (')
+      this.postExcerpts.forEach(v => v.excerptDesc = v.excerptDesc.replaceAll("(')", "'"));     
     });
   }
 
