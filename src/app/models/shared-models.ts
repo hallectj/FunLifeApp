@@ -5,32 +5,12 @@ type DataResponse<T> = {
   [key: string]: T[];
 };
 
-export interface IPostExcerpt {
-  postID: number,
-  excerptImage: string,
-  excerptTitle: string,
-  excerptDesc: string,
-  author: string,
-  dateWritten: Date,
-  lastUpdated: Date,
-  isFeaturePost: boolean
-}
-
 export interface IDateObj  {
   date: Date, 
   day: string, 
   month: string, 
   monthName: string, 
   year: string
-} 
-
-export interface Inflation {
-  currency: string, 
-  year: string, 
-  gas: string, 
-  bread: string, 
-  movie_ticket: string, 
-  car: string
 }
 
 export interface IPresident{
@@ -48,11 +28,22 @@ export interface IPresident{
   spouses: string[]
 }
 
-export interface IPost{
-  userId: number,
-  id: number,
-  title: string,
-  body: string
+export interface IPostExcerpt{
+  postId: number,
+  excerptImage: string,
+  excerptTitle: string,
+  excerptDesc: string,
+  author: string,
+  dateWritten: Date,
+  lastUpdated: Date,
+  isFeaturePost: boolean,
+  pointer: string,
+  attribution: {
+    license: string,
+    author: string,
+    imageURL: string,
+    via: string
+  }
 }
 
 export interface IHistEvent{

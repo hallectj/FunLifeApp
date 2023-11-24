@@ -106,14 +106,21 @@ export class DayInHistoryComponent {
     this.dispHistory = this.historyEvents.map((v: IHistEvent) => (
       {
         post: {
-          postID: -1,
+          postId: -1,
           excerptDesc: v.description,
           excerptImage: v.imageURL, 
           excerptTitle: v.title,
           isFeaturePost: false,
           author: "",
           lastUpdated: null,
-          dateWritten: null
+          dateWritten: null,
+          pointer: "",
+          attribution: {
+            author: "",
+            imageURL: "",
+            license: "",
+            via: ""
+          }
         }, 
         useRibbon: true,
         year: v.year

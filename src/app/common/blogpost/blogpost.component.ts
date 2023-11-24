@@ -14,15 +14,23 @@ import { ReloadService } from 'src/app/services/reload.service';
 })
 export class BlogpostComponent {
   public blogTitle: string = "";
+  public mainAttribution: string = "";
   public postExcerpt: IPostExcerpt = {
-    postID: -1,
+    postId: -1,
     excerptDesc: "",
     excerptImage: "",
     excerptTitle: "",
     author: "",
     dateWritten: null,
     lastUpdated: null,
-    isFeaturePost: false
+    isFeaturePost: false,
+    pointer: "",
+    attribution: {
+      license: "",
+      author: "",
+      imageURL: "",
+      via: ""
+    }
   }
   public subscription: Subscription = new Subscription();
   public isContentLoaded: boolean = false;
@@ -35,13 +43,23 @@ export class BlogpostComponent {
 
   public async ngOnInit(){
     this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();  
-    this.allExcerpts = await this.postService.getDummyPostsExcerpts().toPromise();
+    this.allExcerpts = await this.postService.getAllPosts().toPromise();
 
     this.route.paramMap.subscribe(async (params) => {
       this.blogTitle = deslugify(params.get('postTitle'));
-      const idx = this.allExcerpts.findIndex(v => v.excerptTitle === this.blogTitle);
+      const postId = params.get("postId");
+      const idx = this.allExcerpts.findIndex(v => v.postId.toString() === postId);
       if(idx !== -1){
         this.postExcerpt = this.allExcerpts[idx];
+        if(!!this.postExcerpt.attribution.author){
+          this.mainAttribution = `
+          <figcaption class='source'>
+            Image Source: <cite><a href='${this.postExcerpt.attribution.imageURL}'>${this.postExcerpt.attribution.author}</a></cite>
+            <a href="${this.postExcerpt.attribution.license}">License</a> via ${this.postExcerpt.attribution.via}
+          </figcaption> 
+        `
+        }
+
         window.scroll({ top: 0, left: 0, behavior: 'smooth' });
         this.reloadService.triggerReload(this.postExcerpt);      
       }

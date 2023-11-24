@@ -41,6 +41,12 @@ $dark-blue: hsl(218, 44%, 22%);
       margin-bottom: 10px;
       cursor: pointer;
 
+      .song-div-left{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
       div{
         background-color: #fff;
       }

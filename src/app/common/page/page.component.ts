@@ -27,7 +27,7 @@ export class PageComponent {
       }else{
         this.router.navigate(['/page/' + this.pageNumber])
       }
-      this.postExcerpts = await this.postService.getDummyPostsExcerpts().toPromise();       
+      this.postExcerpts = await this.postService.getAllPosts().toPromise();      
     });
   }
 
@@ -42,7 +42,7 @@ export class PageComponent {
   }
 
   public getPost(postExcerpt: IPostExcerpt){
-    let correctRoute = ['/post/' + slugify(postExcerpt.excerptTitle)];
+    let correctRoute = ['/posts/' + postExcerpt.postId + "/" + slugify(postExcerpt.excerptTitle)];
     this.router.navigate(correctRoute)
   }
 

@@ -14,25 +14,32 @@ export class MissedArticleWidgetComponent {
   public dummyPostsExcerpts: IPostExcerpt[] = [];
   public inCaseYouMissedArr: IPostExcerpt[] = [];
   public selectedArticle: IPostExcerpt = {
-    postID: -1,
+    postId: -1,
     excerptImage: "",
     excerptTitle: "",
     excerptDesc: "",
     author: "",
     dateWritten: null,
     lastUpdated: null,
-    isFeaturePost: false
+    isFeaturePost: false,
+    pointer: "",
+    attribution: {
+      author: "",
+      license: "",
+      imageURL: "",
+      via: ""
+    }
   }
   constructor(public postService: PostService, public reloadService: ReloadService, private router: Router){}
 
   public async ngOnInit(){
-    this.dummyPostsExcerpts = await this.postService.getDummyPostsExcerpts().toPromise();
+    this.dummyPostsExcerpts = await this.postService.getAllPosts().toPromise();
     this.populateInCaseYouMissed();
   }
 
   public goToPost(article: IPostExcerpt){
     this.selectedArticle = article;
-    this.router.navigate(['/post/' + slugify(this.selectedArticle.excerptTitle)]);
+    this.router.navigate(['/posts/' + article.postId + "/" + slugify(this.selectedArticle.excerptTitle)]);
     this.populateInCaseYouMissed();
   }
 

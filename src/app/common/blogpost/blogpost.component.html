@@ -18,11 +18,14 @@
         </header>
         
         <div id="main_img_wrapper">
-          <img [src]="postExcerpt.excerptImage" />
+          <figure class="figure">
+            <img [src]="postExcerpt.excerptImage" />
+            <div class="attribution-div" *ngIf="!!postExcerpt.attribution.author" [innerHTML]="mainAttribution"></div>
+          </figure>
         </div> 
          
         <!-- Article from Server -->
-        <dynamic-content [postId]="postExcerpt.postID" [(isContentLoaded)]="isContentLoaded"></dynamic-content>
+        <dynamic-content [postId]="postExcerpt.postId" [(isContentLoaded)]="isContentLoaded"></dynamic-content>
       </main>
     </div>
     <div id="right-side">

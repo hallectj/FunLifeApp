@@ -201,15 +201,21 @@ export class BirthdayComponent {
     this.dispHistory = this.historyEvents.map((v: IHistEvent) => (
       {
         post: {
-          postID: -1,
+          postId: -1,
           excerptDesc: v.description,
           excerptImage: v.imageURL, 
           excerptTitle: v.title,
           isFeaturePost: false,
           author: "",
           dateWritten: null,
-          lastUpdated: null
-
+          lastUpdated: null,
+          pointer: "",
+          attribution: {
+            license: "",
+            author: "",
+            imageURL: "",
+            via: ""
+          }
         }, 
         useRibbon: true,
         year: v.year

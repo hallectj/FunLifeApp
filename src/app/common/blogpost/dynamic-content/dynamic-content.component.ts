@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { IPostExcerpt } from 'src/app/models/shared-models';
 import { PostService } from 'src/app/services/post.service';
@@ -20,18 +21,18 @@ export class DynamicContentComponent {
   @Output() isContentLoadedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @ViewChild('postContent', { static: true }) postContent: ElementRef;
 
-  constructor(public service: PostService, public reloadService: ReloadService){}
+  constructor(public service: PostService, public reloadService: ReloadService, public sanitizer: DomSanitizer){}
 
   public async ngOnInit(){
     this.subscription.add(this.reloadService.getReloadTrigger().subscribe(async (postExcerpt: IPostExcerpt) => {
-      await this.loadArticle(postExcerpt.postID);
+      await this.loadArticle(postExcerpt.postId);
     }));
   }
 
   public async loadArticle(postId: number){
     this.contentIsLoading = true;
-    const content = await this.service.getPost(postId).toPromise();
-    this.exampleHTML = content.id.toString() + " | " + content.body;
+    const htmlContent = (await this.service.getPost(postId, true).toPromise()) as string;
+    this.exampleHTML = (this.sanitizer.bypassSecurityTrustHtml(htmlContent)) as string;
     this.contentIsLoading = false;
   }
 

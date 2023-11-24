@@ -42,7 +42,7 @@ const routes: Routes = [
   { path: '', pathMatch: 'full', component: PageComponent },
   { path: 'page/:pageId', component: PageComponent },
   { path: 'page/:pageId/:postTitle', component: BlogpostComponent },
-  { path: 'post/:postTitle', component: BlogpostComponent },
+  { path: 'posts/:postId/:postTitle', component: BlogpostComponent },
   { path: 'birthday', component: BirthdayComponent },
   { 
     path: 'day-in-history/:month/:day',
