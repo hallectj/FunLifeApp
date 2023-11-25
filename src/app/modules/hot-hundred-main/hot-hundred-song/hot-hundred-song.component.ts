@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
-import { deslugify } from 'src/app/common/Toolbox/util';
+import { deslugify, slugify } from 'src/app/common/Toolbox/util';
 import { ISong2, ISongInfoObj } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
@@ -76,7 +76,7 @@ export class HotHundredSongComponent {
   }
 
   public onClickArtist(songObj: ISong2){
-    const route = ["/charts/hot-hundred-songs/artist/" + songObj.artist];
+    const route = ["/charts/hot-hundred-songs/artist/" + slugify(songObj.artist)];
     this.router.navigate(route);
   }
 

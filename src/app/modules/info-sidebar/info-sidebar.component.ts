@@ -1,6 +1,7 @@
 import { Component, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { slugify } from 'src/app/common/Toolbox/util';
 import { IFamousQuote, ISong, ISong2, IToy } from 'src/app/models/shared-models';
 import { GeneralService } from 'src/app/services/general.service';
 
@@ -66,7 +67,7 @@ export class InfoSidebarComponent {
   }
 
   public onClickedSong(song: ISong2){
-    const route = ["/charts/hot-hundred-songs/" + song.year + "/" + song.position + "/artist/" + song.artist + "/song/" + song.song];
+    const route = ["/charts/hot-hundred-songs/" + song.year + "/" + song.position + "/artist/" +  slugify(song.artist) + "/song/" + slugify(song.song)];
     this.router.navigate(route);
   }
 

@@ -32,7 +32,7 @@ export class SingleRouteResolver {
 export class ArtistRouteResolver {
   constructor(private service: GeneralService, private router: Router) {}
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    const artist = route.paramMap.get('artist');
+    const artist = deslugify(route.paramMap.get('artist'));
     const resolveFunctionName = route.data['resolveFunction'];
     return this.service[resolveFunctionName](artist).pipe(
       map((exists: string[]) => {

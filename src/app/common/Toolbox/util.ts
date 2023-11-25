@@ -1,12 +1,12 @@
 import Fuse from "fuse.js";
 import { ISong2 } from "src/app/models/shared-models";
 
-export function slugify(str: string) {
+export function slugify(str) {
   const sluggedStr = String(str)
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')
     .trim()
-    .replace(/[^a-zA-Z0-9 -]/g, '') // Change to include capital letters
+    .replace(/[^a-zA-Z0-9&'!+ -]/g, '') // Include '&' and "'" and '!' and '+'
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
 

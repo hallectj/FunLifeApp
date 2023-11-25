@@ -168,13 +168,27 @@ export class GeneralService {
     return this.http.get<ISongInfoObj>(apiUrl).pipe(
       map(response => {
         if (response && response['error']) {
-          return null;
+          return {
+            artist: "",
+            song: "",
+            highest_peak_date: "",
+            peak_position: -1,
+            weeks_on_chart: -1
+          }
         }
         return response;
       }),
       catchError((error) => {
         if (error && error['error']) {
-          return null;
+          return of(
+             {
+              artist: "",
+              song: "",
+              highest_peak_date: "",
+              peak_position: -1,
+              weeks_on_chart: -1
+            }
+          )
         }
         return this.errorHandler.handleError(error);
       })

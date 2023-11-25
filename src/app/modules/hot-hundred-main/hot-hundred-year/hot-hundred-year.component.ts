@@ -34,7 +34,7 @@ export class HotHundredYearComponent {
     //artist name isn't always accurate after desluggifying, so make another call to get artist
     //const response = await this.service.getSongObj(+this.selectedYear, songObj.position).toPromise();
     //const artist = (!!response && !!response.artist) ? response.artist : songObj.artist;
-    const route = ['charts/hot-hundred-songs/artist/' + artist];
+    const route = ['charts/hot-hundred-songs/artist/' + slugify(artist)];
     this.router.navigate(route);
   }
 
