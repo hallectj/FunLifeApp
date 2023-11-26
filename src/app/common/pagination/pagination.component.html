@@ -1,8 +1,8 @@
 <div class="pagination">
-  <div class="page-btn-chevron prev"  (click)="prevPage($event)"><i class="fa fa-thin fa-circle-chevron-left"></i></div>
+  <div class="page-btn-chevron prev pg-btn"  (click)="prevPage($event)"><i class="fa fa-thin fa-circle-chevron-left"></i></div>
   <div class="page-numbers">
-    <div *ngFor="let page of pageRange(5); let currPage = index" [class.active]="pageNumber === currPage + 1" (click)="clickNumberedPage($event, currPage + 1)">{{currPage + 1}}</div>
+    <div class="pg-btn" *ngFor="let page of pageRange(5); let currPage = index" [class.active]="pageNumber === currPage + 1" (click)="clickNumberedPage($event, currPage + 1)">{{currPage + 1}}</div>
   </div>
-  <div class="page-btn-chevron next" (click)="nextPage($event)"><i class="fa fa-thin fa-circle-chevron-right"></i></div>
+  <div class="page-btn-chevron next pg-btn" (click)="nextPage($event)"><i class="fa fa-thin fa-circle-chevron-right"></i></div>
 </div>
 

@@ -5,6 +5,10 @@
   margin: 20px 0;
 }
 
+.pg-btn{
+  background-color: #fff;
+}
+
 .pagination div {
   display: inline-block;
   padding: 2px 15px;
@@ -34,9 +38,11 @@
 
 .pagination div.prev,
 .pagination div.next {
-  display: inline-block;
   font-size: 1.75em;
   border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 

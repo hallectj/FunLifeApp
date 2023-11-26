@@ -4,7 +4,7 @@ const fetch = require("node-fetch-commonjs");
 const pool = require('../pool');
 
 router.get('/', (req, res) => {
-  pool.query('SELECT * FROM public."Articles"', (err, result) => {
+  pool.query('SELECT * FROM public."Articles" ORDER By "postId"', (err, result) => {
     if (err) {
       console.error('Error executing SQL query:', err);
       res.status(500).send('Internal Server Error');

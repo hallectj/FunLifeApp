@@ -39,14 +39,21 @@ import { HotHundredCardsComponent } from './modules/hot-hundred-main/hot-hundred
 import { HotHundredYearComponent } from './modules/hot-hundred-main/hot-hundred-year/hot-hundred-year.component';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', component: PageComponent },
-  { path: 'page/:pageId', component: PageComponent },
-  { path: 'page/:pageId/:postTitle', component: BlogpostComponent },
-  { path: 'posts/:postId/:postTitle', component: BlogpostComponent },
-  { path: 'birthday', component: BirthdayComponent },
+  { path: '', pathMatch: 'full', component: PageComponent, data: { breadcrumb: "Home" } },
+  { path: 'page/:pageId', component: PageComponent, 
+    data: { breadcrumb: 'page > :pageId' } 
+  },
+  { path: 'page/:pageId/:postTitle', component: BlogpostComponent, 
+    data: { breadcrumb: 'page > :pageId > :postTitle' } 
+  },
+  { path: 'posts/:postId/:postTitle', component: BlogpostComponent, 
+    data: { breadcrumb: 'Posts > :postId > postTitle' } 
+  },
+  { path: 'birthday', component: BirthdayComponent, data: { breadcrumb: 'Birthday' } },
   { 
     path: 'day-in-history/:month/:day',
     component: DayInHistoryComponent,
+    data: { breadcrumb: 'Day-in-History > :month > :day' },
     resolve: {
       dateData: DateRouteResolver
     }
@@ -54,13 +61,17 @@ const routes: Routes = [
   { 
     path: 'celebrity/:celebName', 
     component: CelebrityPageComponent, 
-    data: {paramName: 'celebName', resolveFunction: 'getTrueCelebName'}, 
+    data: {paramName: 'celebName', resolveFunction: 'getTrueCelebName', 
+      breadcrumb: 'Celebrity > :celebName'
+    }, 
     resolve: {exists: SingleRouteResolver}
   },
   {
     path: 'president/:presidentName',
     component: PresidentComponent,
-    data: {paramName: 'presidentName', resolveFunction: 'getTruePresidentName'},
+    data: {paramName: 'presidentName', resolveFunction: 'getTruePresidentName', 
+      breadcrumb: 'President > :presidentName'
+    },
     resolve: {exists: SingleRouteResolver}
   },
   {
@@ -68,25 +79,32 @@ const routes: Routes = [
     component: HotHundredMainComponent,
     children: [
       { path: '', redirectTo: 'hot-hundred-songs', pathMatch: 'full' },
-      { path: 'hot-hundred-songs', component: HotHundredCardsComponent},
+      { path: 'hot-hundred-songs', component: HotHundredCardsComponent, 
+        data: { breadcrumb: 'Charts > Hot-Hundred-Songs' }
+      },
       { 
         path: 'hot-hundred-songs/:year/:position/artist/:artist/song/:song', 
         component: HotHundredSongComponent,
-        //data: {paramNames: ["year", "position"], resolveFunction: 'getTrueSongName'},
-        //resolve: {exist: SongRouteResolver}  
+        data: { breadcrumb: 'Charts > Hot-Hundred-Songs > :year > :position > :artist > :song' }
       },
-      { path: 'hot-hundred-songs/:year', component: HotHundredYearComponent },
+      { 
+        path: 'hot-hundred-songs/:year', 
+        component: HotHundredYearComponent,
+        data: { breadcrumb: 'Charts > Hot-Hundred-Songs > :year' } 
+      },
       { 
         path: 'hot-hundred-songs/artist/:artist', 
         component: HotHundredArtistComponent,
-        data: {paramName: 'artist', resolveFunction: 'getTrueArtistName'},
+        data: {paramName: 'artist', resolveFunction: 'getTrueArtistName',
+          breadcrumb: "Charts > Hot-Hundred-Songs > :artist"
+        },
         resolve: {exist: ArtistRouteResolver} 
       },
     ],
   },
-  { path: 'celebrity', component: CelebrityComponent },
-  { path: '404', component: NotFoundComponent },
-  { path: '**', component: NotFoundComponent }
+  { path: 'celebrity', component: CelebrityComponent, data: { breadcrumb: 'Celebrity' }  },
+  { path: '404', component: NotFoundComponent, data: { breadcrumb: 'Not Found' }  },
+  { path: '**', component: NotFoundComponent, data: { breadcrumb: 'Not Found' } }
 ];
 
 @NgModule({
@@ -108,7 +126,6 @@ const routes: Routes = [
     CelebCardComponent,
     RibbonComponent,
     BlogpostComponent,
-    //HistoryPostComponent,
     PageComponent,
     DynamicContentComponent,
     MissedArticleWidgetComponent,
