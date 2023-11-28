@@ -20,6 +20,8 @@ $dark-blue: hsl(218, 44%, 22%);
 
 #sidebarDivWrapper{
   header{
+    background-color: #fff;
+    padding: 5px;
 
     h1{
       font-size: 1.05em;
@@ -90,6 +92,7 @@ $dark-blue: hsl(218, 44%, 22%);
   }
 
   .toy-card {
+    cursor: pointer;
     padding: 0;
     margin: 0;
     margin-top: 10px;

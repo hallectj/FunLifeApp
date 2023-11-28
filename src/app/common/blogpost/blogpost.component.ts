@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, Input, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IPostExcerpt } from 'src/app/models/shared-models';
 import { PostService } from 'src/app/services/post.service';
 import { deslugify } from '../Toolbox/util';
@@ -39,7 +39,7 @@ export class BlogpostComponent {
 
   @ViewChild('postContent', { static: true }) postContent: ElementRef;
 
-  constructor(private route: ActivatedRoute, public postService: PostService, public reloadService: ReloadService, public sanitize: DomSanitizer){}
+  constructor(private route: ActivatedRoute, private router: Router, public postService: PostService, public reloadService: ReloadService, public sanitize: DomSanitizer){}
 
   public async ngOnInit(){
     this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();  
@@ -51,6 +51,17 @@ export class BlogpostComponent {
       const idx = this.allExcerpts.findIndex(v => v.postId.toString() === postId);
       if(idx !== -1){
         this.postExcerpt = this.allExcerpts[idx];
+
+        /** SPECIAL means, we want to route the user to a component html that already exist and not the html I get from the server */
+        if(this.postExcerpt.pointer.startsWith("SPECIAL")){
+          const pointer = this.postExcerpt.pointer;
+          const startIdx = pointer.indexOf("SPECIAL") + "SPECIAL".length;
+          const localURL = pointer.substring(startIdx+1, pointer.length).trim();
+          const route = [localURL];
+          this.router.navigate(route);
+          return;
+        }
+
         if(!!this.postExcerpt.attribution.author){
           this.mainAttribution = `
           <figcaption class='source'>

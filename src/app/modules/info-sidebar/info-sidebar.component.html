@@ -16,7 +16,7 @@
     </div>
   </div>
   
-  <div *ngIf="!hideToys" class="toy-card">
+  <div *ngIf="!hideToys" class="toy-card" (click)="onToyClick()">
     <h1 class="card-toy-year">Most Popular Toy in {{displayToy.year}}</h1>
     <div class="toy-card-img">
       <img [src]="displayToy.image">

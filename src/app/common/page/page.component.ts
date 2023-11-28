@@ -3,6 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IPostExcerpt } from 'src/app/models/shared-models';
 import { PostService } from 'src/app/services/post.service';
 import { isValidDate, slugify } from '../Toolbox/util';
+import { ReloadService } from 'src/app/services/reload.service';
+
+const POSTPERPAGEPAGEN = 8;
+const POSTPERPAGEPAGE1 = 5; 
 
 @Component({
   selector: 'app-page',
@@ -13,11 +17,17 @@ export class PageComponent {
   public randomYear: string = "1990";
   public pageNumber: number = 1;
   public postExcerpts: IPostExcerpt[] = [];
+  private postPerPage: number = 0;
 
-  constructor(private route: ActivatedRoute, private router: Router, public postService: PostService){}
+  public startIndex = 0;
+  public endIndex = POSTPERPAGEPAGE1;
+
+  constructor(private route: ActivatedRoute, private router: Router, public postService: PostService, public reloadService: ReloadService){}
 
   public async ngOnInit(){
-    this.randomYear = this.getRandomYear(1950, 2020).toString();   
+    this.randomYear = this.getRandomYear(1950, 2020).toString();
+    this.postPerPage = (this.pageNumber === 1) ? POSTPERPAGEPAGE1 : POSTPERPAGEPAGEN;
+
     this.route.paramMap.subscribe(async params => {
       const pageId = +params.get('pageId');
       this.pageNumber = pageId;
@@ -27,21 +37,34 @@ export class PageComponent {
       }else{
         this.router.navigate(['/page/' + this.pageNumber])
       }
-      this.postExcerpts = await this.postService.getAllPosts().toPromise(); 
-      //if the database has ', it escapes it with '' which somehow gets translated to (')
-      this.postExcerpts.forEach(v => v.excerptDesc = v.excerptDesc.replaceAll("(')", "'"));     
+
+      await this.refreshPosts()
     });
   }
 
-  get startIndex(): number {
-    const postsPerPage = this.pageNumber === 1 ? 5 : 8;
-    return (this.pageNumber - 1) * postsPerPage;
+  public async refreshPosts(){
+    this.postExcerpts = await this.postService.getAllPosts().toPromise();
+    const indices = this.calculateIndices(this.pageNumber, this.postExcerpts);
+    this.startIndex = indices.startIndex;
+    this.endIndex = indices.endIndex; 
+    //if the database has ', it escapes it with '' which somehow gets translated to (')
+    this.postExcerpts.forEach(v => v.excerptDesc = v.excerptDesc.replaceAll("(')", "'"));  
   }
 
-  get endIndex(): number {
-    const postsPerPage = this.pageNumber === 1 ? 5 : 8;
-    return this.startIndex + postsPerPage;
+  private calculateIndices(pageNumber: number, postArr: IPostExcerpt[]) {
+    if (pageNumber < 1) {
+      throw new Error('Page number must be greater than or equal to 1');
+    }
+  
+    const postsPerPage = pageNumber === 1 ? POSTPERPAGEPAGE1 : POSTPERPAGEPAGEN;
+    let startIndex = pageNumber === 1 ? 0 : POSTPERPAGEPAGE1 + (pageNumber - 2) * POSTPERPAGEPAGEN;
+    startIndex = Math.min(startIndex, postArr.length );
+    let endIndex = startIndex + postsPerPage;
+    endIndex = Math.min(endIndex, postArr.length);
+  
+    return { startIndex, endIndex };
   }
+
 
   public getPost(postExcerpt: IPostExcerpt){
     let correctRoute = ['/posts/' + postExcerpt.postId + "/" + slugify(postExcerpt.excerptTitle)];

@@ -85,6 +85,11 @@ export class InfoSidebarComponent {
     this.subscription.unsubscribe();
   }
 
+  public onToyClick(){
+    const route = ['/toys'];
+    this.router.navigate(route);
+  }
+
   public async callSongsAPI(year: string){
     this.songs = null;
     this.songs = [];

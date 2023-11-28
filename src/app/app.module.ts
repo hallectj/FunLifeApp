@@ -37,6 +37,8 @@ import { HotHundredSongComponent } from './modules/hot-hundred-main/hot-hundred-
 import { HotHundredArtistComponent } from './modules/hot-hundred-main/hot-hundred-artist/hot-hundred-artist.component';
 import { HotHundredCardsComponent } from './modules/hot-hundred-main/hot-hundred-cards/hot-hundred-cards.component';
 import { HotHundredYearComponent } from './modules/hot-hundred-main/hot-hundred-year/hot-hundred-year.component';
+import { ToysComponent } from './modules/toys/toys.component';
+import { OtherComponent } from './common/other/other.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: PageComponent, data: { breadcrumb: "Home" } },
@@ -103,6 +105,8 @@ const routes: Routes = [
     ],
   },
   { path: 'celebrity', component: CelebrityComponent, data: { breadcrumb: 'Celebrity' }  },
+  { path: 'toys', component: ToysComponent, data: { breadcrumb: 'Toys' } },
+  { path: 'other', component: OtherComponent, data: { breadcrumb: "Other" } },
   { path: '404', component: NotFoundComponent, data: { breadcrumb: 'Not Found' }  },
   { path: '**', component: NotFoundComponent, data: { breadcrumb: 'Not Found' } }
 ];
@@ -138,6 +142,8 @@ const routes: Routes = [
     HotHundredArtistComponent,
     HotHundredCardsComponent,
     HotHundredYearComponent,
+    ToysComponent,
+    OtherComponent,
   ],
   imports: [
     BrowserModule,
