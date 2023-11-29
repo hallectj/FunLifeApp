@@ -31,15 +31,14 @@ export class HotHundredSongComponent {
   public ngOnInit(): void {
     // Retrieve the songObj from the state
     this.route.params.subscribe(async (params) => {
-      let song = params["song"];
-      let artist = params["artist"];
-      let position = params["position"];
+      this.loading = true;
 
-      const year = params["year"];
+      const song = deslugify(params["song"]);
+      const artist = deslugify(params["artist"]);
+      const position = params["position"];
+      const year = params["year"];     
       this.currentRank = +position;
       this.currentYear = +year;
-      artist = deslugify(artist);
-      song = deslugify(song);
 
       this.ranks = [...Array(this.getLimit(year)).keys()].map(num => num + 1);
 

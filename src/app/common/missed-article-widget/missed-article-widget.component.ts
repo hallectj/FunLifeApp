@@ -49,12 +49,25 @@ export class MissedArticleWidgetComponent {
   }
 
   public populateInCaseYouMissed(){
-    const randLen = (this.dummyPostsExcerpts.length >= 3) ? 3 : this.dummyPostsExcerpts.length;
-    this.inCaseYouMissedArr = [];
+    if (this.dummyPostsExcerpts.length >= 3) {
+      const randomPosts = [];
+      const randomIndices = [];
+      while (randomIndices.length < 3) {
+        const randomIndex = Math.floor(Math.random() * this.dummyPostsExcerpts.length);
+        if (!randomIndices.includes(randomIndex)) {
+          randomIndices.push(randomIndex);
+        }
+      }
 
-    for (let i = 0; i < randLen; i++) {
-      let idx = Math.floor(Math.random() * this.dummyPostsExcerpts.length);
-      this.inCaseYouMissedArr.push(this.dummyPostsExcerpts[idx]);
-    }    
+      randomIndices.forEach(index => {
+        randomPosts.push(this.dummyPostsExcerpts[index]);
+      });
+
+      this.inCaseYouMissedArr = randomPosts;
+
+    } else {
+      //Not enough posts to select 3 random post
+      return;
+    }
   }
 }
