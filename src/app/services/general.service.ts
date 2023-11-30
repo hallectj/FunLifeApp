@@ -6,7 +6,7 @@ import { GENERAL_URL, IBiographicalInfo, ICelebrity, IDateObj, IHistEvent, IMovi
 import { findMatchingName, slugify } from '../common/Toolbox/util';
 import Fuse from 'fuse.js';
 import { ErrorHandlerService } from '../services/error-handler.service'
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment.development';
 
 // Define a Fuse configuration for fuzzy matching
 const fuseOptions = {
