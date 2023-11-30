@@ -35,16 +35,17 @@ pool.query('SELECT NOW()', (err, result) => {
   }
 });
 
-app.use('/presidents', presidentsRouter);
-app.use('/top-songs', topSongsRouter);
-app.use('/artist', artistRouter);
-app.use('/song-info', songInfoRouter);
-app.use('/celebrities', celebrityRouter);
-app.use('/number-one-hits', numberOneHitsRouter);
-app.use('/posts', postRouter);
+app.use('/api/presidents', presidentsRouter);
+app.use('/api/top-songs', topSongsRouter);
+app.use('/api/artist', artistRouter);
+app.use('/api/song-info', songInfoRouter);
+app.use('/api/celebrities', celebrityRouter);
+app.use('/api/number-one-hits', numberOneHitsRouter);
+app.use('/api/posts', postRouter);
 
+const apiURL = process.env.API_URL;
 app.listen(port, () => {
-  console.log(BASE_URL);
+  console.log(apiURL);
 });
 
 app.get('/', (req, res) => {
