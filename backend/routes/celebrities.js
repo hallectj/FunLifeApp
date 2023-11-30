@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../pool')
-const Fuse = require('fuse.js'); // Import the fuse.js library
+//const Fuse = require('fuse.js'); // Import the fuse.js library
 
 // Route for fetching an array of celebrities names
 router.get('/', (req, res) => {
