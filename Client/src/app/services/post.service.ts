@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, of, throwError } from 'rxjs';
 import { IPostExcerpt } from '../models/shared-models';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class PostService {
-  private server_url = environment.apiUrl;
+  private server_url = 'https://funlifeapp-011573cdfdc6.herokuapp.com/api';
 
   constructor(private http: HttpClient) { }
 
