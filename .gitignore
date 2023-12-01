@@ -56,3 +56,6 @@ backend/node_modules
 backend/.env
 Client/.angular/
 Client/Client/dist/
+Client/src/environments/environment.prod.ts
+Client/src/environments/environment.ts
+backend/dumpfile.dump

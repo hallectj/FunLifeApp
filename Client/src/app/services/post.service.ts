@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, of, throwError } from 'rxjs';
 import { IPostExcerpt } from '../models/shared-models';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class PostService {
-  private server_url = 'http://localhost:5000/api';
+  private server_url = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
