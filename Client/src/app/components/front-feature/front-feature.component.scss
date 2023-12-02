@@ -8,6 +8,10 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 
+  #president_div{
+    display: block;
+  }
+
   header{
     background-color: #212223;
     width: 100%;
@@ -31,9 +35,21 @@
       justify-content: space-around;
       width: 100%;
 
+      .president_wrapper{
+        display: block;
+      }
+
       div{
         flex: 1;
       }
+    }
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .front_card_wrapper{
+    .president_wrapper{
+      display: none !important;
     }
   }
 }

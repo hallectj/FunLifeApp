@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 
 export class PostService {
   private server_url = 'https://funlifeapp-011573cdfdc6.herokuapp.com/api';
+  //private server_url = 'http://localhost:5000/api';
 
   constructor(private http: HttpClient) { }
 
