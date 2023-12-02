@@ -4,8 +4,6 @@ const cors = require('cors');
 const dotenv = require('dotenv').config()
 const helmet = require('helmet');
 const app = express();
-const port = process.env.PORT || 3000;
-const BASE_URL = `http://localhost:${port}`;
 const pool = require('./pool');
 const presidentsRouter = require('./routes/presidents');
 const topSongsRouter = require('./routes/top_songs');
@@ -16,6 +14,8 @@ const numberOneHitsRouter = require('./routes/number_one_songs');
 const postRouter = require('./routes/posts');
 const fetch = require("node-fetch-commonjs")
 const pgp = require('pg-promise')();
+
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
