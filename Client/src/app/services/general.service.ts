@@ -596,6 +596,14 @@ export class GeneralService {
       followers: binding?.followers?.value,
       qid: qid
     }
+
+    if(bioObj.image && bioObj.image.startsWith("http://")){
+      bioObj.image = bioObj.image.replace("http://", "https://");
+    }
+
+    if(bioObj.qid && bioObj.qid.startsWith("http://")){
+      bioObj.qid = bioObj.qid.replace("http://", "https://");
+    }
     
     return bioObj;
   }
