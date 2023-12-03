@@ -53,7 +53,7 @@ export class GeneralService {
 
     const videoId = youtubeId.match('[\\?&]v=([^&#]*)');
     const video = videoId ? videoId[1] : youtubeId;
-    return `http://img.youtube.com/vi/${video}/2.jpg`;
+    return `https://img.youtube.com/vi/${video}/2.jpg`;
   }
 
   public getPresidents(): Observable<IPresident[]>{
