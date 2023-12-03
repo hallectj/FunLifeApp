@@ -12,7 +12,13 @@ router.get('/', (req, res) => {
       console.error('Error executing SQL query:', err);
       res.status(500).send('Internal Server Error');
     } else {
-      const names = result.rows.filter(row => !hasRestrictedOccupation(row.occupations)).map(row => row.name);
+      const updatedResult = result.rows.map(row => {
+        if (row.image && row.image.startsWith('http://')) {
+          row.image = row.image.replace('http://', 'https://');
+        }
+        return row;
+      });
+      const names = updatedResult.filter(row => !hasRestrictedOccupation(row.occupations)).map(row => row.name);
       res.json(names);
     }
   });
@@ -35,7 +41,13 @@ router.get('/:dateset', (req, res) => {
       console.error('Error executing SQL query:', err);
       res.status(500).send('Internal Server Error');
     } else {
-      const filteredRows = result.rows.filter(row => !hasRestrictedOccupation(row.occupations));
+      const updatedResult = result.rows.map(row => {
+        if (row.image && row.image.startsWith('http://')) {
+          row.image = row.image.replace('http://', 'https://');
+        }
+        return row;
+      });
+      const filteredRows = updatedResult.filter(row => !hasRestrictedOccupation(row.occupations));
       res.json(filteredRows);
     }
   });
@@ -58,7 +70,11 @@ router.get('/celeb/:name', (req, res) => {
       if (result.rows.length === 0) {
         res.status(404).send('Celebrity not found');
       } else {
-        res.json(result.rows[0]);
+        let row = result.rows[0];
+        if (row.image && row.image.startsWith('http://')) {
+          row.image = row.image.replace('http://', 'https://');
+        }
+        res.json(row);
       }
     }
   });
