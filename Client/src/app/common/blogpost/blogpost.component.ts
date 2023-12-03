@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, Input, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, Meta, SafeHtml, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../../services/post.service';
 import { deslugify } from '../Toolbox/util';
@@ -39,7 +39,15 @@ export class BlogpostComponent {
 
   @ViewChild('postContent', { static: true }) postContent: ElementRef;
 
-  constructor(private route: ActivatedRoute, private router: Router, public postService: PostService, public reloadService: ReloadService, public sanitize: DomSanitizer){}
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    public postService: PostService, 
+    public reloadService: ReloadService, 
+    public sanitize: DomSanitizer, 
+    private title: Title,
+    private meta: Meta
+  ){}
 
   public async ngOnInit(){
     this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();  
@@ -47,11 +55,12 @@ export class BlogpostComponent {
 
     this.route.paramMap.subscribe(async (params) => {
       this.blogTitle = deslugify(params.get('postTitle'));
+      this.title.setTitle(this.blogTitle);
       const postId = params.get("postId");
       const idx = this.allExcerpts.findIndex(v => v.postId.toString() === postId);
       if(idx !== -1){
         this.postExcerpt = this.allExcerpts[idx];
-
+        this.meta.updateTag({name: "description", content: this.postExcerpt.excerptDesc.substring(0, 256)});
         /** SPECIAL means, we want to route the user to a component html that already exist and not the html I get from the server */
         if(this.postExcerpt.pointer.startsWith("SPECIAL")){
           const pointer = this.postExcerpt.pointer;

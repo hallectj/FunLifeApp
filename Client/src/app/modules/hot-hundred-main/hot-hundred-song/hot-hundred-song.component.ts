@@ -4,6 +4,7 @@ import { map } from 'rxjs';
 import { deslugify, slugify } from '../../../../app/common/Toolbox/util';
 import { ISong2, ISongInfoObj } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -26,7 +27,13 @@ export class HotHundredSongComponent {
 
   public loading: boolean = true;
 
-  constructor(public service: GeneralService, private route: ActivatedRoute, private router: Router){}
+  constructor(
+    public service: GeneralService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private title: Title,
+    private meta: Meta
+  ){}
 
   public ngOnInit(): void {
     // Retrieve the songObj from the state
@@ -39,6 +46,9 @@ export class HotHundredSongComponent {
       const year = params["year"];     
       this.currentRank = +position;
       this.currentYear = +year;
+
+      this.title.setTitle(song + " by " + artist + " " + year);
+      this.meta.updateTag({name: "description", content: this.title.getTitle()});
 
       this.ranks = [...Array(this.getLimit(year)).keys()].map(num => num + 1);
 

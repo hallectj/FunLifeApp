@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GeneralService } from '../../../../app/services/general.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-hot-hundred-cards',
@@ -11,11 +12,12 @@ export class HotHundredCardsComponent {
   public yearsRange = Array.from({ length: 71 }, (_, index) => 1950 + index);
   public selectedYear: number = 1990;
 
-  constructor(public service: GeneralService, public route: ActivatedRoute, public router: Router){}
+  constructor(public service: GeneralService, public route: ActivatedRoute, public router: Router, private title: Title){}
 
   public ngOnInit(){
     this.route.params.subscribe(async (params) => {
       this.selectedYear = params["year"];
+      this.title.setTitle("Hot Hundred Songs of " + this.selectMyYear);
     })
   }
 

@@ -3,6 +3,7 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { slugify } from '../../../../app/common/Toolbox/util';
 import { ISong2 } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-hot-hundred-year',
@@ -14,12 +15,20 @@ export class HotHundredYearComponent {
   public hotHundredSongs: ISong2[] = [];
 
 
-  constructor(public service: GeneralService, public route: ActivatedRoute, public router: Router){}
+  constructor(
+    public service: GeneralService, 
+    public route: ActivatedRoute, 
+    public router: Router, 
+    private title: Title,
+    private meta: Meta
+  ){}
 
   public async ngOnInit(){
     this.route.params.subscribe(async (params) => {
       this.selectedYear = params["year"];
       this.service.sendYearToChild(+this.selectedYear)
+      this.title.setTitle("Hot Hundred Songs of " + this.selectedYear);
+      this.meta.updateTag({name: "description", content: "Hot Hundred Songs of " + this.selectedYear});
       this.hotHundredSongs = await this.service.getSongs(+this.selectedYear, "position").toPromise();
       this.service.updateMainSongPageTitle("Top " + this.hotHundredSongs.length + " Songs of " + this.selectedYear);
     });

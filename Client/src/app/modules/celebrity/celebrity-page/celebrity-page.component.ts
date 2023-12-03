@@ -4,6 +4,7 @@ import { deslugify, numberWithCommas } from '../../../../app/common/Toolbox/util
 import { IBiographicalInfo } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
 import { Location } from '@angular/common';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'celebrity-page',
@@ -29,11 +30,20 @@ export class CelebrityPageComponent {
   public extractString: string = "";
   public wikiURL = "https://en.wikipedia.org/wiki/";
 
-  constructor(public service: GeneralService, private route: ActivatedRoute, private router: Router, public location: Location){} 
+  constructor(
+    public service: GeneralService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    public location: Location, 
+    private title: Title,
+    private meta: Meta
+  ){} 
 
   public async ngOnInit(){
     this.route.paramMap.subscribe(async params => {
       const celebName = deslugify(params.get('celebName'));
+      this.title.setTitle(celebName);
+      this.meta.updateTag({name: "description", content: "Interesting facts and information on " + celebName});
 
       let arr = await this.service.getTrueCelebName(celebName).toPromise();
       const trueCelebName = ((arr.length > 0) && arr[0]) ? arr[0] : celebName;

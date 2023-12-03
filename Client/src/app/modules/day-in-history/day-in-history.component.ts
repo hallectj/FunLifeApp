@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LOADINGSPINNER } from '../../../app/common/base64Assests';
 import { IHistEvent, IPostExcerpt } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-day-in-history',
@@ -57,7 +58,13 @@ export class DayInHistoryComponent {
 
   @ViewChild('calendar') calendar!: ElementRef<HTMLDivElement>; 
 
-  constructor(public route: ActivatedRoute, public router: Router, public service: GeneralService){}
+  constructor(
+    public route: ActivatedRoute, 
+    public router: Router, 
+    public service: GeneralService, 
+    private title: Title,
+    private meta: Meta
+  ){}
 
   public applyStyles(index: number){
     if(index + 1 === +this.currentDay){
@@ -77,6 +84,7 @@ export class DayInHistoryComponent {
   }
 
   public ngOnInit(){
+    this.title.setTitle("This day in History");
     this.route.paramMap.subscribe(async params => {
       this.isHistoryLoading = true;
       const histDay = params.get("day");
@@ -84,6 +92,8 @@ export class DayInHistoryComponent {
 
       this.currentMonth = histMonth;
       this.currentDay = histDay;
+
+      this.meta.updateTag({name: "description", content: "Important historical events that happened " + this.currentMonth + " " +this.currentDay + " throughout the history of mankind."})
 
       const prevDateObj = this.getPreviousDateInfo();
       this.previousDay = prevDateObj.previousDay;

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GeneralService } from '../../../app/services/general.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 const STARTYEAR = 1950;
 const ENDYEAR = 2020;
@@ -61,12 +62,21 @@ export class HotHundredMainComponent {
 
   public subscription: Subscription = new Subscription();
 
-  constructor(public route: ActivatedRoute, public router: Router, public service: GeneralService){}
+  constructor(
+    public route: ActivatedRoute, 
+    public router: Router, 
+    public service: GeneralService, 
+    private title: Title,
+    private meta: Meta
+  ){}
 
   public ngOnInit(){
     this.subscription.add(this.service.subscribeToYearChange().subscribe((year: number) => {
       setTimeout(() => {
         this.selectedYear = year.toString();
+        this.title.setTitle("Hot Hundred Songs of " + year);
+        this.meta.updateTag({name: "description", content: this.title.getTitle()})
+        
         this.service.refreshSidebarSongs(year);
       });
     }));

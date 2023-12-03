@@ -1,5 +1,5 @@
 import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Meta, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { slugify } from '../../../../src/app/common/Toolbox/util';
 import { LOADINGSPINNER } from '../../../../src/app/common/base64Assests';
@@ -101,13 +101,21 @@ export class BirthdayComponent {
   
   @ViewChildren('sportCards') sportCards!: QueryList<ElementRef<HTMLElement>>;
 
-  constructor(public service: GeneralService, public sanitizer: DomSanitizer, private router: Router){}
+  constructor(
+    public service: GeneralService, 
+    public sanitizer: DomSanitizer, 
+    private router: Router,
+    private title: Title,
+    private meta: Meta
+  ){}
   
   public isLeapYear(year: number){
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
   }
 
   public async ngOnInit(){
+    this.title.setTitle("Number One Song on Your Birthday");
+    this.meta.updateTag({name: "description", content: "Find out what was the number one song on your birthday as well as celebrities you share a birthday with and more."})
     this.songs = await this.service.getNumberOneHitSongs().toPromise();
     this.movies = await this.service.getMovies().toPromise();
 

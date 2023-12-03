@@ -4,6 +4,7 @@ import { IPostExcerpt } from '../../../app/models/shared-models';
 import { PostService } from '../../../app/services/post.service';
 import { isValidDate, slugify } from '../Toolbox/util';
 import { ReloadService } from '../../../app/services/reload.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 const POSTPERPAGEPAGEN = 8;
 const POSTPERPAGEPAGE1 = 5; 
@@ -22,9 +23,19 @@ export class PageComponent {
   public startIndex = 0;
   public endIndex = POSTPERPAGEPAGE1;
 
-  constructor(private route: ActivatedRoute, private router: Router, public postService: PostService, public reloadService: ReloadService){}
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    public postService: PostService, 
+    public reloadService: ReloadService, 
+    private title: Title,
+    private meta: Meta
+  ){}
 
   public async ngOnInit(){
+    this.title.setTitle("Back Then Now");
+    this.meta.updateTag({name: "description", content: "Website about nostalgia and celebrities"});
+
     this.randomYear = this.getRandomYear(1950, 2020).toString();
     this.postPerPage = (this.pageNumber === 1) ? POSTPERPAGEPAGE1 : POSTPERPAGEPAGEN;
 

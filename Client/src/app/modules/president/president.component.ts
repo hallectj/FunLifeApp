@@ -4,6 +4,7 @@ import { GeneralService } from '../../../app/services/general.service';
 import { Location } from '@angular/common';
 import { deslugify } from '../../../app/common/Toolbox/util';
 import { IPresident } from '../../../app/models/shared-models';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'president',
@@ -29,11 +30,20 @@ export class PresidentComponent {
     spouses: []
   }
 
-  constructor(public service: GeneralService, private route: ActivatedRoute, private router: Router, public location: Location){} 
+  constructor(
+    public service: GeneralService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    public location: Location, 
+    private title: Title,
+    private meta: Meta
+  ){} 
 
   ngOnInit(){
     this.route.paramMap.subscribe(async params => {
       const presName = deslugify(params.get('presidentName'));
+      this.title.setTitle(presName);
+      this.meta.updateTag({name: "description", content: "Interesting facts and information on " + presName});
 
       let arr = await this.service.getTruePresidentName(presName).toPromise();
       const truePresName = (arr.length > 0) ? arr[0] : presName;

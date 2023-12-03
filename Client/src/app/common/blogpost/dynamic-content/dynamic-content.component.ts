@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Meta } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { PostService } from '../../../../app/services/post.service';
 import { ReloadService } from '../../../services/reload.service';
@@ -21,7 +21,12 @@ export class DynamicContentComponent {
   @Output() isContentLoadedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @ViewChild('postContent', { static: true }) postContent: ElementRef;
 
-  constructor(public service: PostService, public reloadService: ReloadService, public sanitizer: DomSanitizer){}
+  constructor(
+    public service: PostService, 
+    public reloadService: ReloadService, 
+    public sanitizer: DomSanitizer,
+    private meta: Meta
+  ){}
 
   public async ngOnInit(){
     this.subscription.add(this.reloadService.getReloadTrigger().subscribe(async (postExcerpt: IPostExcerpt) => {
@@ -33,6 +38,7 @@ export class DynamicContentComponent {
     this.contentIsLoading = true;
     const htmlContent = (await this.service.getPost(postId, true).toPromise()) as string;
     this.exampleHTML = (this.sanitizer.bypassSecurityTrustHtml(htmlContent)) as string;
+    this.meta.updateTag({name: "description", content: this.exampleHTML.substring(0, 256)});
     this.contentIsLoading = false;
   }
 

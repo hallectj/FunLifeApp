@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LOADINGSPINNER } from '../../../app/common/base64Assests';
 import { ICelebCard, ICelebrity, IDateObj } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-celebrity',
@@ -10,7 +11,11 @@ import { GeneralService } from '../../../app/services/general.service';
 })
 
 export class CelebrityComponent {
-  constructor(public service: GeneralService){}
+  constructor(
+    public service: GeneralService, 
+    private title: Title,
+    private meta: Meta
+  ){}
 
   public dateObj: IDateObj = this.service.populateDateObj();
   public yesterday = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-1);
@@ -38,6 +43,9 @@ export class CelebrityComponent {
     this.yesterday.setHours(0, 0, 0, 0);
     this.tomorrow.setHours(0, 0, 0, 0);
     this.today.setHours(0, 0, 0, 0);
+
+    this.title.setTitle("Celebrities Born this day");
+    this.meta.updateTag({name: "description", content: this.title.getTitle()})
 
     this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();
 
