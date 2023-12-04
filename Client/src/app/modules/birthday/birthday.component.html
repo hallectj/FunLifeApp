@@ -84,19 +84,28 @@
 
 <section *ngIf="showCelebs" class="section celebrity-section">
   <h3>Celebrities you share a birthday with {{lockedInMonthAndDay}}</h3>
-  <div class="celebrity-holder">
-    <div *ngFor="let card of cards">
-      <celeb-card
-        [image]="card.image"
-        [size]="'large'"
-        [medalColor]="'gold'"
-        [showSkills]="true"
-        [celebPopularity]="card.celebPopularity"
-        [celebInfo]="card.celebInfo"
-      ></celeb-card>
+  <div class="container-fluid">
+    <div *ngFor="let card of cards; let j = index;">
+      <div class="row" *ngIf="j % 3 === 0">
+        <div class="col-md-4" *ngFor="let card of cards.slice(j, j + 3); let i = index;">
+          <div class="box">
+            <celeb-card
+              [image]="card.image"
+              [size]="'large'"
+              [medalColor]="'gold'"
+              [showSkills]="true"
+              [celebPopularity]="card.celebPopularity"
+              [celebInfo]="card.celebInfo"
+            ></celeb-card>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+
+
 
 <section class="section other-section">
   <div *ngIf="showSports">

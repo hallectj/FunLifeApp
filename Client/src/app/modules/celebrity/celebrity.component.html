@@ -8,32 +8,44 @@
       <p>If you want to know which celebrities were born on your birthday including year, check out our page <a routerLink="/birthday">Celebrities Born on My Birthday</a>.</p>
     </div>
   </header>
-  
-  <div class="card-container">
+
+  <div class="container-fluid">
     <ng-container *ngIf="!isExpanded; else showAllCelebs">
-      <ng-container *ngFor="let card of todayCelebCards | slice:0:initCelebCardsLen">
-        <celeb-card
-          [image]="card.image"
-          [size]="card.size"
-          [medalColor]="card.medalColor"
-          [showSkills]="card.showSkills"
-          [celebPopularity]="card.celebPopularity"
-          [celebInfo]="card.celebInfo"
-        ></celeb-card>
-      </ng-container>
+      <div *ngFor="let chunk of todayCelebCards | slice:0:initCelebCardsLen-2; let j = index;">
+        <div class="row" *ngIf="j % 3 === 0">
+          <div class="col-md-4" *ngFor="let card of todayCelebCards.slice(j, j + 3); let i = index;">
+            <div class="box">
+              <celeb-card
+                [image]="card.image"
+                [size]="card.size"
+                [medalColor]="card.medalColor"
+                [showSkills]="card.showSkills"
+                [celebPopularity]="card.celebPopularity"
+                [celebInfo]="card.celebInfo"
+              ></celeb-card>
+            </div>
+          </div>
+        </div>
+      </div>    
     </ng-container>
 
     <ng-template #showAllCelebs>
-      <ng-container *ngFor="let card of todayCelebCards">
-        <celeb-card
-          [image]="card.image"
-          [size]="card.size"
-          [medalColor]="card.medalColor"
-          [showSkills]="card.showSkills"
-          [celebPopularity]="card.celebPopularity"
-          [celebInfo]="card.celebInfo"
-        ></celeb-card>
-      </ng-container>
+      <div *ngFor="let chunk of todayCelebCards let j = index;">
+        <div class="row" *ngIf="j % 3 === 0">
+          <div class="col-md-4 bg-success" *ngFor="let card of todayCelebCards.slice(j, j + 3); let i = index;">
+            <div class="box">
+              <celeb-card
+                [image]="card.image"
+                [size]="card.size"
+                [medalColor]="card.medalColor"
+                [showSkills]="card.showSkills"
+                [celebPopularity]="card.celebPopularity"
+                [celebInfo]="card.celebInfo"
+              ></celeb-card>
+            </div>
+          </div>
+        </div>
+      </div>  
     </ng-template>
   </div>
 

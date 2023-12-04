@@ -29,7 +29,7 @@ export class GeneralService {
   private yearSubject: Subject<number> = new Subject<number>();
   private mainSongPageTitleSubject: Subject<string> = new Subject<string>();
 
-  public server_url = 'https://funlifeapp-011573cdfdc6.herokuapp.com/api';
+  private server_url = 'https://funlifeapp-011573cdfdc6.herokuapp.com/api';
   //private server_url = 'http://localhost:5000/api';
 
   constructor(private http: HttpClient, private errorHandler: ErrorHandlerService) {}

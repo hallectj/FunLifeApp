@@ -61,7 +61,13 @@ app.use('/api/celebrities', celebrityRouter);
 app.use('/api/number-one-hits', numberOneHitsRouter);
 app.use('/api/posts', postRouter);
 
-const apiURL = process.env.API_URL;
+let apiURL = '';
+if(process.env.NODE_ENV === 'development'){
+  apiURL = process.env.LOCAL_API_URL;
+}else if(process.env.NODE_ENV === 'production'){
+  apiURL = process.env.API_URL;
+}
+
 app.listen(port, () => {
   if(process.env.NODE_ENV === 'development'){
     console.log(apiURL);
