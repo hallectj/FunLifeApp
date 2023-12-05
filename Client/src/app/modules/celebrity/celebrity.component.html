@@ -64,14 +64,16 @@
     
       <div class="card-container secondary-card-container">
         <ng-container *ngFor="let card of tomorrowCelebCards">
-          <celeb-card
-            [image]="card.image"
-            [size]="card.size"
-            [medalColor]="card.medalColor"
-            [showSkills]="card.showSkills"
-            [celebPopularity]="card.celebPopularity"
-            [celebInfo]="card.celebInfo"
-          ></celeb-card>
+          <div class="small-box">
+            <celeb-card
+              [image]="card.image"
+              [size]="card.size"
+              [medalColor]="card.medalColor"
+              [showSkills]="card.showSkills"
+              [celebPopularity]="card.celebPopularity"
+              [celebInfo]="card.celebInfo"
+            ></celeb-card>
+          </div>
         </ng-container>
       </div>
   
@@ -84,14 +86,16 @@
   
       <div class="card-container secondary-card-container">
         <ng-container *ngFor="let card of yesterdayCelebCards">
-          <celeb-card
-            [image]="card.image"
-            [size]="card.size"
-            [medalColor]="card.medalColor"
-            [showSkills]="card.showSkills"
-            [celebPopularity]="card.celebPopularity"
-            [celebInfo]="card.celebInfo"
-          ></celeb-card>
+          <div class="small-box">
+            <celeb-card
+              [image]="card.image"
+              [size]="card.size"
+              [medalColor]="card.medalColor"
+              [showSkills]="card.showSkills"
+              [celebPopularity]="card.celebPopularity"
+              [celebInfo]="card.celebInfo"
+            ></celeb-card>
+          </div>
         </ng-container>
       </div>
 

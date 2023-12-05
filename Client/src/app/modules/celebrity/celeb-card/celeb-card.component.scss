@@ -33,7 +33,6 @@
   .inner-card{
     cursor: pointer;
     margin: 10px;
-    height: 100%;
     background-color: #000;
     background-position: center;
     background-repeat: no-repeat;
@@ -103,4 +102,20 @@
 .small-card{
   width: 180px;
   height: 200px;
+}
+
+@media screen and (min-width: 450px){
+  .inner-card{
+    height: 150%;
+  }
+}
+
+@media screen and (min-width: 100px) and (max-width: 450px) {
+  .small-card{
+    width: 100%;
+  }
+
+  .inner-card{
+    height: 200% !important;
+  }
 }

@@ -28,6 +28,10 @@
 
 .secondary-card-container{
   display: flex;
+
+  .small-box{
+    width: unset;
+  }
 }
 
 .show-all{
@@ -109,4 +113,15 @@
       width: 100%;
       margin: 0 auto;
     }
+}
+
+
+@media screen and (min-width: 100px) and (max-width: 450px) {
+  .secondary-card-container{
+    display: flex;
+  
+    .small-box{
+      width: 100%;
+    }
+  }
 }

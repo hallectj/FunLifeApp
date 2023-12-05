@@ -38,7 +38,6 @@ export class DynamicContentComponent {
     this.contentIsLoading = true;
     const htmlContent = (await this.service.getPost(postId, true).toPromise()) as string;
     this.exampleHTML = (this.sanitizer.bypassSecurityTrustHtml(htmlContent)) as string;
-    this.meta.updateTag({name: "description", content: this.exampleHTML.substring(0, 256)});
     this.contentIsLoading = false;
   }
 
