@@ -1,5 +1,5 @@
 import { Inject, Injectable, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, ResolveFn, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, ResolveFn, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { of } from 'rxjs';
 import { GeneralService } from '../../services/general.service'; // Replace with your actual service
