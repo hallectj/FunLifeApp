@@ -6,8 +6,8 @@
       <div>position</div>
       
       <div class="position-dropdown">
-        <select class="custom-select" name="dates" id="position-dropdown-select">
-          <option [selected]="i + 1 === +this.currentRank" *ngFor="let p of ranks; let i = index" (click)="selectPosition(p)" [value]="p">#{{p}}</option>
+        <select class="custom-select" name="dates" id="position-dropdown-select" (change)="onPositionSelect($event)">
+          <option [selected]="i + 1 === +this.currentRank" *ngFor="let p of ranks; let i = index" [value]="p">#{{p}}</option>
         </select>
       </div>
   

@@ -28,8 +28,8 @@
     </div>
 
     <div class="date-dropdown">
-      <select class="custom-select" name="dates" id="date-dropown-select">
-        <option (click)="pickTheYear(year)" *ngFor="let year of yearsRange; let i = index" [value]="year">{{year}}</option>
+      <select class="custom-select" name="dates" id="date-dropown-select" (change)="onPickTheYear($event)">
+        <option *ngFor="let year of yearsRange; let i = index" [value]="year">{{year}}</option>
       </select>
     </div>
   </div>

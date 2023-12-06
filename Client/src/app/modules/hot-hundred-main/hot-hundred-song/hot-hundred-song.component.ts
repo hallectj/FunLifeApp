@@ -79,6 +79,12 @@ export class HotHundredSongComponent {
     this.youTubeURL = "https://www.youtube.com/embed/" + this.songInfoObj.songObj.videoId;
   }
 
+  public onPositionSelect(event: Event): void {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    this.selectPosition(+selectedValue);
+  }
+  
+
   public goToYear(songObj: ISong2){
     const route = ["/charts/hot-hundred-songs/" + songObj.year];
     this.router.navigate(route);

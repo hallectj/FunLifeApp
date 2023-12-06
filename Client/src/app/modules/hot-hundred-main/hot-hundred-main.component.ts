@@ -94,6 +94,11 @@ export class HotHundredMainComponent {
     this.router.navigate(route);
   }
 
+  public onPickTheYear($event: Event){
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    this.pickTheYear(+selectedValue)
+  }
+
   public ngOnDestroy(){
     this.subscription.unsubscribe();
   }
