@@ -1,10 +1,10 @@
 <div id="day-in-history-wrapper">
   <div class="top-banner">
-    <div><span>{{currentMonth}} {{currentDay}}</span></div>
+    <div><span>{{currentMonth.substring(0, 3)}} {{currentDay}}</span></div>
     <div>This Day In History</div>
     <div class="date-controls">
-      <div class="date-direction date-prev" (click)="getPreviousHistoryDayEvent()"><span><i class="fa-solid fa-chevron-left"></i>{{previousMonth}} {{previousDay}}</span></div>
-      <div class="date-direction date-next" (click)="getNextHistoryDayEvent()"><span>{{nextMonth}} {{nextDay}}<i class="fa-solid fa-chevron-right"></i></span></div>
+      <div class="date-direction date-prev" (click)="getPreviousHistoryDayEvent()"><span><i class="fa-solid fa-chevron-left"></i>{{previousMonth.substring(0, 3)}} {{previousDay}}</span></div>
+      <div class="date-direction date-next" (click)="getNextHistoryDayEvent()"><span>{{nextMonth.substring(0, 3)}} {{nextDay}}<i class="fa-solid fa-chevron-right"></i></span></div>
     </div>
   </div>
 

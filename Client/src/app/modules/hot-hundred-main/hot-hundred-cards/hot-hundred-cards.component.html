@@ -3,5 +3,5 @@
 </div>
 
 <div class="allYears">
-  <div (click)="selectMyYear(year)" *ngFor="let year of yearsRange" class="yearBox">{{year}}<span>Chart</span></div>
+  <div (touchstart)="selectMyYear(year)" (click)="selectMyYear(year)" *ngFor="let year of yearsRange" class="yearBox">{{year}}<span>Chart</span></div>
 </div>

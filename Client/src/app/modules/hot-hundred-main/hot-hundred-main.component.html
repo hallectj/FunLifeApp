@@ -12,12 +12,12 @@
               <div class="inner-years">
                 <div class="left-years">
                   <div *ngFor="let year of decades[i].even_years">
-                    <div (click)="pickTheYear(year)" class="year">{{year}}</div>
+                    <div (click)="pickTheYear(year)" (touchstart)="pickTheYear(year)" class="year">{{year}}</div>
                   </div>
                 </div>
                 <div class="right-years">
                   <div *ngFor="let year of decades[i].odd_years">
-                    <div (click)="pickTheYear(year)" class="year">{{year}}</div>
+                    <div (click)="pickTheYear(year)" (touchstart)="pickTheYear(year)" class="year">{{year}}</div>
                   </div>
                 </div>
               </div>
