@@ -1,9 +1,10 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, Inject, Input, Output, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { slugify } from '../../..//app/common/Toolbox/util';
 import { IFamousQuote, ISong, ISong2, IToy } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'info-sidebar',
@@ -36,30 +37,42 @@ export class InfoSidebarComponent {
 
   public subscription: Subscription = new Subscription();
   
-  constructor(public generalService: GeneralService, public route: ActivatedRoute, public router: Router){}
+  public isBrowser: boolean = false;
+
+  constructor(
+    public generalService: GeneralService, 
+    public route: ActivatedRoute, 
+    public router: Router,
+    @Inject(PLATFORM_ID) platformId: Object
+  ){
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   public async ngOnInit(){
-    const mainURL = window.location.href;
-    const year = this.extractYearFromUrl(mainURL);
-
+    let year = 1990;
+    if(this.isBrowser){
+      const mainURL = window.location.href;
+      year = this.extractYearFromUrl(mainURL);
+    }
+  
     if(!!year && year.toString().length === 4 && /[0-9]{4}/g.test(year.toString())){
       this.randomYear = year.toString();
     }
-
+  
     await this.callSongsAPI(this.randomYear);
-
+  
     if(!this.hideToys){
       this.toys = await this.generalService.getToys().toPromise();
       this.displayToy = this.toyByYear(+this.randomYear);
     }
-
+  
     if(!this.hideQuote){
       const quote = await this.generalService.getRandomQuote().toPromise();
       if(quote && quote?.data && quote?.data.length > 0){
         this.famousQuote = quote.data[0];
       }
     }
-
+  
     this.subscription.add(this.generalService.subscribeToSidebarRefresh().subscribe(async (year: number) => {
       await this.callSongsAPI(year.toString());
       this.randomYear = year.toString();

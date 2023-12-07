@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 
-import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+import { HttpClientModule, HttpClientJsonpModule, withFetch, provideHttpClient } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './common/navbar/navbar.component';
@@ -156,7 +156,7 @@ const routes: Routes = [
   providers: [ErrorHandlerService, SingleRouteResolver, DateRouteResolver, ArtistRouteResolver, SongRouteResolver, {     
      provide: DATE_PIPE_DEFAULT_OPTIONS,
      useValue: { dateFormat: "longDate" }
-  }],
+  }, provideClientHydration(), provideHttpClient(withFetch())],
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })

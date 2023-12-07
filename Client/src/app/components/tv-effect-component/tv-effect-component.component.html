@@ -2,7 +2,7 @@
   <div id="tvWrapper">
     <main #main class="scanlines">
       <div class="screen">
-        <canvas #canvas id="canvas" class="picture" style="height: 100%; width: 100%; min-width: 100px; min-height: 120px;"></canvas>
+        <canvas *ngIf="isBrowser" #canvas id="canvas" class="picture" style="height: 100%; width: 100%; min-width: 100px; min-height: 120px;"></canvas>
         <div class="overlay">
           <div #text class="text"><span>AV-1</span></div>
           <div #menu class="menu">
