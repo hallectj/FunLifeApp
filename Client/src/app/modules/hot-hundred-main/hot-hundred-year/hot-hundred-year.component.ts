@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { slugify } from '../../../../app/common/Toolbox/util';
+import { Util } from '../../../common/Toolbox/util';
 import { ISong2 } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
 import { Meta, Title } from '@angular/platform-browser';
@@ -35,7 +35,7 @@ export class HotHundredYearComponent {
   }
 
   public onClickedSong(songObj: ISong2){
-    const route = ['charts/hot-hundred-songs/' + this.selectedYear + "/" + songObj.position + "/artist/" + slugify(songObj.artist) + "/song/" + slugify(songObj.song)];
+    const route = ['charts/hot-hundred-songs/' + this.selectedYear + "/" + songObj.position + "/artist/" + Util.slugify(songObj.artist) + "/song/" + Util.slugify(songObj.song)];
     this.router.navigate(route);
   }
 
@@ -43,7 +43,7 @@ export class HotHundredYearComponent {
     //artist name isn't always accurate after desluggifying, so make another call to get artist
     //const response = await this.service.getSongObj(+this.selectedYear, songObj.position).toPromise();
     //const artist = (!!response && !!response.artist) ? response.artist : songObj.artist;
-    const route = ['charts/hot-hundred-songs/artist/' + slugify(artist)];
+    const route = ['charts/hot-hundred-songs/artist/' + Util.slugify(artist)];
     this.router.navigate(route);
   }
 

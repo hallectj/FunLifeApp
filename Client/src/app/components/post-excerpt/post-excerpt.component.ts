@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { slugify } from '../../..//app/common/Toolbox/util';
 import { IMAGE_NOT_FOUND } from '../../../app/common/base64Assests';
 import { IHistEvent, IPostExcerpt } from '../../../app/models/shared-models';
 import { PostService } from '../../../app/services/post.service';

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GeneralService } from '../../../app/services/general.service';
 import { Location } from '@angular/common';
-import { deslugify } from '../../../app/common/Toolbox/util';
+import { Util } from '../../common/Toolbox/util';
 import { IPresident } from '../../../app/models/shared-models';
 import { Meta, Title } from '@angular/platform-browser';
 
@@ -41,7 +41,7 @@ export class PresidentComponent {
 
   ngOnInit(){
     this.route.paramMap.subscribe(async params => {
-      const presName = deslugify(params.get('presidentName'));
+      const presName = Util.deslugify(params.get('presidentName'));
       this.title.setTitle(presName);
       this.meta.updateTag({name: "description", content: "Interesting facts and information on " + presName});
 

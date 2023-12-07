@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IPostExcerpt } from '../../../app/models/shared-models';
 import { PostService } from '../../../app/services/post.service';
-import { isValidDate, slugify } from '../Toolbox/util';
+import { Util } from '../../common/Toolbox/util';
 import { ReloadService } from '../../../app/services/reload.service';
 import { Meta, Title } from '@angular/platform-browser';
 
@@ -78,7 +78,7 @@ export class PageComponent {
 
 
   public getPost(postExcerpt: IPostExcerpt){
-    let correctRoute = ['/posts/' + postExcerpt.postId + "/" + slugify(postExcerpt.excerptTitle)];
+    let correctRoute = ['/posts/' + postExcerpt.postId + "/" + Util.slugify(postExcerpt.excerptTitle)];
     this.router.navigate(correctRoute)
   }
 

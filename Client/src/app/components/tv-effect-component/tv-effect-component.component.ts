@@ -1,6 +1,7 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, Input, PLATFORM_ID, ViewChild } from '@angular/core';
 import { ISport } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../../src/app/services/general.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'tv-effect-component',
@@ -39,7 +40,11 @@ export class TvEffectComponentComponent {
     score: ""
   }
 
-  constructor(private service: GeneralService){}
+  public isBrowser: boolean;
+
+  constructor(private service: GeneralService, @Inject(PLATFORM_ID) platformId: Object){
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   public async ngOnInit(){
     const response = await this.service.getSportsByYear(this.randomYear).toPromise();
@@ -54,18 +59,21 @@ export class TvEffectComponentComponent {
   }
 
   public ngAfterViewInit(){
-    this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.count = this.innerDiv.nativeElement.childElementCount - 1;
-    this.canvas.nativeElement.width = this.ww / 3;
-    this.canvas.nativeElement.height = (this.ww * 0.5625) / 3;	
+    if(this.isBrowser){
+      this.ctx = this.canvas.nativeElement.getContext('2d');
+      this.count = this.innerDiv.nativeElement.childElementCount - 1;
+      this.canvas.nativeElement.width = this.ww / 3;
+      this.canvas.nativeElement.height = (this.ww * 0.5625) / 3;	
+  
+      setTimeout(() => {
+        this.main.nativeElement.classList.add('on');
+        this.main.nativeElement.classList.remove('off');
+        this.animate(this.ctx);
+        this.glitchEffect();
+        this.sportTextSlider(5000);
+      }, 1000);
+    }
 
-    setTimeout(() => {
-      this.main.nativeElement.classList.add('on');
-      this.main.nativeElement.classList.remove('off');
-      this.animate(this.ctx);
-      this.glitchEffect();
-      this.sportTextSlider(5000);
-    }, 1000);
   }
 
   public clearSportsInterval(){

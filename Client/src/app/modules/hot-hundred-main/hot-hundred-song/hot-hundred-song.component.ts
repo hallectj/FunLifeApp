@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
-import { deslugify, slugify } from '../../../../app/common/Toolbox/util';
+import { Util } from '../../../common/Toolbox/util';
 import { ISong2, ISongInfoObj } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
 import { Meta, Title } from '@angular/platform-browser';
@@ -40,8 +40,8 @@ export class HotHundredSongComponent {
     this.route.params.subscribe(async (params) => {
       this.loading = true;
 
-      const song = deslugify(params["song"]);
-      const artist = deslugify(params["artist"]);
+      const song = Util.deslugify(params["song"]);
+      const artist = Util.deslugify(params["artist"]);
       const position = params["position"];
       const year = params["year"];     
       this.currentRank = +position;
@@ -91,7 +91,7 @@ export class HotHundredSongComponent {
   }
 
   public onClickArtist(songObj: ISong2){
-    const route = ["/charts/hot-hundred-songs/artist/" + slugify(songObj.artist)];
+    const route = ["/charts/hot-hundred-songs/artist/" + Util.slugify(songObj.artist)];
     this.router.navigate(route);
   }
 

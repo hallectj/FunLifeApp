@@ -1,9 +1,10 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, Inject, Input, Output, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { slugify } from '../../..//app/common/Toolbox/util';
 import { IFamousQuote, ISong, ISong2, IToy } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
+import { isPlatformBrowser } from '@angular/common';
+import { Util } from '../../common/Toolbox/util';
 
 @Component({
   selector: 'info-sidebar',
@@ -35,12 +36,20 @@ export class InfoSidebarComponent {
   @Input() showAlternateTitle: boolean = false;
 
   public subscription: Subscription = new Subscription();
+
+  public isBrowser: boolean = false;
   
-  constructor(public generalService: GeneralService, public route: ActivatedRoute, public router: Router){}
+  constructor(public generalService: GeneralService, public route: ActivatedRoute, public router: Router, @Inject(PLATFORM_ID) platformId: Object){
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
+
 
   public async ngOnInit(){
-    const mainURL = window.location.href;
-    const year = this.extractYearFromUrl(mainURL);
+    let year = 1990;
+    if(this.isBrowser){
+      const mainURL = window.location.href;
+      year = this.extractYearFromUrl(mainURL);
+    }
 
     if(!!year && year.toString().length === 4 && /[0-9]{4}/g.test(year.toString())){
       this.randomYear = year.toString();
@@ -67,7 +76,7 @@ export class InfoSidebarComponent {
   }
 
   public onClickedSong(song: ISong2){
-    const route = ["/charts/hot-hundred-songs/" + song.year + "/" + song.position + "/artist/" +  slugify(song.artist) + "/song/" + slugify(song.song)];
+    const route = ["/charts/hot-hundred-songs/" + song.year + "/" + song.position + "/artist/" +  Util.slugify(song.artist) + "/song/" + Util.slugify(song.song)];
     this.router.navigate(route);
   }
 
