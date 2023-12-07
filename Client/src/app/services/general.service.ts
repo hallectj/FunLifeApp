@@ -3,9 +3,9 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, ReplaySubject, Subject, forkJoin, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { GENERAL_URL, IBiographicalInfo, ICelebrity, IDateObj, IHistEvent, IMovie, IPresident, ISong, ISong2, ISongInfoObj, ISport, IToy } from '../models/shared-models';
+import { findMatchingName, slugify } from '../common/Toolbox/util';
 import Fuse from 'fuse.js';
 import { ErrorHandlerService } from '../services/error-handler.service'
-import { Util } from '../common/Toolbox/util';
 
 
 // Define a Fuse configuration for fuzzy matching
@@ -275,7 +275,7 @@ export class GeneralService {
     return this.getPresidents().pipe(
       map((presidents: IPresident[]) => {
         const strArr: string[] = [];
-        const value = Util.findMatchingName(name, presidents.map(v => v.name));
+        const value = findMatchingName(name, presidents.map(v => v.name));
         if(!!value){
           strArr.push(value);
         }
@@ -290,7 +290,7 @@ export class GeneralService {
       map(response => {
         const data = response;
         //will ever only be one element or no elements
-        const value = Util.findMatchingName(name, data);
+        const value = findMatchingName(name, data);
         return [value];
       })
     )
@@ -318,7 +318,7 @@ export class GeneralService {
     return this.http.get<any>(url).pipe(
       map((response: ISong2[]) => {
         const data = response;
-        const value = Util.findMatchingName(artist, data.map(v => v.artist));
+        const value = findMatchingName(artist, data.map(v => v.artist));
         return [value];
       })
     )
@@ -346,8 +346,8 @@ export class GeneralService {
   public getTrueSongName(year: number, position: number, song: string, artist: string): Observable<{artist: string, song: string}[]>{
     return this.getSongObj(year, position).pipe(
       map((response: ISong2) => {
-        const foundSong = Util.findMatchingName(song, [response.song]);
-        const foundArtist = Util.findMatchingName(artist, [response.artist]);
+        const foundSong = findMatchingName(song, [response.song]);
+        const foundArtist = findMatchingName(artist, [response.artist]);
         return [{ artist: foundArtist, song: foundSong }]
       })
     )
@@ -357,8 +357,8 @@ export class GeneralService {
     const url = this.server_url + "/top-songs/" + year.toString();
     return this.http.get<any>(url).pipe(
       map((response: ISong2[]) => {
-        const foundSong = Util.findMatchingName(song, response.map(v => v.song));
-        const foundArtist = Util.findMatchingName(artist, response.map(v => v.artist));
+        const foundSong = findMatchingName(song, response.map(v => v.song));
+        const foundArtist = findMatchingName(artist, response.map(v => v.artist));
         return { artist: foundArtist, song: foundSong };
       })
     )

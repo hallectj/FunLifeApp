@@ -1,7 +1,7 @@
 import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import { DomSanitizer, Meta, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { Util } from '../../common/Toolbox/util';
+import { slugify } from '../../../../src/app/common/Toolbox/util';
 import { LOADINGSPINNER } from '../../../../src/app/common/base64Assests';
 import { ICelebCard, ICelebrity, IHistEvent, IMovie, IPostExcerpt, IPresident, ISong, ISong2, ISport } from '../../../../src/app/models/shared-models';
 import { GeneralService } from '../../../../src/app/services/general.service';
@@ -349,7 +349,7 @@ export class BirthdayComponent {
   }
 
   public goToPresidentPage(){
-    let sluggedPresident = Util.slugify(this.currentPresident.name);
+    let sluggedPresident = slugify(this.currentPresident.name);
     this.router.navigate(['/president/' + sluggedPresident])
   }
 }

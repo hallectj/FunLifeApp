@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { IPostExcerpt } from '../../../app/models/shared-models';
 import { PostService } from '../../../app/services/post.service';
-import { Util } from '../../common/Toolbox/util';
+import { slugify } from '../Toolbox/util';
 import { ReloadService } from '../../../app/services/reload.service';
 
 @Component({
@@ -44,7 +44,7 @@ export class MissedArticleWidgetComponent {
 
   public goToPost(article: IPostExcerpt){
     this.selectedArticle = article;
-    this.router.navigate(['/posts/' + article.postId + "/" + Util.slugify(this.selectedArticle.excerptTitle)]);
+    this.router.navigate(['/posts/' + article.postId + "/" + slugify(this.selectedArticle.excerptTitle)]);
     this.populateInCaseYouMissed();
   }
 

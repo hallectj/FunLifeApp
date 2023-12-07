@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Util } from '../../../common/Toolbox/util';
+import { deslugify, numberWithCommas } from '../../../../app/common/Toolbox/util';
 import { IBiographicalInfo } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
 import { Location } from '@angular/common';
@@ -41,7 +41,7 @@ export class CelebrityPageComponent {
 
   public async ngOnInit(){
     this.route.paramMap.subscribe(async params => {
-      const celebName = Util.deslugify(params.get('celebName'));
+      const celebName = deslugify(params.get('celebName'));
       this.title.setTitle(celebName);
       this.meta.updateTag({name: "description", content: "Interesting facts and information on " + celebName});
 
@@ -63,7 +63,7 @@ export class CelebrityPageComponent {
         qid = bioResponse.qid;
       }
 
-      this.bioGraphObj.followers = Util.numberWithCommas(this.bioGraphObj.followers);
+      this.bioGraphObj.followers = numberWithCommas(this.bioGraphObj.followers);
 
       const correctedTitle = await this.service.getCorrectedWikiTitle(qid);
       wikiSearchTerm = (correctedTitle !== "") ? correctedTitle : bioResponse.name; 

@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, Input, Renderer2, ViewChild, 
 import { DomSanitizer, Meta, SafeHtml, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../../services/post.service';
-import { Util } from '../../common/Toolbox/util';
+import { deslugify } from '../Toolbox/util';
 import { Subscription } from 'rxjs';
 import { ReloadService } from '../../../app/services/reload.service';
 import { IPostExcerpt } from '../../../app/models/shared-models';
@@ -54,7 +54,7 @@ export class BlogpostComponent {
     this.allExcerpts = await this.postService.getAllPosts().toPromise();
 
     this.route.paramMap.subscribe(async (params) => {
-      this.blogTitle = Util.deslugify(params.get('postTitle'));
+      this.blogTitle = deslugify(params.get('postTitle'));
       this.title.setTitle(this.blogTitle);
       const postId = params.get("postId");
       const idx = this.allExcerpts.findIndex(v => v.postId.toString() === postId);

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { combineLatest, lastValueFrom, map } from 'rxjs';
-import { Util } from '../../common/Toolbox/util';
+import { slugify } from '../../../app/common/Toolbox/util';
 import { IDateObj, ICelebrity, IHistEvent, IPresident } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
 
@@ -81,7 +81,7 @@ export class FrontFeatureComponent {
 
     const president = this.presidentByYear(this.presidents, this.dateObj.year);
     this.selectedPresident = president;
-    this.selectedPresidentNameSlugged = Util.slugify(president.name);
+    this.selectedPresidentNameSlugged = slugify(president.name);
     this.presidentPortrait = president.portraitURL;
     this.loading = false;
     

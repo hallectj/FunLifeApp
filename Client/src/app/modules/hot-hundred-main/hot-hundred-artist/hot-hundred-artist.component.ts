@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Util } from '../../../common/Toolbox/util';
+import { deslugify, slugify } from '../../../../app/common/Toolbox/util';
 import { ISong2 } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
 import { Meta, Title } from '@angular/platform-browser';
@@ -24,7 +24,7 @@ export class HotHundredArtistComponent {
 
   public async ngOnInit(){
     this.route.params.subscribe(async (params) => {
-      const artist = Util.deslugify(params["artist"]) as string;
+      const artist = deslugify(params["artist"]) as string;
       const featuringStr = this.findFeaturingKeyword(artist);
       this.title.setTitle("Top songs by " + artist);
       this.meta.updateTag({name: "description", content: "Top Songs by " + artist})
@@ -41,7 +41,7 @@ export class HotHundredArtistComponent {
   }
 
   public onClickedSongCard(song: ISong2){
-    const route = ["/charts/hot-hundred-songs/" + song.year + "/" + song.position + "/artist/" +  Util.slugify(song.artist) + "/song/" + Util.slugify(song.song)];
+    const route = ["/charts/hot-hundred-songs/" + song.year + "/" + song.position + "/artist/" +  slugify(song.artist) + "/song/" + slugify(song.song)];
     this.router.navigate(route);
   }
 }
