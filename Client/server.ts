@@ -16,8 +16,6 @@ export function app(): express.Express {
     ? join(distFolder, 'index.original.html')
     : join(distFolder, 'index.html');
 
-    console.log('indexHtml path:', indexHtml);
-
   const commonEngine = new CommonEngine();
 
   server.set('view engine', 'html');

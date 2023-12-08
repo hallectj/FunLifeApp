@@ -7,7 +7,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "dist/fun_life_app/browser/**"
+      "includeFiles": "./dist/fun_life_app/browser/**"
     }
   }
 }
