@@ -5,13 +5,13 @@
     "ng": "ng",
     "start": "ng serve",
     "build-dev": "ng build",
-    "vercel-build": "npm run prerender && npm run build:ssr",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "dev:ssr": "ng run fun_life_app:serve-ssr",
     "serve:ssr": "node dist/fun_life_app/server/main.js",
-    "build:ssr": "ng build && ng run fun_life_app:server",
-    "prerender": "ng run fun_life_app:prerender"
+    "build:ssr": "ng build && npm run prerender && ng run fun_life_app:server",
+    "prerender": "ng run fun_life_app:prerender",
+    "vercel-build": "npm run build:ssr"
   },
   "private": true,
   "dependencies": {
