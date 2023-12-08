@@ -11,8 +11,13 @@ import AppServerModule from './src/main.server';
 export function app(): express.Express {
   const server = express();
   //const distFolder = join(process.cwd(), 'dist/fun_life_app/browser');
-  const distFolder = join(__dirname, 'dist/fun_life_app/browser');
-  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
+  //const distFolder = join(__dirname, 'dist/fun_life_app/browser');
+  //const indexHtml = existsSync(join(distFolder, 'index.original.html'))
+    //? join(distFolder, 'index.original.html')
+    //: join(distFolder, 'index.html');
+
+  const distFolder = __dirname.replace('server', 'browser');
+  let indexHtml = existsSync(join(distFolder, 'index.original.html'))
     ? join(distFolder, 'index.original.html')
     : join(distFolder, 'index.html');
 
