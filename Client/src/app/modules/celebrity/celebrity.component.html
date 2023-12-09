@@ -38,7 +38,7 @@
     <ng-template #showAllCelebs>
       <div *ngFor="let chunk of todayCelebCards let j = index;">
         <div class="row" *ngIf="j % 3 === 0">
-          <div class="col-md-4 bg-success" *ngFor="let card of todayCelebCards.slice(j, j + 3); let i = index;">
+          <div class="col-md-4" *ngFor="let card of todayCelebCards.slice(j, j + 3); let i = index;">
             <div class="box">
               <celeb-card
                 [image]="card.image"

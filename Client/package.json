@@ -4,12 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build-dev": "ng build",
+    "build-dev": "ng build && node generate-netlify-toml.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "dev:ssr": "ng run fun_life_app:serve-ssr",
     "serve:ssr": "node dist/fun_life_app/server/main.js",
-    "build:ssr": "ng build && npm run prerender && ng run fun_life_app:server",
+    "build:ssr": "ng build && node generate-netlify-toml.js && npm run prerender && ng run fun_life_app:server",
     "prerender": "ng run fun_life_app:prerender",
     "vercel-build": "npm run build:ssr"
   },
