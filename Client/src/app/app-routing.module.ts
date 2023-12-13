@@ -16,6 +16,7 @@ import { HotHundredSongComponent } from './modules/hot-hundred-main/hot-hundred-
 import { HotHundredYearComponent } from './modules/hot-hundred-main/hot-hundred-year/hot-hundred-year.component';
 import { PresidentComponent } from './modules/president/president.component';
 import { ToysComponent } from './modules/toys/toys.component';
+import { SitemapComponent } from './common/sitemap/sitemap.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: PageComponent, data: { breadcrumb: "Home" } },
@@ -84,6 +85,7 @@ const routes: Routes = [
   { path: 'celebrity', component: CelebrityComponent, data: { breadcrumb: 'Celebrity' }  },
   { path: 'toys', component: ToysComponent, data: { breadcrumb: 'Toys' } },
   { path: 'other', component: OtherComponent, data: { breadcrumb: "Other" } },
+  { path: 'sitemap.xml', component: SitemapComponent },
   { path: '404', component: NotFoundComponent, data: { breadcrumb: 'Not Found' }  },
   { path: '**', component: NotFoundComponent, data: { breadcrumb: 'Not Found' } }
 ];
