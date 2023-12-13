@@ -72,7 +72,7 @@ if(process.env.NODE_ENV === 'development'){
   apiURL = process.env.API_URL;
 }
 
-if(process.env.NODE_ENV === 'development'){
+if(process.env.GEN_SITEMAP === 'yes'){
   const allRoutes = sitemapGenerator();
   app.get('/sitemap.xml', async (req, res) => {
     const root = xmlbuilder.create('urlset', { version: '1.0', encoding: 'UTF-8', headless: true });
@@ -87,21 +87,6 @@ if(process.env.NODE_ENV === 'development'){
   
     res.header('Content-Type', 'application/xml');
     res.send(root.end({ pretty: true }));
-  });
-}
-
-if(process.env.NODE_ENV === 'production'){
-  app.get('/sitemap.xml', (req, res) => {
-    const sitemapPath = path.join(__dirname, '../Client/src/assets/sitemap.xml');
-    
-    fs.readFile(sitemapPath, 'utf8', (err, data) => {
-      if (err) {
-        console.error('Error reading sitemap:', err);
-        res.status(500).send('Internal Server Error');
-      } else {
-        res.type('application/xml').send(data);
-      }
-    });
   });
 }
 
