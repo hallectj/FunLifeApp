@@ -12,8 +12,12 @@ const songInfoRouter = require('./routes/song_info');
 const celebrityRouter = require('./routes/celebrities');
 const numberOneHitsRouter = require('./routes/number_one_songs');
 const postRouter = require('./routes/posts');
+const sitemapGenerator = require('./routes/generate-sitemap');
 const fetch = require("node-fetch-commonjs")
 const pgp = require('pg-promise')();
+const xmlbuilder = require('xmlbuilder');
+const fs = require('fs');
+const path = require('path');
 
 const port = process.env.PORT || 3000;
 
@@ -68,7 +72,40 @@ if(process.env.NODE_ENV === 'development'){
   apiURL = process.env.API_URL;
 }
 
-app.listen(port, () => {
+if(process.env.NODE_ENV === 'development'){
+  const allRoutes = sitemapGenerator();
+  app.get('/sitemap.xml', async (req, res) => {
+    const root = xmlbuilder.create('urlset', { version: '1.0', encoding: 'UTF-8', headless: true });
+    root.att('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+  
+    allRoutes.forEach(route => {
+      const url = root.ele('url');
+      url.ele('loc', route.loc);
+      url.ele('changefreq', route.changefreq);
+      url.ele('priority', route.priority);
+    });
+  
+    res.header('Content-Type', 'application/xml');
+    res.send(root.end({ pretty: true }));
+  });
+}
+
+if(process.env.NODE_ENV === 'production'){
+  app.get('/sitemap.xml', (req, res) => {
+    const sitemapPath = path.join(__dirname, '../Client/src/assets/sitemap.xml');
+    
+    fs.readFile(sitemapPath, 'utf8', (err, data) => {
+      if (err) {
+        console.error('Error reading sitemap:', err);
+        res.status(500).send('Internal Server Error');
+      } else {
+        res.type('application/xml').send(data);
+      }
+    });
+  });
+}
+
+app.listen(port, async () => {
   if(process.env.NODE_ENV === 'development'){
     console.log(apiURL);
   }

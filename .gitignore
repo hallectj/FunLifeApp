@@ -59,3 +59,5 @@ Client/Client/dist/
 Client/src/environments/environment.prod.ts
 Client/src/environments/environment.ts
 backend/dumpfile.dump
+Client/export-routes.js
+Client/export-routes.ts

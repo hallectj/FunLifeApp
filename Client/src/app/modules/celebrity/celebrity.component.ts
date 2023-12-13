@@ -111,7 +111,7 @@ export class CelebrityComponent {
       birthdate: new Date(v.birthdate),
       followerCount: v.followerCount,
       image: v.image,
-      occupations: v.occupations.splice(0, 4)
+      occupations: v.occupations.slice(0, 3)
     }))
 
     return iCelebrityArr;
