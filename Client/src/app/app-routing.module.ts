@@ -84,8 +84,8 @@ const routes: Routes = [
   },
   { path: 'celebrity', component: CelebrityComponent, data: { breadcrumb: 'Celebrity' }  },
   { path: 'toys', component: ToysComponent, data: { breadcrumb: 'Toys' } },
+  { path: 'sitemap.xml', redirectTo: 'assets/sitemap.xml', pathMatch: 'full' },
   { path: 'other', component: OtherComponent, data: { breadcrumb: "Other" } },
-  { path: 'sitemap.xml', component: SitemapComponent },
   { path: '404', component: NotFoundComponent, data: { breadcrumb: 'Not Found' }  },
   { path: '**', component: NotFoundComponent, data: { breadcrumb: 'Not Found' } }
 ];
