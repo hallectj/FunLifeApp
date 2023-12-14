@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 
 @Component({
@@ -12,7 +12,9 @@ export class SitemapComponent {
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.http.get(this.server_url + '/sitemap.xml', { responseType: 'text' })
-      .subscribe((data) => console.log(data));
+    const headers = new HttpHeaders({ 'Content-Type': 'text/xml' }).set('Accept', 'text/xml')
+    this.http.get(this.server_url + '/sitemap.xml', { headers: headers, responseType: 'text' }).subscribe((data) => {
+      document.write(data)
+    })
   }
 }
