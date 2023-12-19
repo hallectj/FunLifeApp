@@ -5,6 +5,7 @@ import { HttpClientModule, HttpClientJsonpModule, withFetch, provideHttpClient }
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './common/navbar/navbar.component';
+import { BreadcrumbComponent } from './common/breadcrumb/breadcrumb.component';
 import { BirthdayComponent } from './modules/birthday/birthday.component';
 import { DayInHistoryComponent } from './modules/day-in-history/day-in-history.component';
 import { CelebrityComponent } from './modules/celebrity/celebrity.component';
@@ -46,6 +47,7 @@ import { OtherComponent } from './common/other/other.component';
   declarations: [
     AppComponent,
     NavbarComponent,
+    BreadcrumbComponent,
     BirthdayComponent,
     DayInHistoryComponent,
     CelebrityComponent,
