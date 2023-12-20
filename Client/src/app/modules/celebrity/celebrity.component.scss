@@ -17,6 +17,69 @@
   }
 }
 
+#top-wrapper{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  #celebrityPageHeader{
+    flex: 2;
+    margin-right: 20px;
+    min-width: 425px;
+    width: 100%;
+  }
+
+  #calendar-grid{
+    flex: 1;
+    width: 100%;
+    padding: 5px;
+    background-color: snow;
+
+    .calendar-month{
+      background-color: #212223;
+      padding: 5px;
+      margin-bottom: 2px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .box-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr); /* Adjust the number of columns as needed */
+      gap: 10px;
+  
+      .box {
+        border: 1px solid #ccc;
+        padding: 5px;
+        text-align: center;
+        cursor: pointer;
+
+        &:hover{
+          background-color: #f3f4f6;
+          border: 1px solid #000;
+          color: #000;
+        }
+
+        &:active{
+          color: white;
+          background-color: #212223;
+          border: 1px solid white;
+        }
+      }
+
+      .activeDay{
+        color: white;
+        background-color: #212223;
+        border: 1px solid white;
+      }
+    }
+  }
+  
+
+  
+
+}
+
 .card-container {
 	padding-top: 10px;
 	max-width: 100%;

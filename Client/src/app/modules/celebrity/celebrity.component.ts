@@ -3,7 +3,6 @@ import { LOADINGSPINNER } from '../../../app/common/base64Assests';
 import { ICelebCard, ICelebrity, IDateObj } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
 import { Meta, Title } from '@angular/platform-browser';
-
 @Component({
   selector: 'app-celebrity',
   templateUrl: './celebrity.component.html',
@@ -17,10 +16,14 @@ export class CelebrityComponent {
     private meta: Meta
   ){}
 
+  //This will always be today's date only, do not change this
+  public updatedDate = new Date()
+
   public dateObj: IDateObj = this.service.populateDateObj();
   public yesterday = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()-1);
   public tomorrow = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()+1);
   public today = new Date();
+  public todayDateNum = 1;
 
   public dateObjTomorow: IDateObj = null;
   public dateObjYesterday: IDateObj = null;
@@ -39,15 +42,37 @@ export class CelebrityComponent {
   public randomYear: string = "1999";
   @ViewChild('expandButton') public expandButton: ElementRef<HTMLDivElement>;
 
+  public setDatesFunction(dateNum: number){
+    const d = new Date(new Date().getFullYear(), new Date().getMonth(), dateNum);
+    this.dateObj = this.service.populateDateObj(d);
+    this.yesterday = new Date(d.getFullYear(), d.getMonth(), d.getDate()-1);
+    this.tomorrow = new Date(d.getFullYear(), d.getMonth(), d.getDate()+1);
+    this.today = new Date(d);
+  }
+
   public async ngOnInit(){
+    this.title.setTitle("Celebrities Born this day");
+    this.meta.updateTag({name: "description", content: "Find out which celebrities were born this month or any day of this month."})
+    this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();
+
+    this.todayDateNum = this.today.getDate();
+    await this.getAllThingsCelebrity(this.todayDateNum);
+  }
+
+  public async pickedDate(dateNum: number){
+    this.todayDateNum = dateNum;
+    await this.getAllThingsCelebrity(this.todayDateNum);
+  }
+
+  public async getAllThingsCelebrity(dateNum: number){
+    this.setDatesFunction(dateNum);
+    await this.runMain();
+  }
+
+  public async runMain(){
     this.yesterday.setHours(0, 0, 0, 0);
     this.tomorrow.setHours(0, 0, 0, 0);
     this.today.setHours(0, 0, 0, 0);
-
-    this.title.setTitle("Celebrities Born this day");
-    this.meta.updateTag({name: "description", content: this.title.getTitle()})
-
-    this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();
 
     this.dateObjTomorow = this.service.populateDateObj(this.tomorrow);
     this.dateObjYesterday = this.service.populateDateObj(this.yesterday);
@@ -170,5 +195,17 @@ export class CelebrityComponent {
     }
 
     this.isExpanded = !this.isExpanded;
+  }
+
+
+  public getDaysInMonth() {
+    const currentDate = new Date();
+    return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+  }
+
+  // Generate an array of numbers based on the number of days
+  public generateArray() {
+    const daysInMonth = this.getDaysInMonth();
+    return new Array(daysInMonth).fill(0).map((_, index) => index + 1);
   }
 }
