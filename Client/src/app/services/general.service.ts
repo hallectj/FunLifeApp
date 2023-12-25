@@ -48,7 +48,7 @@ export class GeneralService {
     return diffDays + 1; // Include both start and end dates in the count
   }
 
-  private getYoutubeThumbnailUrl(youtubeId: string): string {
+  public getYoutubeThumbnailUrl(youtubeId: string): string {
     if (!youtubeId) return '';
 
     const videoId = youtubeId.match('[\\?&]v=([^&#]*)');
