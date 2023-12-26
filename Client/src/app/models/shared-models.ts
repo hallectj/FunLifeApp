@@ -153,5 +153,6 @@ export interface ICelebrity{
   birthdate: string,
   followerCount: number,
   image: string,
+  imageB64: string,
   occupations: string[]
 }

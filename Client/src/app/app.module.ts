@@ -40,6 +40,7 @@ import { HotHundredCardsComponent } from './modules/hot-hundred-main/hot-hundred
 import { HotHundredYearComponent } from './modules/hot-hundred-main/hot-hundred-year/hot-hundred-year.component';
 import { ToysComponent } from './modules/toys/toys.component';
 import { OtherComponent } from './common/other/other.component';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 
 
@@ -84,6 +85,7 @@ import { OtherComponent } from './common/other/other.component';
     HttpClientModule,
     HttpClientJsonpModule,
     FormsModule,
+    LazyLoadImageModule
   ],
   providers: [ErrorHandlerService, SingleRouteResolver, DateRouteResolver, ArtistRouteResolver, SongRouteResolver, {     
      provide: DATE_PIPE_DEFAULT_OPTIONS,

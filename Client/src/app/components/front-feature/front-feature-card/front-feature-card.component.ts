@@ -13,6 +13,8 @@ export class FrontFeatureCardComponent {
   @Input() cardButtonText: string = "";
   @Input() loading: boolean = false;
   @Input() routePath: string = "";
+  @Input() cardImgB64: string = "";
+  @Input() useB64: boolean = false;
   @Output() featureBtnClickEvent: EventEmitter<string> = new EventEmitter<string>();
 
   public isFlipped: boolean = false;

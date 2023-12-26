@@ -266,6 +266,11 @@ export class GeneralService {
     )
   }
 
+  public getTopCelebrityByDateSet(dateset: string): Observable<ICelebrity> {
+    const url = this.server_url + "/celebrities/" + dateset + "/top"
+    return this.http.get<any>(url);
+  }
+
   public getCelebrityByName(celebName: string): Observable<ICelebrity>{
     const url = this.server_url + "/celebrities/celeb/" + celebName;
     return this.http.get<any>(url);
@@ -618,6 +623,7 @@ export class GeneralService {
       const birthdate = new Date(binding.birthdate.value).toISOString();
       const followerCount = parseInt(binding.followers.value);
       const image = binding.uniqueImage.value;
+      const imageB64 = "";
       //const country = binding.countryLabel.value;
       const occupations = binding.occupations.value.split(',');
   
@@ -626,6 +632,7 @@ export class GeneralService {
         birthdate,
         followerCount,
         image,
+        imageB64,
         occupations
       });
     }

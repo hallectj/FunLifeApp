@@ -8,6 +8,8 @@
         <front-feature-card 
           [cardImg]="celebImg"
           [cardButtonText]="'Celebrities Born Today'"
+          [cardImgB64]="celebImgB64"
+          [useB64]="true"
           [loading]="loading"
           [routePath]="'/celebrity'"
         ></front-feature-card>
@@ -18,6 +20,7 @@
           [cardImg]="histEvtImg"
           [cardButtonText]="'This Day In History'"
           [loading]="loading"
+          [useB64]="false"
           [routePath]="historyRoutePath"
         ></front-feature-card>
       </div>
@@ -27,6 +30,7 @@
           [cardImg]="presidentPortrait"
           [cardButtonText]="'President ' + dateObj.monthName + ' ' + dateObj.day + ' ' + dateObj.year"
           [loading]="loading"
+          [useB64]="false"
           [routePath]="'/president/' + selectedPresidentNameSlugged"
         ></front-feature-card>
       </div>

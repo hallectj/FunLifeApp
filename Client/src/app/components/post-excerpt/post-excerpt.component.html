@@ -1,5 +1,6 @@
 <div class="excerpt-rectangle" [style.cursor]="cursor">
-  <div class="excerpt-image-div"><img [src]="(!!postExcerpt.excerptImage) ? postExcerpt.excerptImage : noImageFound" alt="Image"></div>
+  <div class="excerpt-image-div">
+    <img [lazyLoad]="(!!postExcerpt.excerptImage) ? postExcerpt.excerptImage : noImageFound" loading="lazy" alt="Image"></div>
   <div class="excerpt-content">
     <h2 class="text-center">{{postExcerpt.excerptTitle}}</h2>
     <p [ngStyle]="{'margin-right':useRibbonYear ? '50px' : '10px' }">{{postExcerpt.excerptDesc}}   

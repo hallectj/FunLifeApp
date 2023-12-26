@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../pool')
+const pool = require('../pool');
+const imageConverter = require('../image_to_webp')
 //const Fuse = require('fuse.js'); // Import the fuse.js library
 
 // Route for fetching an array of celebrities names
@@ -76,6 +77,36 @@ router.get('/celeb/:name', (req, res) => {
         }
         res.json(row);
       }
+    }
+  });
+});
+
+// Route for fetching all celebrities
+router.get('/:dateset/top', (req, res) => {
+  const dateset = req.params.dateset
+
+  const query = {
+    text: `
+      SELECT * FROM public."Celebrities" 
+      WHERE dateset = $1
+      ORDER BY "followerCount" DESC`,
+    values: [dateset],
+  };
+
+  pool.query(query, async (err, result) => {
+    if (err) {
+      console.error('Error executing SQL query:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      const updatedResult = result.rows.map(row => {
+        if (row.image && row.image.startsWith('http://')) {
+          row.image = row.image.replace('http://', 'https://');
+        }
+        return row;
+      });
+      const filteredRows = updatedResult.filter(row => !hasRestrictedOccupation(row.occupations));
+      filteredRows[0].imageB64 = await imageConverter.convertToWebPBase64(filteredRows[0].image);
+      res.json(filteredRows[0]);
     }
   });
 });

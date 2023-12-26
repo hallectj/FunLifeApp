@@ -1,6 +1,13 @@
 <div class="card-container">
   <div *ngIf="!loading; else loadingState" class="cust_card">
-    <img class="card__img" [src]="cardImg" alt="">
+    <div *ngIf="useB64; else useURLImage">
+      <img class="card__img" [src]="'data:image/webp;base64,' + cardImgB64" alt="">
+    </div>
+
+    <ng-template #useURLImage>
+      <img class="card__img" [src]="cardImg" alt="">
+    </ng-template>
+
     <div class="w-100 card_button_holder">
       <a [routerLink]='routePath' (click)="navigateToPath()" class="cust__button">{{cardButtonText}}</a>
     </div>

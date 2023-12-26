@@ -12,6 +12,7 @@ import { GeneralService } from '../../../app/services/general.service';
 export class FrontFeatureComponent {
   @Input() randomYear: string = "";
   public celebImg: string = "";
+  public celebImgB64: string = "";
   public celebName: string = "";
   public histEvtImg: string = "";
   public historyRoutePath = ""
@@ -33,7 +34,15 @@ export class FrontFeatureComponent {
   }
   public loading: boolean = true;
 
-  public famousBirths: ICelebrity[];
+  //public famousBirths: ICelebrity[];
+  public topCelebToday: ICelebrity = {
+    name: "",
+    birthdate: "",
+    followerCount: 0,
+    image: "",
+    imageB64: "",
+    occupations: []
+  }
   public histEvents: IHistEvent[];
   public presidents: any;
 
@@ -52,7 +61,7 @@ export class FrontFeatureComponent {
     this.historyRoutePath = "/day-in-history/" + this.dateObj.monthName + "/" + this.dateObj.day 
   
     const responses = await lastValueFrom(this.initData());
-    this.famousBirths = responses.famousBirths;
+    this.topCelebToday = responses.famousBirth
     this.presidents = responses.presidents;
     this.histEvents = responses.histEvents;
 
@@ -74,9 +83,9 @@ export class FrontFeatureComponent {
       }
     }
 
-
-    const celeb = this.famousBirths[0];
+    const celeb = this.topCelebToday;
     this.celebImg = celeb.image;
+    this.celebImgB64 = celeb.imageB64;
     this.celebName = celeb.name;
 
     const president = this.presidentByYear(this.presidents, this.dateObj.year);
@@ -90,15 +99,16 @@ export class FrontFeatureComponent {
   public initData(){
     const observable = combineLatest({
       histEvents: this.service.getEvents(this.dateObj.date),
-      famousBirths: this.service.getCelebrityByDateSet(this.dateObj.month + '-' + this.dateObj.day),
+      //famousBirths: this.service.getCelebrityByDateSet(this.dateObj.month + '-' + this.dateObj.day),
+      famousBirth: this.service.getTopCelebrityByDateSet(this.dateObj.month + "-" + this.dateObj.day),
       presidents: this.service.getPresidents()
     });
 
     return observable.pipe(
-      map(({ histEvents, famousBirths, presidents }) => {
+      map(({ histEvents, famousBirth, presidents }) => {
         return {
           histEvents: histEvents,
-          famousBirths: famousBirths,
+          famousBirth: famousBirth,
           presidents: presidents
         }
       })
