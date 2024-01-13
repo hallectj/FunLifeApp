@@ -26,7 +26,10 @@ export class BreadcrumbComponent {
           label: bCrumbs[i].substring(lastIdx+1, bCrumbs[i].length),
           url: route
         }
-        this.breadcrumbs.push(obj);    
+        
+        if (!(this.breadcrumbs.length === 0 && obj.label === 'Home')) {
+          this.breadcrumbs.push(obj);
+        }
       }
     });
   }
