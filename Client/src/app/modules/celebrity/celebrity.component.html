@@ -18,7 +18,7 @@
 
     <div id="calendar-grid">
       <h5 class="text-center">Celebrities born on any day this month</h5>
-      <div class="calendar-month">December</div>
+      <div class="calendar-month">{{dateObj.monthName}}</div>
       <div class="box-grid">
         <div *ngFor="let day of generateArray(); let i = index" [class.activeDay]="todayDateNum === day" class="box" (click)="pickedDate(day)">{{ day }}</div>
       </div>      

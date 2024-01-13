@@ -1,7 +1,7 @@
 const sharp = require('sharp');
 const axios = require('axios');
 
- async function convertToWebPBase64(inputImageUrl) {
+async function convertToWebPBase64(inputImageUrl) {
   try {
     // Fetch the image from the original URL
     const imageBuffer = await fetchImage(inputImageUrl);
@@ -11,10 +11,20 @@ const axios = require('axios');
 
     // Convert the WebP buffer to a base64 string
     const webpBase64 = webpBuffer.toString('base64');
-    
+
     return webpBase64;
   } catch (error) {
     console.error('Error converting image to WebP:', error);
+    throw error;
+  }
+}
+
+async function batchConvertToWebPBase64(imageUrls) {
+  try {
+    const webpBase64Array = await Promise.all(imageUrls.map(convertToWebPBase64));
+    return webpBase64Array;
+  } catch (error) {
+    console.error('Error batch converting images to WebP:', error);
     throw error;
   }
 }
@@ -34,4 +44,5 @@ async function fetchImage(imageUrl) {
 
 module.exports = {
   convertToWebPBase64,
+  batchConvertToWebPBase64
 };

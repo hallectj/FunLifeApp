@@ -31,6 +31,7 @@ export interface IPresident{
 export interface IPostExcerpt{
   postId: number,
   excerptImage: string,
+  excerptImageB64: string,
   excerptTitle: string,
   excerptDesc: string,
   author: string,

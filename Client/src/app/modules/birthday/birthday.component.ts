@@ -211,7 +211,8 @@ export class BirthdayComponent {
         post: {
           postId: -1,
           excerptDesc: v.description,
-          excerptImage: v.imageURL, 
+          excerptImage: v.imageURL,
+          excerptImageB64: "", 
           excerptTitle: v.title,
           isFeaturePost: false,
           author: "",

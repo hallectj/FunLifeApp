@@ -16,6 +16,7 @@ export class MissedArticleWidgetComponent {
   public selectedArticle: IPostExcerpt = {
     postId: -1,
     excerptImage: "",
+    excerptImageB64: "",
     excerptTitle: "",
     excerptDesc: "",
     author: "",

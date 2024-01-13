@@ -16,6 +16,10 @@ export class AppComponent {
     private activatedRoute: ActivatedRoute,
     private breadcrumbService: BreadcrumbService
   ) {
+
+    // initialize breadcrumb to nothing
+    this.breadcrumbService.setBreadcrumb([]);
+
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {

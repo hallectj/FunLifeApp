@@ -19,6 +19,7 @@ export class BlogpostComponent {
     postId: -1,
     excerptDesc: "",
     excerptImage: "",
+    excerptImageB64: "",
     excerptTitle: "",
     author: "",
     dateWritten: null,
