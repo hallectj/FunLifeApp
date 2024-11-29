@@ -20,13 +20,12 @@ const fs = require('fs');
 const path = require('path');
 
 const port = process.env.PORT || 3000;
-if(process.env.NODE_ENV  === "Development"){
+if(process.env.NODE_ENV  === "development"){
   app.use(cors());
-}else if(process.env.NODE_ENV  === "Production"){
+}else if(process.env.NODE_ENV  === "production"){
   const allowedOrigins = [process.env.FRONTEND_URL]; // Use environment variable for your frontend
   app.use(cors({
     origin: (origin, callback) => {
-      // Allow requests with no 'origin' (e.g., mobile apps, Postman)
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -35,11 +34,13 @@ if(process.env.NODE_ENV  === "Development"){
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, // Enable credentials if needed
   }));
 }
 
-app.options('*', cors()); // Allow all OPTIONS requests
+// Log preflight requests for debugging
+app.options('*', cors(), (req, res) => {
+  res.sendStatus(200);
+});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
