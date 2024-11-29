@@ -33,7 +33,7 @@ if(process.env.NODE_ENV  === "development"){
       }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: '*',  // Allow all headers
   }));
 }
 
