@@ -20,9 +20,9 @@ const fs = require('fs');
 const path = require('path');
 
 const port = process.env.PORT || 3000;
-if(env.NODE_ENV === "Development"){
+if(process.env.NODE_ENV  === "Development"){
   app.use(cors());
-}else if(env.NODE_ENV === "Production"){
+}else if(process.env.NODE_ENV  === "Production"){
   app.use(cors({
     origin: 'https://www.backthennow.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
