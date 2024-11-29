@@ -31,7 +31,8 @@ export class GeneralService {
   private yearSubject: Subject<number> = new Subject<number>();
   private mainSongPageTitleSubject: Subject<string> = new Subject<string>();
 
-  private server_url = environment.apiUrl;
+  public server_url = "https://fun-life-app-aa5d-23ut5q61y-hallectjs-projects.vercel.app/api"
+  //public server_url = "localhost:5000/api"
 
   constructor(private http: HttpClient, private errorHandler: ErrorHandlerService) {}
 
