@@ -1,7 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-sitemap',
