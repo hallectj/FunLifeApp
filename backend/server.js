@@ -26,9 +26,11 @@ if(process.env.NODE_ENV  === "Development"){
   app.use(cors({
     origin: 'https://www.backthennow.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'] // Allow headers for requests
   }));
 }
 
+app.options('*', cors()); // Allow all OPTIONS requests
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
