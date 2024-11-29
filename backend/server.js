@@ -23,10 +23,19 @@ const port = process.env.PORT || 3000;
 if(process.env.NODE_ENV  === "Development"){
   app.use(cors());
 }else if(process.env.NODE_ENV  === "Production"){
+  const allowedOrigins = [process.env.FRONTEND_URL]; // Use environment variable for your frontend
   app.use(cors({
-    origin: 'https://www.backthennow.com',
+    origin: (origin, callback) => {
+      // Allow requests with no 'origin' (e.g., mobile apps, Postman)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'] // Allow headers for requests
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // Enable credentials if needed
   }));
 }
 
