@@ -20,8 +20,16 @@ const fs = require('fs');
 const path = require('path');
 
 const port = process.env.PORT || 3000;
+if(env.NODE_ENV === "Development"){
+  app.use(cors());
+}else if(env.NODE_ENV === "Production"){
+  app.use(cors({
+    origin: 'https://www.backthennow.com',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  }));
+}
 
-app.use(cors());
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 //app.use('/images', express.static('path/to/your/image/directory'));
