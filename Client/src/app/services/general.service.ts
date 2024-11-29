@@ -6,6 +6,7 @@ import { GENERAL_URL, IBiographicalInfo, ICelebrity, IDateObj, IHistEvent, IMovi
 import { findMatchingName, slugify } from '../common/Toolbox/util';
 import Fuse from 'fuse.js';
 import { ErrorHandlerService } from '../services/error-handler.service'
+import { environment } from 'src/environments/environment';
 
 
 // Define a Fuse configuration for fuzzy matching
@@ -22,6 +23,7 @@ export class GeneralService {
   private sparqlEndpoint = 'https://query.wikidata.org/sparql';
   public coreWikiURL = 'https://en.wikipedia.org/w/api.php';
   public wikidataApiUrl = 'https://www.wikidata.org/w/api.php';
+  private corsAnywhere = "https://cors-anywhere.herokuapp.com"
   private birthdateSession: Date = new Date();
   public hasBirthdayBtnClickedBefore: boolean = false;
 
@@ -29,8 +31,7 @@ export class GeneralService {
   private yearSubject: Subject<number> = new Subject<number>();
   private mainSongPageTitleSubject: Subject<string> = new Subject<string>();
 
-  private server_url = 'https://funlifeapp-011573cdfdc6.herokuapp.com/api';
-  //private server_url = 'http://localhost:5000/api';
+  private server_url = environment.apiUrl;
 
   constructor(private http: HttpClient, private errorHandler: ErrorHandlerService) {}
 
@@ -436,6 +437,11 @@ export class GeneralService {
     }
     
     return null;
+  }
+
+  public getRandomQuote2(): Observable<any>{
+    const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://zenquotes.io/api/random');
+    return this.http.get(url);
   }
 
   public getRandomQuote(): Observable<any> {

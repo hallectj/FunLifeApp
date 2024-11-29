@@ -9,7 +9,7 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./hot-hundred-cards.component.scss']
 })
 export class HotHundredCardsComponent {
-  public yearsRange = Array.from({ length: 71 }, (_, index) => 1950 + index);
+  public yearsRange = Array.from({ length: 74 }, (_, index) => 1950 + index);
   public selectedYear: number = 1990;
 
   constructor(public service: GeneralService, public route: ActivatedRoute, public router: Router, private title: Title){}

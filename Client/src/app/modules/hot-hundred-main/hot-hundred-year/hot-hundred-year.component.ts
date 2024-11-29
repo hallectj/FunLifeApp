@@ -14,7 +14,6 @@ export class HotHundredYearComponent {
   public selectedYear: string = "1990";
   public hotHundredSongs: ISong2[] = [];
 
-
   constructor(
     public service: GeneralService, 
     public route: ActivatedRoute, 
@@ -30,6 +29,7 @@ export class HotHundredYearComponent {
       this.title.setTitle("Hot Hundred Songs of " + this.selectedYear);
       this.meta.updateTag({name: "description", content: "Hot Hundred Songs of " + this.selectedYear});
       this.hotHundredSongs = await this.service.getSongs(+this.selectedYear, "position").toPromise();
+      this.hotHundredSongs.sort((a,b) => a.position - b.position);
       this.service.updateMainSongPageTitle("Top " + this.hotHundredSongs.length + " Songs of " + this.selectedYear);
     });
   }
@@ -44,11 +44,14 @@ export class HotHundredYearComponent {
     //const response = await this.service.getSongObj(+this.selectedYear, songObj.position).toPromise();
     //const artist = (!!response && !!response.artist) ? response.artist : songObj.artist;
     const route = ['charts/hot-hundred-songs/artist/' + slugify(artist)];
+    console.log("artist", artist);
+    console.log("slug artist", slugify(artist));
     this.router.navigate(route);
   }
 
   public extractArtists(inputString: string): string[] {
     const featuringIndex = inputString.toLowerCase().indexOf("featuring");
+    const commaIndex = inputString.toLowerCase().indexOf(",");
   
     if (featuringIndex !== -1) {
       // "featuring" is present in the string
@@ -57,6 +60,9 @@ export class HotHundredYearComponent {
   
       const artistsArray = [...artistsString.split(/\band\b/i), ...featuringPart.split(/\band\b/i)].map(artist => artist.trim());
       return artistsArray;
+    } else if (commaIndex !== -1) {
+      const artistArr = inputString.split(",");
+      return artistArr;
     } else {
       // "featuring" is not present in the string
       return [inputString.trim()];

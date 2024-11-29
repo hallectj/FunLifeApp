@@ -19,3 +19,25 @@ body{
 .yesterYearFont {
   font-family: 'Yesteryear', cursive;
 }
+
+.youtube-video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+}
+
+app-youtube-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+app-youtube-player div#player {
+  width: 100% !important;
+  height: 100% !important;
+}
+

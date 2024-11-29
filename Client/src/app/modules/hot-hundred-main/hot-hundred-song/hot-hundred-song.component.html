@@ -18,9 +18,10 @@
   </div>
 
   <div *ngIf="!!songInfoObj.songObj" class="movie-wrapper">
-    <div class="video-container">
-      <iframe [src]="youTubeURL | safeResourceUrl" allow="autoplay; encrypted-media" width="640" height="480" frameborder="0">
-      </iframe>
+    <div class="youtube-video-container">
+      <!-- <iframe [src]="youTubeURL | safeResourceUrl" allow="autoplay; encrypted-media" width="640" height="480" frameborder="0">
+      </iframe> -->
+      <app-youtube-player [videoId]="songInfoObj.songObj.videoId" [includeMuteOverlay]="false" [controls]="{autoplay: 1, mute: 0}"></app-youtube-player>
     </div>
   </div>
 

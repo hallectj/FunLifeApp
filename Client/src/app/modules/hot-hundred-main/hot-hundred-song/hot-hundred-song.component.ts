@@ -6,7 +6,6 @@ import { ISong2, ISongInfoObj } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
 import { Meta, Title } from '@angular/platform-browser';
 
-
 @Component({
   selector: 'app-hot-hundred-song',
   templateUrl: './hot-hundred-song.component.html',
@@ -83,6 +82,26 @@ export class HotHundredSongComponent {
     const selectedValue = (event.target as HTMLSelectElement).value;
     this.selectPosition(+selectedValue);
   }
+
+  public extractArtists(inputString: string): string[] {
+    const featuringIndex = inputString.toLowerCase().indexOf("featuring");
+    const commaIndex = inputString.toLowerCase().indexOf(",");
+  
+    if (featuringIndex !== -1) {
+      // "featuring" is present in the string
+      const artistsString = inputString.substring(0, featuringIndex).trim();
+      const featuringPart = inputString.substring(featuringIndex + "featuring".length).trim();
+  
+      const artistsArray = [...artistsString.split(/\band\b/i), ...featuringPart.split(/\band\b/i)].map(artist => artist.trim());
+      return artistsArray;
+    } else if (commaIndex !== -1) {
+      const artistArr = inputString.split(",");
+      return artistArr;
+    } else {
+      // "featuring" is not present in the string
+      return [inputString.trim()];
+    }
+  }
   
 
   public goToYear(songObj: ISong2){
@@ -91,7 +110,8 @@ export class HotHundredSongComponent {
   }
 
   public onClickArtist(songObj: ISong2){
-    const route = ["/charts/hot-hundred-songs/artist/" + slugify(songObj.artist)];
+    const correctedArtist = this.extractArtists(songObj.artist);
+    const route = ["/charts/hot-hundred-songs/artist/" + slugify(correctedArtist[0])];
     this.router.navigate(route);
   }
 
@@ -101,7 +121,7 @@ export class HotHundredSongComponent {
           return 30;
       case (year >= 1956 && year <= 1959):
           return 50;
-      case (year >= 1960 && year <= 2021):
+      case (year >= 1960 && year <= 2023):
           return 100;
       default:
           return -1;

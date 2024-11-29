@@ -25,6 +25,9 @@ export class InfoSidebarComponent {
     quoteGenre: "",
     quoteText: ""
   }
+  public famousQuote2: {q: string, a: string, h: string} = {
+    q: "", a: "", h: ""
+  }
   //Songs filtered by year and longest number one song
   public songsByYearArr: ISong2[] = [];
 
@@ -67,9 +70,9 @@ export class InfoSidebarComponent {
     }
   
     if(!this.hideQuote){
-      const quote = await this.generalService.getRandomQuote().toPromise();
-      if(quote && quote?.data && quote?.data.length > 0){
-        this.famousQuote = quote.data[0];
+      const quote = await this.generalService.getRandomQuote2().toPromise();
+      if(quote.length > 0 && quote[0]?.q !== ""){
+        this.famousQuote2 = quote[0];
       }
     }
   

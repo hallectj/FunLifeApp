@@ -1,14 +1,14 @@
 import { DOCUMENT } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-sitemap',
   template: '',
 })
 export class SitemapComponent {
-  public server_url = 'https://funlifeapp-011573cdfdc6.herokuapp.com';
-  //public server_url = 'http://localhost:5000';
+  public server_url = environment.apiUrl;
 
   constructor(private http: HttpClient, @Inject(DOCUMENT) private document: Document) { }
 

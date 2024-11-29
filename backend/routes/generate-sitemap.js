@@ -19,7 +19,7 @@ const generateSitemap = () => {
 
   const daysInMonths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-  const years = Array.from({ length: 2020 - 1950 + 1 }, (_, index) => 1950 + index);
+  const years = Array.from({ length: 2023 - 1950 + 1 }, (_, index) => 1950 + index);
   let dynamicRoutes = [];
   for (let i = 0; i < years.length; i++) {
     const dynamicRoute = "charts/hot-hundred-songs/" + years[i];

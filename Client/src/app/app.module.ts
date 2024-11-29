@@ -41,6 +41,7 @@ import { HotHundredYearComponent } from './modules/hot-hundred-main/hot-hundred-
 import { ToysComponent } from './modules/toys/toys.component';
 import { OtherComponent } from './common/other/other.component';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { YoutubePlayerComponent } from './common/youtube.player.component';
 
 
 
@@ -78,6 +79,7 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
     HotHundredYearComponent,
     ToysComponent,
     OtherComponent,
+    YoutubePlayerComponent
   ],
   imports: [
     BrowserModule,

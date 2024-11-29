@@ -37,7 +37,9 @@ export class MissedArticleWidgetComponent {
     this.dummyPostsExcerpts = await this.postService.getAllPosts().toPromise();
     if(this.dummyPostsExcerpts.length > 0){
       this.dummyPostsExcerpts.forEach(v => {
-        v.excerptDesc = v.excerptDesc.split(" ").splice(0, 20).join(" ") + "..."
+        if(!v.excerptDesc.endsWith("...")){
+          v.excerptDesc = v.excerptDesc.split(" ").splice(0, 20).join(" ") + "..."
+        }
       })
     }
     this.populateInCaseYouMissed();
