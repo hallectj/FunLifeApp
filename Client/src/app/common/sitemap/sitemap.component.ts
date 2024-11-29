@@ -7,7 +7,7 @@ import { Component, Inject } from '@angular/core';
   template: '',
 })
 export class SitemapComponent {
-  public server_url = "https://fun-life-app-aa5d-23ut5q61y-hallectjs-projects.vercel.app/api"
+  public server_url = "https://fun-life-backend.onrender.com/api"
   //public server_url = "localhost:5000/api"
 
   constructor(private http: HttpClient, @Inject(DOCUMENT) private document: Document) { }
