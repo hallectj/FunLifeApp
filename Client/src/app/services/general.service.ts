@@ -6,6 +6,7 @@ import { GENERAL_URL, IBiographicalInfo, ICelebrity, IDateObj, IHistEvent, IMovi
 import { findMatchingName, slugify } from '../common/Toolbox/util';
 import Fuse from 'fuse.js';
 import { ErrorHandlerService } from '../services/error-handler.service'
+import { environment } from 'src/environments/environment';
 
 
 // Define a Fuse configuration for fuzzy matching
@@ -30,8 +31,7 @@ export class GeneralService {
   private yearSubject: Subject<number> = new Subject<number>();
   private mainSongPageTitleSubject: Subject<string> = new Subject<string>();
 
-  public server_url = "https://fun-life-backend.onrender.com/api"
-  //public server_url = "localhost:5000/api"
+  public server_url = environment.apiUrl;
 
   constructor(private http: HttpClient, private errorHandler: ErrorHandlerService) {}
 

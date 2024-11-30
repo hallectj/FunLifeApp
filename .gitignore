@@ -47,17 +47,11 @@ testem.log
 .DS_Store
 Thumbs.db
 
-#environments folder
-src/environments
-src/environments/environment.ts
-
 #server node_modules
 backend/node_modules
 backend/.env
 Client/.angular/
 Client/Client/dist/
-Client/src/environments/environment.prod.ts
-Client/src/environments/environment.ts
 backend/dumpfile.dump
 Client/export-routes.js
 Client/export-routes.ts

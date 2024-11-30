@@ -1,14 +1,14 @@
 import { DOCUMENT } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-sitemap',
   template: '',
 })
 export class SitemapComponent {
-  public server_url = "https://fun-life-backend.onrender.com/api"
-  //public server_url = "localhost:5000/api"
+  public server_url = environment.apiUrl;
 
   constructor(private http: HttpClient, @Inject(DOCUMENT) private document: Document) { }
 

@@ -6,7 +6,7 @@
   <div  id="song-list-wrapper">
     <div (click)="onClickedSong(song)" *ngFor="let song of songsByYearArr; let i = index" class="song-wrapper">
       <div class="song-div-left">
-        <div><img [src]="song?.youtubeThumb" /></div>
+        <div><img [alt]="song?.song" [src]="song?.youtubeThumb" /></div>
       </div>
       <div class="song-div-right">
         <p class="song-title m-0"> {{song.song}}</p>
@@ -19,7 +19,7 @@
   <div *ngIf="!hideToys" class="toy-card" (click)="onToyClick()">
     <h1 class="card-toy-year">Most Popular Toy in {{displayToy.year}}</h1>
     <div class="toy-card-img">
-      <img [src]="displayToy.image">
+      <img [alt]="'top toy of' + displayToy.year" [src]="displayToy.image">
       <p class="text-center"><span>Image Source: </span><cite><a [href]="displayToy.image_source_url" target="_blank" rel="noopener noreferrer">{{displayToy.image_source}}</a></cite></p>
     </div>
     <div class="toy-card-content">

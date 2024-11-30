@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, of, throwError } from 'rxjs';
 import { IPostExcerpt } from '../models/shared-models';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class PostService {
-  public server_url = "https://fun-life-backend.onrender.com/api"
-  //public server_url = "localhost:5000/api"
+  public server_url = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 
