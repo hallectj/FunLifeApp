@@ -5,6 +5,7 @@ import { deslugify, slugify } from '../../../../app/common/Toolbox/util';
 import { ISong2, ISongInfoObj } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
 import { Meta, Title } from '@angular/platform-browser';
+import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
 
 @Component({
   selector: 'app-hot-hundred-song',
@@ -28,6 +29,7 @@ export class HotHundredSongComponent {
 
   constructor(
     public service: GeneralService, 
+    public breadcrumbService: BreadcrumbService,
     private route: ActivatedRoute, 
     private router: Router, 
     private title: Title,
@@ -74,6 +76,13 @@ export class HotHundredSongComponent {
     this.loading = true;
     this.currentRank = position;
     this.songInfoObj = await this.service.getSongWithInfo(this.currentYear, this.currentRank).toPromise();
+    const breadcrumb: {valid_urls: string, long_urls: string}[] = [];
+    const longURL = `/ > charts/hot-hundred-songs > charts/hot-hundred-songs/${this.currentYear} > charts/hot-hundred-songs/${this.currentYear}/${position}/artist/${slugify(this.songInfoObj.songObj.artist)}/song/${slugify(this.songInfoObj.songObj.song)}`;
+    const validURL = `Home > charts/hot-hundred-songs > ${this.currentYear} > ${this.currentYear}/${position}/artist/${slugify(this.songInfoObj.songObj.artist)}/song/${slugify(this.songInfoObj.songObj.song)}"`;
+    
+    //since this is the tail, only one element in array is all that is needed.
+    breadcrumb[0] = {valid_urls: validURL, long_urls: longURL};
+    this.breadcrumbService.setBreadcrumb(breadcrumb)
     this.loading = false;
     this.youTubeURL = "https://www.youtube.com/embed/" + this.songInfoObj.songObj.videoId;
   }
