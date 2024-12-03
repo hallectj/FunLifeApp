@@ -2,13 +2,6 @@
   "version": 2,
   "public": true,
   "name": "fun-life-app",
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "https://www.backthennow.com/",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/api" }
   ],
