@@ -7,7 +7,6 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./other.component.scss']
 })
 export class OtherComponent {
-  public websiteURL = "www.backthennow.com";
   public websiteName = "BackThenNow";
   public affiliates: string[] = ["Amazon", "NordVPN"];
   public contactEmail: string = "hallectj@gmail.com"
