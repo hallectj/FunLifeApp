@@ -33,28 +33,31 @@ export function app(): express.Express {
     maxAge: '1y'
   }));
 
-  // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {
-    const { protocol, originalUrl, baseUrl, headers } = req;
+    const { originalUrl, baseUrl, headers } = req;
+  
+    // Force HTTPS by checking the protocol
+    const protocol = req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
     const canonicalUrl = `${protocol}://${headers.host}${originalUrl}`;
-
+  
     commonEngine
-    .render({
-      bootstrap: AppServerModule,
-      documentFilePath: indexHtml,
-      url: canonicalUrl,
-      publicPath: distFolder,
-      providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
-    })
-    .then((html) => {
-      // Inject the canonical URL into the HTML
-      const canonicalTag = `<link rel="canonical" href="${canonicalUrl}" />`;
-      html = html.replace('</head>', `${canonicalTag}</head>`);
-
-      res.send(html);
-    })
-    .catch((err) => next(err));
+      .render({
+        bootstrap: AppServerModule,
+        documentFilePath: indexHtml,
+        url: canonicalUrl,
+        publicPath: distFolder,
+        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+      })
+      .then((html) => {
+        // Inject the canonical URL into the HTML
+        const canonicalTag = `<link rel="canonical" href="${canonicalUrl}" />`;
+        html = html.replace('</head>', `${canonicalTag}</head>`);
+  
+        res.send(html);
+      })
+      .catch((err) => next(err));
   });
+  
 
   return server;
 }
