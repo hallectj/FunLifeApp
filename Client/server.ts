@@ -36,8 +36,8 @@ export function app(): express.Express {
   server.get('*', (req, res, next) => {
     const { originalUrl, baseUrl, headers } = req;
   
-    // Force HTTPS by checking the protocol
-    const protocol = req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    // Force HTTPS
+    const protocol = 'https'
     const canonicalUrl = `${protocol}://${headers.host}${originalUrl}`;
   
     commonEngine
