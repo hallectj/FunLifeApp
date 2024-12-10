@@ -36,17 +36,24 @@ export function app(): express.Express {
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
+    const canonicalUrl = `${protocol}://${headers.host}${originalUrl}`;
 
     commonEngine
-      .render({
-        bootstrap: AppServerModule,
-        documentFilePath: indexHtml,
-        url: `${protocol}://${headers.host}${originalUrl}`,
-        publicPath: distFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
-      })
-      .then((html) => res.send(html))
-      .catch((err) => next(err));
+    .render({
+      bootstrap: AppServerModule,
+      documentFilePath: indexHtml,
+      url: canonicalUrl,
+      publicPath: distFolder,
+      providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+    })
+    .then((html) => {
+      // Inject the canonical URL into the HTML
+      const canonicalTag = `<link rel="canonical" href="${canonicalUrl}" />`;
+      html = html.replace('</head>', `${canonicalTag}</head>`);
+
+      res.send(html);
+    })
+    .catch((err) => next(err));
   });
 
   return server;
