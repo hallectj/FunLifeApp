@@ -5,7 +5,7 @@ const dotenv = require('dotenv').config()
 const helmet = require('helmet');
 const app = express();
 const pool = require('./pool');
-const { router: videoKeyRoute } = require('./routes/video_encode_key');
+//const { router: videoKeyRoute } = require('./routes/video_encode_key');
 const presidentsRouter = require('./routes/presidents');
 const topSongsRouter = require('./routes/top_songs');
 const artistRouter = require('./routes/artist');
@@ -89,7 +89,7 @@ app.use('/api/song-info', songInfoRouter);
 app.use('/api/celebrities', celebrityRouter);
 app.use('/api/number-one-hits', numberOneHitsRouter);
 app.use('/api/posts', postRouter);
-app.use('/api/key', videoKeyRoute);
+//app.use('/api/key', videoKeyRoute);
 
 let apiURL = '';
 if(process.env.NODE_ENV === 'development'){
