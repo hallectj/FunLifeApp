@@ -5,6 +5,7 @@ const dotenv = require('dotenv').config()
 const helmet = require('helmet');
 const app = express();
 const pool = require('./pool');
+const { router: videoKeyRoute } = require('./routes/video_encode_key');
 const presidentsRouter = require('./routes/presidents');
 const topSongsRouter = require('./routes/top_songs');
 const artistRouter = require('./routes/artist');
@@ -20,20 +21,17 @@ const fs = require('fs');
 const path = require('path');
 
 const port = process.env.PORT || 3000;
-
-function generateRandomCode() {
-  const length = 9; // Length of the code
-  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  return Array.from({ length }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
-}
-
 if(process.env.NODE_ENV  === "development"){
   app.use(cors());
 }else if(process.env.NODE_ENV  === "production"){
-  const allowedOrigins = [process.env.FRONTEND_URL, `https://fun-life-${generateRandomCode()}-hallectjs-projects.vercel.app`]; // Use environment variable for your frontend
+  const allowedOrigins = [process.env.FRONTEND_URL];
+
   app.use(cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Regex to match the dynamic subdomain (e.g., dq4hwdbcy, aq4gwdbuy)
+      const dynamicOriginPattern = /^https:\/\/fun-life-[a-z0-9]{8}-hallectjs-projects\.vercel\.app$/;
+      
+      if (!origin || allowedOrigins.includes(origin) || dynamicOriginPattern.test(origin)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
@@ -91,6 +89,7 @@ app.use('/api/song-info', songInfoRouter);
 app.use('/api/celebrities', celebrityRouter);
 app.use('/api/number-one-hits', numberOneHitsRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/key', videoKeyRoute);
 
 let apiURL = '';
 if(process.env.NODE_ENV === 'development'){
