@@ -20,10 +20,17 @@ const fs = require('fs');
 const path = require('path');
 
 const port = process.env.PORT || 3000;
+
+function generateRandomCode() {
+  const length = 9; // Length of the code
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  return Array.from({ length }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
+}
+
 if(process.env.NODE_ENV  === "development"){
   app.use(cors());
 }else if(process.env.NODE_ENV  === "production"){
-  const allowedOrigins = [process.env.FRONTEND_URL]; // Use environment variable for your frontend
+  const allowedOrigins = [process.env.FRONTEND_URL, `https://fun-life-${generateRandomCode()}-hallectjs-projects.vercel.app`]; // Use environment variable for your frontend
   app.use(cors({
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
