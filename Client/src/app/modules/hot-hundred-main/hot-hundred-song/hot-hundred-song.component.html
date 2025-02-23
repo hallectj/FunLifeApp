@@ -10,7 +10,6 @@
           <option [selected]="i + 1 === +this.currentRank" *ngFor="let p of ranks; let i = index" [value]="p">#{{p}}</option>
         </select>
       </div>
-  
       
       <div><span style="cursor: pointer;" (click)="goToYear(songInfoObj.songObj)" class="color-1">{{songInfoObj.songObj.year}}</span>
       </div>
@@ -29,6 +28,19 @@
     <div class="song-info-box">
       <p><b>The song {{songInfoObj.songObj.song}}</b> was ranked #{{songInfoObj.songObj.position}} overall in {{songInfoObj.songObj.year}}. The song was performed by {{songInfoObj.songObj.artist}}</p>
       <p *ngIf="!!songInfoObj.infoObj && songInfoObj.infoObj.peak_position !== -1">The song's highest peak was #{{songInfoObj.infoObj.peak_position}} which was obtained on {{songInfoObj.infoObj.highest_peak_date}}. It stayed at on the hot 100 charts for {{songInfoObj.infoObj.weeks_on_chart}} weeks.</p>
+    </div>
+  </div>
+
+  <div class="lyrics-container">
+    <h3 class="lyrics-title">Lyrics</h3>
+    <div *ngIf="!lyricsLoading && !lyricsError && lyrics" class="lyrics-content">
+      <pre>{{lyrics}}</pre>
+    </div>
+    <div *ngIf="lyricsLoading" class="lyrics-message">
+      Loading lyrics...
+    </div>
+    <div *ngIf="lyricsError" class="lyrics-message lyrics-error">
+      Lyrics not available
     </div>
   </div>
 

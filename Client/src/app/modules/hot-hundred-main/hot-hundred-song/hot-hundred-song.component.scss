@@ -48,8 +48,7 @@
   }
 }
 
-
-#song-component-wrapper{
+#song-component-wrapper {
   .header{
     font-family: 'Russo One', sans-serif;
     font-weight: bold;
@@ -70,19 +69,70 @@
       margin-left: 5px;
     }
   }
-
-  .song-info-box{
+  .song-info-box {
     padding: 20px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     background-color: #dcebf0;
     border: 1px solid lightgray;
     width: 100%;
   }
+}
 
+// Move lyrics container outside of song-info-box
+.lyrics-container {
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  .lyrics-title {
+    font-family: 'Russo One', sans-serif;
+    color: #2c667a;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+  }
+  .lyrics-content {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: white;
+    border-radius: 4px;
+    
+    pre {
+      white-space: pre-line; // Changed from pre-wrap to pre-line
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      margin: 0;
+    
+      // Add spacing between paragraphs
+      p {
+        margin: 0.5em 0;
+      }
+    
+      // Remove excessive blank lines
+      br + br {
+        display: none;
+      }
+    }
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #2c667a;
+      border-radius: 4px;
+    }
+  }
+}
   .ad-box{
     margin-top: 20px;
   }
-}
+
 
 .select-control-div{
   display: flex;

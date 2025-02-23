@@ -6,6 +6,7 @@ import { ISong2, ISongInfoObj } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
 import { Meta, Title } from '@angular/platform-browser';
 import { BreadcrumbService } from 'src/app/services/breadcrumb.service';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-hot-hundred-song',
@@ -18,24 +19,54 @@ export class HotHundredSongComponent {
     songObj: null,
     infoObj: null
   }
-
+  public lyrics: string = '';
+  public lyricsLoading: boolean = false;
+  public lyricsError: boolean = false;
   public isSongError = true;
   public youTubeURL: string = "";
   public ranks = [];
   public currentRank = -1;
   public currentYear = 1990;
-
   public loading: boolean = true;
-
   constructor(
     public service: GeneralService, 
     public breadcrumbService: BreadcrumbService,
     private route: ActivatedRoute, 
     private router: Router, 
     private title: Title,
-    private meta: Meta
+    private meta: Meta,
+    private http: HttpClient
   ){}
-
+  
+  private async fetchLyrics(artist: string, song: string) {
+    this.lyricsLoading = true;
+    this.lyricsError = false;
+    this.lyrics = '';
+    
+    try {
+      const response = await this.http.get(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(song)}`, 
+        { observe: 'response' }).toPromise();
+      
+      if (response?.status === 200 && response.body?.hasOwnProperty('lyrics')) {
+        // Clean up excessive newlines before setting lyrics
+        this.lyrics = (response.body as {lyrics: string}).lyrics.replace(/\n{3,}/g, '\n\n');
+      } else {
+        this.lyricsError = true;
+      }
+    } catch (error: any) {
+      this.lyricsError = true;
+      // Only log non-404 errors as warnings
+      if (error?.status !== 404) {
+        console.warn(`Unexpected error fetching lyrics: ${error?.status || 'Unknown error'}`);
+      } else {
+        // For 404s, log a more informative but less prominent message
+        console.debug('Lyrics not found:', { artist, song });
+      }
+    } finally {
+      this.lyricsLoading = false;
+    }
+  }
+  
   public ngOnInit(): void {
     // Retrieve the songObj from the state
     this.route.params.subscribe(async (params) => {
@@ -64,6 +95,10 @@ export class HotHundredSongComponent {
         this.youTubeURL = "https://www.youtube.com/embed/" + this.songInfoObj.songObj.videoId;
       }
 
+      //The lyrics api needs the main artist only, otherwise it will return an error.
+      const mainArtist = this.extractArtists(obj.artist)[0];
+      await this.fetchLyrics(mainArtist, obj.song);
+
       this.loading = false;
 
       if(!!this.songInfoObj.songObj){
@@ -71,7 +106,6 @@ export class HotHundredSongComponent {
       }
     })
   }
-
   public async selectPosition(position: number){
     this.loading = true;
     this.currentRank = position;
@@ -86,12 +120,10 @@ export class HotHundredSongComponent {
     this.loading = false;
     this.youTubeURL = "https://www.youtube.com/embed/" + this.songInfoObj.songObj.videoId;
   }
-
   public onPositionSelect(event: Event): void {
     const selectedValue = (event.target as HTMLSelectElement).value;
     this.selectPosition(+selectedValue);
   }
-
   public extractArtists(inputString: string): string[] {
     const featuringIndex = inputString.toLowerCase().indexOf("featuring");
     const commaIndex = inputString.toLowerCase().indexOf(",");
@@ -112,18 +144,15 @@ export class HotHundredSongComponent {
     }
   }
   
-
   public goToYear(songObj: ISong2){
     const route = ["/charts/hot-hundred-songs/" + songObj.year];
     this.router.navigate(route);
   }
-
   public onClickArtist(songObj: ISong2){
     const correctedArtist = this.extractArtists(songObj.artist);
     const route = ["/charts/hot-hundred-songs/artist/" + slugify(correctedArtist[0])];
     this.router.navigate(route);
   }
-
   public getLimit(year: number): number {
     switch (true) {
       case (year >= 1950 && year <= 1955):
