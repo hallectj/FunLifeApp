@@ -1,33 +1,23 @@
 import 'zone.js/node';
 
 import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine } from '@angular/ssr';
+import { renderModule } from '@angular/platform-server';
 import * as express from 'express';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import AppServerModule from './src/main.server';
+import { provideServerRendering } from '@angular/platform-server';
+import { Provider, StaticProvider } from '@angular/core';
+import { AppServerModule } from 'src/app/app.module.server';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
-  //const distFolder = join(process.cwd(), 'dist/fun_life_app/browser');
-  //const distFolder = join(__dirname, 'dist/fun_life_app/browser');
-  //const indexHtml = existsSync(join(distFolder, 'index.original.html'))
-    //? join(distFolder, 'index.original.html')
-    //: join(distFolder, 'index.html');
-
-  const distFolder = __dirname.replace('server', 'browser');
-  let indexHtml = existsSync(join(distFolder, 'index.original.html'))
-    ? join(distFolder, 'index.original.html')
-    : join(distFolder, 'index.html');
-
-  const commonEngine = new CommonEngine();
+  const distFolder = join(process.cwd(), 'dist/fun_life_app/browser');
+  const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? join(distFolder, 'index.original.html') : join(distFolder, 'index.html');
 
   server.set('view engine', 'html');
   server.set('views', distFolder);
 
-  // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
   server.get('*.*', express.static(distFolder, {
     maxAge: '1y'
@@ -35,29 +25,29 @@ export function app(): express.Express {
 
   server.get('*', (req, res, next) => {
     const { originalUrl, baseUrl, headers } = req;
-  
+
     // Force HTTPS
-    const protocol = 'https'
+    const protocol = 'https';
     const canonicalUrl = `${protocol}://${headers.host}${originalUrl}`;
-  
-    commonEngine
-      .render({
-        bootstrap: AppServerModule,
-        documentFilePath: indexHtml,
-        url: canonicalUrl,
-        publicPath: distFolder,
-        providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
-      })
+
+    import('./src/main.server').then((m) => renderModule(m.AppServerModule, {
+      document: indexHtml,
+      url: canonicalUrl,
+      extraProviders: [
+        provideServerRendering() as unknown as StaticProvider,
+        { provide: APP_BASE_HREF, useValue: baseUrl }
+      ],
+    })
       .then((html) => {
         // Inject the canonical URL into the HTML
         const canonicalTag = `<link rel="canonical" href="${canonicalUrl}" />`;
         html = html.replace('</head>', `${canonicalTag}</head>`);
-  
+
         res.send(html);
       })
-      .catch((err) => next(err));
+      .catch((err) => next(err)),
+    ).catch((err) => next(err));
   });
-  
 
   return server;
 }
