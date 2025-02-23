@@ -44,8 +44,6 @@ export class HotHundredYearComponent {
     //const response = await this.service.getSongObj(+this.selectedYear, songObj.position).toPromise();
     //const artist = (!!response && !!response.artist) ? response.artist : songObj.artist;
     const route = ['charts/hot-hundred-songs/artist/' + slugify(artist)];
-    console.log("artist", artist);
-    console.log("slug artist", slugify(artist));
     this.router.navigate(route);
   }
 
