@@ -82,7 +82,7 @@ import { YoutubePlayerComponent } from './common/youtube.player.component';
     YoutubePlayerComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     HttpClientModule,
     HttpClientJsonpModule,

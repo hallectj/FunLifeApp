@@ -142,34 +142,49 @@ export class GeneralService {
 
 
   public getSongs(year: number, orderByPosition: string = "position", spliceAmount: number = 0): Observable<ISong2[]> {
-    // Check if songs for this year are already in TransferState (client-side after SSR)
     const songsKey = SONGS_KEY(year);
     if (this.transferState.hasKey(songsKey)) {
       const cachedSongs = this.transferState.get(songsKey, null as ISong2[]);
-      this.transferState.remove(songsKey); // Clean up after retrieval
-      return of(cachedSongs); // Return cached data as an Observable
-    } else {
-      // Fetch songs from the API and store in TransferState on the server
-      const headers = new HttpHeaders().set('X-Order-By', orderByPosition);
-      return this.http.get<ISong2[]>(`${this.server_url}/top-songs/${year}`, { headers }).pipe(
-        map((response) => {
-          const songObjects: ISong2[] = response.map((songObj: ISong2) => {
-            songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
-            return { ...songObj };
-          });
-          if (spliceAmount > 0) {
-            return songObjects.slice(0, spliceAmount);
-          } else {
-            return songObjects;
-          }
-        }),
-        tap((songs) => {
-          if (isPlatformServer(this.platformId)) {
-            this.transferState.set(songsKey, songs); // Store songs on the server for this year
-          }
-        })
-      );
+      console.log(`[${year}] Using TransferState: ${cachedSongs.length} songs`);
+      if (isPlatformServer(this.platformId)) {
+        this.transferState.remove(songsKey); // Clean up on server
+      }
+      return of(cachedSongs);
     }
+
+    const headers = new HttpHeaders().set('X-Order-By', orderByPosition);
+    const url = `${this.server_url}/api/top-songs/${year}`;
+    console.log(`[${year}] Fetching from: ${url}, Server: ${isPlatformServer(this.platformId)}`);
+
+    return this.http.get<ISong2[]>(url, { headers }).pipe(
+      map((response: ISong2[]) => {
+        const songObjects = response.map((songObj: ISong2) => {
+          songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
+          return { ...songObj };
+        });
+        return spliceAmount > 0 ? songObjects.slice(0, spliceAmount) : songObjects;
+      }),
+      tap(songs => {
+        if (isPlatformServer(this.platformId)) {
+          console.log(`[${year}] Storing ${songs.length} songs in TransferState`);
+          this.transferState.set(songsKey, songs);
+        } else {
+          console.log(`[${year}] Client fetched ${songs.length} songs`);
+        }
+      }),
+      catchError(err => {
+        console.error(`[${year}] Fetch error (Server: ${isPlatformServer(this.platformId)}):`, err.message);
+        const mockSongs: ISong2[] = [
+          { position: 1, artist: 'Mock Artist', song: 'Mock Song', year, youtubeThumb: 'https://img.youtube.com/vi/mock1/default.jpg', videoId: 'mock1' },
+          { position: 2, artist: 'Another Mock', song: 'Another Song', year, youtubeThumb: 'https://img.youtube.com/vi/mock2/default.jpg', videoId: 'mock2' }
+        ];
+        if (isPlatformServer(this.platformId)) {
+          console.log(`[${year}] Using mock data for SSR`);
+          this.transferState.set(songsKey, mockSongs);
+        }
+        return of(mockSongs); // Return mock for both server and client on error
+      })
+    );
   }
   public getNumberOneHitSongs(): Observable<ISong[]>{
     const apiURL = this.server_url + "/" + "number-one-hits";
