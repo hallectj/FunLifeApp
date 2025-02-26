@@ -1,13 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, ReplaySubject, Subject, forkJoin, of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { GENERAL_URL, IBiographicalInfo, ICelebrity, IDateObj, IHistEvent, IMovie, IPresident, ISong, ISong2, ISongInfoObj, ISport, IToy } from '../models/shared-models';
 import { findMatchingName, slugify } from '../common/Toolbox/util';
 import Fuse from 'fuse.js';
 import { ErrorHandlerService } from '../services/error-handler.service'
 import { environment } from 'src/environments/environment';
-
+import { TransferState, makeStateKey } from '@angular/platform-browser';
+import { isPlatformServer } from '@angular/common';
 
 // Define a Fuse configuration for fuzzy matching
 const fuseOptions = {
@@ -15,6 +16,8 @@ const fuseOptions = {
   includeScore: true,
   threshold: 0.7, // Adjust the threshold as needed
 };
+
+const SONGS_KEY = (year: number) => makeStateKey<ISong2[]>(`songs-${year}`);
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +36,7 @@ export class GeneralService {
 
   public server_url = environment.apiUrl;
 
-  constructor(private http: HttpClient, private errorHandler: ErrorHandlerService) {}
+  constructor(private http: HttpClient, private errorHandler: ErrorHandlerService, private transferState: TransferState, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   public setBirthDate(birthDate: Date){
     this.birthdateSession = birthDate;
@@ -139,22 +142,35 @@ export class GeneralService {
 
 
   public getSongs(year: number, orderByPosition: string = "position", spliceAmount: number = 0): Observable<ISong2[]> {
-    const headers = new HttpHeaders().set('X-Order-By', orderByPosition); 
-    return this.http.get<ISong2[]>(this.server_url + '/top-songs/' + year.toString(), { headers }).pipe(
-      map((response) => {
-        const songObjects: ISong2[] = response.map((songObj: ISong2) => {
-          songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
-          return { ...songObj };
-        });
-        if (spliceAmount > 0) {
-          return songObjects.slice(0, spliceAmount);
-        } else {
-          return songObjects;
-        }
-      })
-    );
+    // Check if songs for this year are already in TransferState (client-side after SSR)
+    const songsKey = SONGS_KEY(year);
+    if (this.transferState.hasKey(songsKey)) {
+      const cachedSongs = this.transferState.get(songsKey, null as ISong2[]);
+      this.transferState.remove(songsKey); // Clean up after retrieval
+      return of(cachedSongs); // Return cached data as an Observable
+    } else {
+      // Fetch songs from the API and store in TransferState on the server
+      const headers = new HttpHeaders().set('X-Order-By', orderByPosition);
+      return this.http.get<ISong2[]>(`${this.server_url}/top-songs/${year}`, { headers }).pipe(
+        map((response) => {
+          const songObjects: ISong2[] = response.map((songObj: ISong2) => {
+            songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
+            return { ...songObj };
+          });
+          if (spliceAmount > 0) {
+            return songObjects.slice(0, spliceAmount);
+          } else {
+            return songObjects;
+          }
+        }),
+        tap((songs) => {
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(songsKey, songs); // Store songs on the server for this year
+          }
+        })
+      );
+    }
   }
-
   public getNumberOneHitSongs(): Observable<ISong[]>{
     const apiURL = this.server_url + "/" + "number-one-hits";
     return this.http.get<any>(apiURL);

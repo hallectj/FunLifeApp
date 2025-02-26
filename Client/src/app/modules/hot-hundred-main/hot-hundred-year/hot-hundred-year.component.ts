@@ -22,15 +22,27 @@ export class HotHundredYearComponent {
     private meta: Meta
   ){}
 
-  public async ngOnInit(){
-    this.route.params.subscribe(async (params) => {
-      this.selectedYear = params["year"];
-      this.service.sendYearToChild(+this.selectedYear)
-      this.title.setTitle("Hot Hundred Songs of " + this.selectedYear);
-      this.meta.updateTag({name: "description", content: "Hot Hundred Songs of " + this.selectedYear});
-      this.hotHundredSongs = await this.service.getSongs(+this.selectedYear, "position").toPromise();
-      this.hotHundredSongs.sort((a,b) => a.position - b.position);
-      this.service.updateMainSongPageTitle("Top " + this.hotHundredSongs.length + " Songs of " + this.selectedYear);
+  public ngOnInit(): void {
+    this.route.params.subscribe((params) => {
+      this.selectedYear = params['year'];
+      if (this.selectedYear) {
+        const yearNum = +this.selectedYear;
+
+        // Update title and meta tags (runs on both server and client)
+        this.title.setTitle(`Hot Hundred Songs of ${this.selectedYear}`);
+        this.meta.updateTag({ name: 'description', content: `Hot Hundred Songs of ${this.selectedYear}` });
+
+        // Notify child components (assuming this is synchronous or handled elsewhere)
+        this.service.sendYearToChild(yearNum);
+
+        // Fetch songs and sort them
+        this.service.getSongs(yearNum, 'position').subscribe((songs) => {
+          this.hotHundredSongs = songs.sort((a, b) => a.position - b.position);
+
+          // Update main song page title (runs on both server and client)
+          this.service.updateMainSongPageTitle(`Top ${this.hotHundredSongs.length} Songs of ${this.selectedYear}`);
+        });
+      }
     });
   }
 
