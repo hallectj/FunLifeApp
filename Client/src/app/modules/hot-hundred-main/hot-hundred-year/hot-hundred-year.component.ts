@@ -35,7 +35,7 @@ export class HotHundredYearComponent {
         this.title.setTitle(`Hot Hundred Songs of ${this.selectedYear}`);
         this.meta.updateTag({ name: 'description', content: `Hot Hundred Songs of ${this.selectedYear}` });
         this.service.sendYearToChild(yearNum);
-
+  
         this.service.getSongs(yearNum, 'position').pipe(first()).subscribe({
           next: (songs) => {
             console.log(`[${yearNum}] Loaded ${songs.length} songs, Server: ${isPlatformServer(this.platformId)}`);
