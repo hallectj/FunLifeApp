@@ -34,7 +34,7 @@ export class GeneralService {
   private yearSubject: Subject<number> = new Subject<number>();
   private mainSongPageTitleSubject: Subject<string> = new Subject<string>();
 
-  public server_url = environment.apiUrl;
+  public server_url = "https://fun-life-backend.onrender.com/api"
 
   constructor(private http: HttpClient, private errorHandler: ErrorHandlerService, private transferState: TransferState, @Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -145,13 +145,15 @@ export class GeneralService {
     const songsKey = SONGS_KEY(year);
 
     if (isPlatformServer(this.platformId)) {
-      const headers = new HttpHeaders().set('X-Order-By', orderByPosition);
+      const headers = new HttpHeaders()
+        .set('X-Order-By', orderByPosition)
+        .set('User-Agent', 'Angular-SSR');
       const url = `${this.server_url}/top-songs/${year}`;
       console.log(`[${year}] Server fetching: ${url}`);
 
       return this.http.get<ISong2[]>(url, { headers }).pipe(
         map((response: ISong2[]) => {
-          console.log(`[${year}] Server response: ${response.length} songs`);
+          console.log(`[${year}] Server fetched ${response.length} songs`);
           const songObjects = response.map((songObj: ISong2) => {
             songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
             return { ...songObj };
@@ -159,14 +161,19 @@ export class GeneralService {
           return spliceAmount > 0 ? songObjects.slice(0, spliceAmount) : songObjects;
         }),
         tap(songs => {
-          console.log(`[${year}] Server storing ${songs.length} real songs in TransferState`);
+          console.log(`[${year}] Server storing ${songs.length} real songs`);
           this.transferState.set(songsKey, songs);
         }),
         catchError(err => {
-          console.error(`[${year}] Server fetch error:`, err.message, err.status, err.statusText);
+          console.error(`[${year}] Server fetch error:`, {
+            message: err.message,
+            status: err.status,
+            statusText: err.statusText,
+            url: err.url
+          });
           const mockSongs: ISong2[] = [
-            { position: 1, artist: 'Mock Artist', song: 'Mock Song', year, youtubeThumb: 'https://img.youtube.com/vi/mock1/default.jpg', videoId: 'mock1' },
-            { position: 2, artist: 'Another Mock', song: 'Another Song', year, youtubeThumb: 'https://img.youtube.com/vi/mock2/default.jpg', videoId: 'mock2' }
+            { position: 1, artist: 'Mock Artist', song: 'Mock Song', videoId: 'mock1', youtubeThumb: 'https://img.youtube.com/vi/mock1/default.jpg', year: year },
+            { position: 2, artist: 'Mock Artist2', song: 'Mock Song2', videoId: 'mock2', youtubeThumb: 'https://img.youtube.com/vi/mock1/default.jpg', year: year },
           ];
           console.log(`[${year}] Server using mock data`);
           this.transferState.set(songsKey, mockSongs);
@@ -174,15 +181,14 @@ export class GeneralService {
         })
       );
     } else {
-      // Client: Fetch real data
       if (this.transferState.hasKey(songsKey)) {
         const cachedSongs = this.transferState.get(songsKey, null as ISong2[]);
         console.log(`[${year}] Client checking TransferState: ${cachedSongs.length} songs`);
-        // Only use TransferState if it’s not mock data (heuristic: more than 2 songs)
-        if (cachedSongs.length > 2 ) {
+        if (cachedSongs.length > 2) {
           return of(cachedSongs);
         }
       }
+
       const headers = new HttpHeaders().set('X-Order-By', orderByPosition);
       const url = `${this.server_url}/top-songs/${year}`;
       console.log(`[${year}] Client fetching: ${url}`);
@@ -198,7 +204,7 @@ export class GeneralService {
         }),
         catchError(err => {
           console.error(`[${year}] Client fetch error:`, err.message);
-          return of([]); // Empty on client failure
+          return of([]);
         })
       );
     }
