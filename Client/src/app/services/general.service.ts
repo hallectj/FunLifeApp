@@ -147,7 +147,7 @@ export class GeneralService {
     if (isPlatformServer(this.platformId)) {
       // Server: Try real fetch, fall back to mock
       const headers = new HttpHeaders().set('X-Order-By', orderByPosition);
-      const url = `${this.server_url}/api/top-songs/${year}`;
+      const url = `${this.server_url}/top-songs/${year}`;
       console.log(`[${year}] Server fetching: ${url}`);
 
       return this.http.get<ISong2[]>(url, { headers }).pipe(
@@ -176,7 +176,7 @@ export class GeneralService {
     } else {
       // Client: Always fetch real data, ignore TransferState unless confirmed real
       const headers = new HttpHeaders().set('X-Order-By', orderByPosition);
-      const url = `${this.server_url}/api/top-songs/${year}`;
+      const url = `${this.server_url}/top-songs/${year}`;
       console.log(`[${year}] Client fetching: ${url}`);
 
       return this.http.get<ISong2[]>(url, { headers }).pipe(
