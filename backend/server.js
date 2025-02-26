@@ -21,28 +21,29 @@ const fs = require('fs');
 const path = require('path');
 
 const port = process.env.PORT || 3000;
-if(process.env.NODE_ENV  === "development"){
+if (process.env.NODE_ENV === "development") {
   app.use(cors());
-}else if(process.env.NODE_ENV  === "production"){
-  const allowedOrigins = [process.env.FRONTEND_URL];
+} else if (process.env.NODE_ENV === "production") {
+  const allowedOrigins = [process.env.FRONTEND_URL]; // e.g., 'https://your-app.com'
+  const dynamicOriginPattern = /^https:\/\/fun-life-[a-z0-9]{8}-hallectjs-projects\.vercel\.app$/;
 
   app.use(cors({
     origin: (origin, callback) => {
-      // Regex to match the dynamic subdomain (e.g., dq4hwdbcy, aq4gwdbuy)
-      const dynamicOriginPattern = /^https:\/\/fun-life-[a-z0-9]{8}-hallectjs-projects\.vercel\.app$/;
-      
+      // Allow requests with no origin (common for server-side fetches like SSR)
+      // OR match allowed origins/dynamic pattern
       if (!origin || allowedOrigins.includes(origin) || dynamicOriginPattern.test(origin)) {
+        console.log(`CORS allowed for origin: ${origin || 'none'}`);
         callback(null, true);
       } else {
+        console.error(`CORS rejected for origin: ${origin}`);
         callback(new Error('Not allowed by CORS'));
       }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: '*',  // Allow all headers
+    allowedHeaders: ['X-Order-By', 'User-Agent', 'Content-Type'], // Explicitly allow SSR headers
   }));
 }
 
-// Log preflight requests for debugging
 app.options('*', cors(), (req, res) => {
   res.sendStatus(200);
 });
