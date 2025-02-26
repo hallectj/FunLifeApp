@@ -145,13 +145,13 @@ export class GeneralService {
     const songsKey = SONGS_KEY(year);
 
     if (isPlatformServer(this.platformId)) {
-      // Server: Try real fetch, fall back to mock
       const headers = new HttpHeaders().set('X-Order-By', orderByPosition);
       const url = `${this.server_url}/top-songs/${year}`;
       console.log(`[${year}] Server fetching: ${url}`);
 
       return this.http.get<ISong2[]>(url, { headers }).pipe(
         map((response: ISong2[]) => {
+          console.log(`[${year}] Server response: ${response.length} songs`);
           const songObjects = response.map((songObj: ISong2) => {
             songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
             return { ...songObj };
@@ -159,14 +159,14 @@ export class GeneralService {
           return spliceAmount > 0 ? songObjects.slice(0, spliceAmount) : songObjects;
         }),
         tap(songs => {
-          console.log(`[${year}] Server storing ${songs.length} real songs`);
+          console.log(`[${year}] Server storing ${songs.length} real songs in TransferState`);
           this.transferState.set(songsKey, songs);
         }),
         catchError(err => {
-          console.error(`[${year}] Server fetch error:`, err.message);
+          console.error(`[${year}] Server fetch error:`, err.message, err.status, err.statusText);
           const mockSongs: ISong2[] = [
-            { position: 1, artist : "Mock Artist", song: "Mock Song", year: year, youtubeThumb: "https://img.youtube.com/vi/mock1/default.jpg", videoId: "mock1" },
-            { position: 2, artist : "Another Mock", song: "Another Song", year: year, youtubeThumb: "https://img.youtube.com/vi/mock2/default.jpg", videoId: "mock2" }
+            { position: 1, artist: 'Mock Artist', song: 'Mock Song', year, youtubeThumb: 'https://img.youtube.com/vi/mock1/default.jpg', videoId: 'mock1' },
+            { position: 2, artist: 'Another Mock', song: 'Another Song', year, youtubeThumb: 'https://img.youtube.com/vi/mock2/default.jpg', videoId: 'mock2' }
           ];
           console.log(`[${year}] Server using mock data`);
           this.transferState.set(songsKey, mockSongs);
@@ -174,7 +174,15 @@ export class GeneralService {
         })
       );
     } else {
-      // Client: Always fetch real data, ignore TransferState unless confirmed real
+      // Client: Fetch real data
+      if (this.transferState.hasKey(songsKey)) {
+        const cachedSongs = this.transferState.get(songsKey, null as ISong2[]);
+        console.log(`[${year}] Client checking TransferState: ${cachedSongs.length} songs`);
+        // Only use TransferState if it’s not mock data (heuristic: more than 2 songs)
+        if (cachedSongs.length > 2 ) {
+          return of(cachedSongs);
+        }
+      }
       const headers = new HttpHeaders().set('X-Order-By', orderByPosition);
       const url = `${this.server_url}/top-songs/${year}`;
       console.log(`[${year}] Client fetching: ${url}`);
@@ -190,13 +198,7 @@ export class GeneralService {
         }),
         catchError(err => {
           console.error(`[${year}] Client fetch error:`, err.message);
-          // Use TransferState as fallback if it exists (mock or real)
-          if (this.transferState.hasKey(songsKey)) {
-            const cachedSongs = this.transferState.get(songsKey, null as ISong2[]);
-            console.log(`[${year}] Client using TransferState fallback: ${cachedSongs.length}`);
-            return of(cachedSongs);
-          }
-          return of([]); // Empty if no fallback
+          return of([]); // Empty on client failure
         })
       );
     }
