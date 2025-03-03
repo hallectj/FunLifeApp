@@ -35,6 +35,7 @@ export class GeneralService {
   private mainSongPageTitleSubject: Subject<string> = new Subject<string>();
 
   public server_url = "https://fun-life-backend.onrender.com/api"
+  //public server_url = "http://localhost:5000/api"
 
   constructor(private http: HttpClient, private errorHandler: ErrorHandlerService, private transferState: TransferState, @Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -149,11 +150,9 @@ export class GeneralService {
         .set('X-Order-By', orderByPosition)
         .set('User-Agent', 'Angular-SSR');
       const url = `${this.server_url}/top-songs/${year}`;
-      console.log(`[${year}] Server fetching: ${url}`);
 
       return this.http.get<ISong2[]>(url, { headers }).pipe(
         map((response: ISong2[]) => {
-          console.log(`[${year}] Server fetched ${response.length} songs`);
           const songObjects = response.map((songObj: ISong2) => {
             songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
             return { ...songObj };
@@ -161,7 +160,6 @@ export class GeneralService {
           return spliceAmount > 0 ? songObjects.slice(0, spliceAmount) : songObjects;
         }),
         tap(songs => {
-          console.log(`[${year}] Server storing ${songs.length} real songs`);
           this.transferState.set(songsKey, songs);
         }),
         catchError(err => {
@@ -175,7 +173,6 @@ export class GeneralService {
             { position: 1, artist: 'Mock Artist', song: 'Mock Song', videoId: 'mock1', youtubeThumb: 'https://img.youtube.com/vi/mock1/default.jpg', year: year },
             { position: 2, artist: 'Mock Artist2', song: 'Mock Song2', videoId: 'mock2', youtubeThumb: 'https://img.youtube.com/vi/mock1/default.jpg', year: year },
           ];
-          console.log(`[${year}] Server using mock data`);
           this.transferState.set(songsKey, mockSongs);
           return of(mockSongs);
         })
@@ -183,7 +180,6 @@ export class GeneralService {
     } else {
       if (this.transferState.hasKey(songsKey)) {
         const cachedSongs = this.transferState.get(songsKey, null as ISong2[]);
-        console.log(`[${year}] Client checking TransferState: ${cachedSongs.length} songs`);
         if (cachedSongs.length > 2) {
           return of(cachedSongs);
         }
@@ -191,7 +187,6 @@ export class GeneralService {
 
       const headers = new HttpHeaders().set('X-Order-By', orderByPosition);
       const url = `${this.server_url}/top-songs/${year}`;
-      console.log(`[${year}] Client fetching: ${url}`);
 
       return this.http.get<ISong2[]>(url, { headers }).pipe(
         map((response: ISong2[]) => {
@@ -199,7 +194,6 @@ export class GeneralService {
             songObj.youtubeThumb = this.getYoutubeThumbnailUrl(songObj.videoId);
             return { ...songObj };
           });
-          console.log(`[${year}] Client fetched ${songObjects.length} songs`);
           return spliceAmount > 0 ? songObjects.slice(0, spliceAmount) : songObjects;
         }),
         catchError(err => {

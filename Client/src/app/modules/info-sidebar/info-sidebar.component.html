@@ -1,8 +1,23 @@
 <div id="sidebarDivWrapper">
   <header>
-    <h1 *ngIf="!showAlternateTitle">Top {{songsByYearArr.length}} of the Hot 100 Songs of {{randomYear}}</h1>
+    <h1 *ngIf="!showAlternateTitle">Top {{songsByYearArr.length}} songs of {{randomYear}}</h1>
     <h1 *ngIf="showAlternateTitle">Some of {{randomYear}}'s hottest hit songs of the era</h1>
   </header>
+  <div style="background-color: white; display: flex; justify-content: center; align-items: center;">
+    <div style="margin-bottom: 5px;">     
+      <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <line x1="12" y1="6" x2="12" y2="16" stroke="black" stroke-width="4"/>
+        <polygon points="4,16 12,24 20,16" fill="black"/>
+      </svg>
+    </div>
+    <div style="text-align: center;">Click on a song to listen and learn more  </div>   
+    <div style="margin-bottom: 5px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <line x1="12" y1="6" x2="12" y2="16" stroke="black" stroke-width="4"/>
+        <polygon points="4,16 12,24 20,16" fill="black"/>
+      </svg>
+    </div>
+  </div>
   <div  id="song-list-wrapper">
     <div (click)="onClickedSong(song)" *ngFor="let song of songsByYearArr; let i = index" class="song-wrapper">
       <div class="song-div-left">

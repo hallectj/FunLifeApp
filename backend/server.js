@@ -32,7 +32,6 @@ if (process.env.NODE_ENV === "development") {
       // Allow requests with no origin (common for server-side fetches like SSR)
       // OR match allowed origins/dynamic pattern
       if (!origin || allowedOrigins.includes(origin) || dynamicOriginPattern.test(origin)) {
-        console.log(`CORS allowed for origin: ${origin || 'none'}`);
         callback(null, true);
       } else {
         console.error(`CORS rejected for origin: ${origin}`);

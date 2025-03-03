@@ -89,7 +89,12 @@ import { YoutubePlayerComponent } from './common/youtube.player.component';
     FormsModule,
     LazyLoadImageModule
   ],
-  providers: [ErrorHandlerService, SingleRouteResolver, DateRouteResolver, ArtistRouteResolver, SongRouteResolver, {     
+  providers: [
+     ErrorHandlerService, 
+     SingleRouteResolver, 
+     DateRouteResolver, 
+     ArtistRouteResolver, 
+     SongRouteResolver, {     
      provide: DATE_PIPE_DEFAULT_OPTIONS,
      useValue: { dateFormat: "longDate" }
   }, provideClientHydration(), provideHttpClient(withFetch())],

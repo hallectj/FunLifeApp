@@ -26,19 +26,16 @@ export class HotHundredYearComponent {
   ){}
 
   public ngOnInit(): void {
-    console.log('ngOnInit running, Server:', isPlatformServer(this.platformId));
     this.route.params.pipe(first()).subscribe((params) => {
       this.selectedYear = params['year'];
       if (this.selectedYear) {
         const yearNum = +this.selectedYear;
-        console.log(`[${yearNum}] Setting title and meta`);
         this.title.setTitle(`Hot Hundred Songs of ${this.selectedYear}`);
         this.meta.updateTag({ name: 'description', content: `Hot Hundred Songs of ${this.selectedYear}` });
         this.service.sendYearToChild(yearNum);
   
         this.service.getSongs(yearNum, 'position').pipe(first()).subscribe({
           next: (songs) => {
-            console.log(`[${yearNum}] Loaded ${songs.length} songs, Server: ${isPlatformServer(this.platformId)}`);
             this.hotHundredSongs = songs.sort((a, b) => a.position - b.position);
             this.service.updateMainSongPageTitle(`Top ${this.hotHundredSongs.length} Songs of ${this.selectedYear}`);
           },

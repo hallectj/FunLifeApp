@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GeneralService } from '../../../app/services/general.service';
@@ -67,7 +67,8 @@ export class HotHundredMainComponent {
     public router: Router, 
     public service: GeneralService, 
     private title: Title,
-    private meta: Meta
+    private meta: Meta,
+    private cd: ChangeDetectorRef
   ){}
 
   public ngOnInit(){
@@ -88,10 +89,11 @@ export class HotHundredMainComponent {
     }));
   }
 
-  public pickTheYear(year: number){
+  public async pickTheYear(year: number){
     this.selectedYear = year.toString();
     const route = ['charts/hot-hundred-songs/' + this.selectedYear];
-    this.router.navigate(route);
+    await this.router.navigate(route)
+    window.location.reload();
   }
 
   public onPickTheYear($event: Event){
