@@ -100,7 +100,7 @@ export class FrontFeatureComponent {
     const observable = combineLatest({
       histEvents: this.service.getEvents(this.dateObj.date),
       //famousBirths: this.service.getCelebrityByDateSet(this.dateObj.month + '-' + this.dateObj.day),
-      famousBirth: this.service.getTopCelebrityByDateSet(this.dateObj.month + "-" + this.dateObj.day),
+      famousBirth: this.service.getTopCelebrityByDateSet(this.dateObj.month + "-" + this.dateObj.day)[0],
       presidents: this.service.getPresidents()
     });
 

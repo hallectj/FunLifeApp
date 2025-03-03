@@ -316,7 +316,7 @@ export class GeneralService {
   }
 
   public getTopCelebrityByDateSet(dateset: string): Observable<ICelebrity> {
-    const url = this.server_url + "/celebrities/" + dateset + "/top"
+    const url = this.server_url + "/celebrities/" + dateset;
     return this.http.get<any>(url);
   }
 
