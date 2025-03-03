@@ -25,13 +25,12 @@ if (process.env.NODE_ENV === "development") {
   app.use(cors());
 } else if (process.env.NODE_ENV === "production") {
   const allowedOrigins = [process.env.FRONTEND_URL]; // e.g., 'https://your-app.com'
-  const dynamicOriginPattern = /^https:\/\/fun-life-[a-z0-9]{8}-hallectjs-projects\.vercel\.app$/;
 
   app.use(cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (common for server-side fetches like SSR)
       // OR match allowed origins/dynamic pattern
-      if (!origin || allowedOrigins.includes(origin) || dynamicOriginPattern.test(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || isValidVercelUrl(origin)) {
         callback(null, true);
       } else {
         console.error(`CORS rejected for origin: ${origin}`);
@@ -125,3 +124,9 @@ app.listen(port, async () => {
 app.get('/', (req, res) => {
   res.json({ message: 'This is your Node.js server response.' });
 });
+
+
+function isValidVercelUrl(url) {
+  const regex = /^https:\/\/fun-life-[a-zA-Z0-9]{8}-hallectj-projects\.vercel\.app$/;
+  return regex.test(url);
+}
