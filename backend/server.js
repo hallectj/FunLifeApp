@@ -24,22 +24,23 @@ const port = process.env.PORT || 3000;
 if (process.env.NODE_ENV === "development") {
   app.use(cors());
 } else if (process.env.NODE_ENV === "production") {
-  const allowedOrigins = [process.env.FRONTEND_URL]; // e.g., 'https://your-app.com'
+  app.use(cors());
+  // const allowedOrigins = [process.env.FRONTEND_URL]; // e.g., 'https://your-app.com'
 
-  app.use(cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (common for server-side fetches like SSR)
-      // OR match allowed origins/dynamic pattern
-      if (!origin || allowedOrigins.includes(origin) || isValidVercelUrl(origin)) {
-        callback(null, true);
-      } else {
-        console.error(`CORS rejected for origin: ${origin}`);
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['X-Order-By', 'User-Agent', 'Content-Type'], // Explicitly allow SSR headers
-  }));
+  // app.use(cors({
+  //   origin: (origin, callback) => {
+  //     // Allow requests with no origin (common for server-side fetches like SSR)
+  //     // OR match allowed origins/dynamic pattern
+  //     if (!origin || allowedOrigins.includes(origin) || isValidVercelUrl(origin)) {
+  //       callback(null, true);
+  //     } else {
+  //       console.error(`CORS rejected for origin: ${origin}`);
+  //       callback(new Error('Not allowed by CORS'));
+  //     }
+  //   },
+  //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  //   allowedHeaders: ['X-Order-By', 'User-Agent', 'Content-Type'], // Explicitly allow SSR headers
+  // }));
 }
 
 app.options('*', cors(), (req, res) => {
