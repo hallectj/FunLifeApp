@@ -82,7 +82,7 @@ router.get('/celeb/:name', (req, res) => {
 });
 
 // Route for fetching all celebrities
-router.get('/:dateset/top', (req, res) => {
+router.get('/:dateset', (req, res) => {
   const dateset = req.params.dateset
 
   const query = {
