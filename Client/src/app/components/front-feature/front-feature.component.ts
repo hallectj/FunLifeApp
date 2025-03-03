@@ -3,6 +3,7 @@ import { combineLatest, lastValueFrom, map } from 'rxjs';
 import { slugify } from '../../../app/common/Toolbox/util';
 import { IDateObj, ICelebrity, IHistEvent, IPresident } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
+import { IMAGE_NOT_FOUND } from '../../../app/common/base64Assests';
 
 @Component({
   selector: 'front-feature',
@@ -61,7 +62,7 @@ export class FrontFeatureComponent {
     this.historyRoutePath = "/day-in-history/" + this.dateObj.monthName + "/" + this.dateObj.day 
   
     const responses = await lastValueFrom(this.initData());
-    this.topCelebToday = responses.famousBirth[0];
+    this.topCelebToday = responses.famousBirths[0];
     this.presidents = responses.presidents;
     this.histEvents = responses.histEvents;
 
@@ -84,8 +85,13 @@ export class FrontFeatureComponent {
     }
 
     const celeb = this.topCelebToday;
-    this.celebImg = celeb.image;
-    this.celebImgB64 = celeb.imageB64;
+    if(!!this.topCelebToday.image){
+      this.celebImg = celeb.image;
+      this.celebImgB64 = celeb.imageB64;
+    }else{
+      this.celebImg = "";
+      this.celebImgB64 = IMAGE_NOT_FOUND;
+    }
     this.celebName = celeb.name;
 
     const president = this.presidentByYear(this.presidents, this.dateObj.year);
@@ -99,16 +105,16 @@ export class FrontFeatureComponent {
   public initData(){
     const observable = combineLatest({
       histEvents: this.service.getEvents(this.dateObj.date),
-      //famousBirths: this.service.getCelebrityByDateSet(this.dateObj.month + '-' + this.dateObj.day),
-      famousBirth: this.service.getTopCelebrityByDateSet(this.dateObj.month + "-" + this.dateObj.day),
+      famousBirths: this.service.getCelebrityByDateSet(this.dateObj.month + '-' + this.dateObj.day),
+      //famousBirth: this.service.getTopCelebrityByDateSet(this.dateObj.month + "-" + this.dateObj.day),
       presidents: this.service.getPresidents()
     });
 
     return observable.pipe(
-      map(({ histEvents, famousBirth, presidents }) => {
+      map(({ histEvents, famousBirths, presidents }) => {
         return {
           histEvents: histEvents,
-          famousBirth: famousBirth,
+          famousBirths: famousBirths,
           presidents: presidents
         }
       })
