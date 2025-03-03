@@ -34,16 +34,8 @@ export class FrontFeatureComponent {
     spouses: []
   }
   public loading: boolean = true;
+  public topCelebrities: ICelebrity[] = [];
 
-  //public famousBirths: ICelebrity[];
-  public topCelebToday: ICelebrity = {
-    name: "",
-    birthdate: "",
-    followerCount: 0,
-    image: "",
-    imageB64: "",
-    occupations: []
-  }
   public histEvents: IHistEvent[];
   public presidents: any;
 
@@ -60,9 +52,8 @@ export class FrontFeatureComponent {
     this.dateObj = this.service.populateDateObj(date);
 
     this.historyRoutePath = "/day-in-history/" + this.dateObj.monthName + "/" + this.dateObj.day 
-  
     const responses = await lastValueFrom(this.initData());
-    this.topCelebToday = responses.famousBirths[0];
+    this.topCelebrities = responses.famousBirths;
     this.presidents = responses.presidents;
     this.histEvents = responses.histEvents;
 
@@ -84,15 +75,17 @@ export class FrontFeatureComponent {
       }
     }
 
-    const celeb = this.topCelebToday;
-    if(!!this.topCelebToday.image){
-      this.celebImg = celeb.image;
-      this.celebImgB64 = celeb.imageB64;
-    }else{
-      this.celebImg = "";
-      this.celebImgB64 = IMAGE_NOT_FOUND;
-    }
-    this.celebName = celeb.name;
+    const firstThreeImages = this.topCelebrities.slice(0, 3).map(celeb => celeb.image);
+
+    // Check all three images concurrently, sometimes image url is not valid
+    const validImages = await Promise.all(firstThreeImages.map(async (url) => {
+        return (await this.isImageUrl(url)) ? url : null;
+    }));
+
+    // Find the first valid image or fallback to IMAGE_NOT_FOUND
+    this.celebImg = validImages.find(img => img !== null) || IMAGE_NOT_FOUND;
+    this.celebImgB64 = "";
+    this.celebName = "";
 
     const president = this.presidentByYear(this.presidents, this.dateObj.year);
     this.selectedPresident = president;
@@ -106,7 +99,6 @@ export class FrontFeatureComponent {
     const observable = combineLatest({
       histEvents: this.service.getEvents(this.dateObj.date),
       famousBirths: this.service.getCelebrityByDateSet(this.dateObj.month + '-' + this.dateObj.day),
-      //famousBirth: this.service.getTopCelebrityByDateSet(this.dateObj.month + "-" + this.dateObj.day),
       presidents: this.service.getPresidents()
     });
 
@@ -142,5 +134,15 @@ export class FrontFeatureComponent {
   
     return null;
 
+  }
+
+
+  private async isImageUrl(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+    });
   }
 }
