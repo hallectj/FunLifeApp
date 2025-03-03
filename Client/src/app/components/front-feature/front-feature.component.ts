@@ -61,7 +61,7 @@ export class FrontFeatureComponent {
     this.historyRoutePath = "/day-in-history/" + this.dateObj.monthName + "/" + this.dateObj.day 
   
     const responses = await lastValueFrom(this.initData());
-    this.topCelebToday = responses.famousBirth
+    this.topCelebToday = responses.famousBirth[0];
     this.presidents = responses.presidents;
     this.histEvents = responses.histEvents;
 
@@ -100,7 +100,7 @@ export class FrontFeatureComponent {
     const observable = combineLatest({
       histEvents: this.service.getEvents(this.dateObj.date),
       //famousBirths: this.service.getCelebrityByDateSet(this.dateObj.month + '-' + this.dateObj.day),
-      famousBirth: this.service.getTopCelebrityByDateSet(this.dateObj.month + "-" + this.dateObj.day)[0],
+      famousBirth: this.service.getTopCelebrityByDateSet(this.dateObj.month + "-" + this.dateObj.day),
       presidents: this.service.getPresidents()
     });
 
