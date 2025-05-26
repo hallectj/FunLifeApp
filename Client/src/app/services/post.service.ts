@@ -9,8 +9,10 @@ import { environment } from 'src/environments/environment';
 })
 
 export class PostService {
-  public server_url = "https://fun-life-backend.onrender.com/api";
-  //public server_url = "http://localhost:5000/api";
+  // Use environment variable for server URL
+  public server_url = environment.production 
+    ? "https://fun-life-backend.onrender.com/api"
+    : "http://localhost:5000/api";
 
   constructor(private http: HttpClient) { }
 
