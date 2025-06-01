@@ -1,5 +1,6 @@
 <div class="birthday-container">
-  <h1 id="birthdayHeadline">Find Your Birthday Song And More</h1>
+  <h1 id="birthdayHeadline">Find the #1 Song on Your Birthday and Famous People Born This Day</h1>
+  <p class="seo-intro">Discover what was the number one song on your birthday, which celebrities were born on the same day, and more interesting facts about your special day.</p>
   <div id="birthdayTop">
     <div class="dropdown-container">
       <div class="dropdown">
@@ -21,7 +22,7 @@
         </select>
       </div>
     </div>
-    <div class="birthday-button-div"><button class="find-button" (click)="getBirthDateInfo()">#1 Song and More</button></div>
+    <div class="birthday-button-div"><button class="find-button" (click)="getBirthDateInfo()">Find #1 Song on My Birthday</button></div>
   </div>
 </div>
 
@@ -83,7 +84,7 @@
 </section>
 
 <section *ngIf="showCelebs" class="section celebrity-section">
-  <h3>Celebrities you share a birthday with {{lockedInMonthAndDay}}</h3>
+  <h2>Famous People Born on {{lockedInMonthAndDay}} | Celebrities Born This Day</h2>
   <div class="container-fluid">
     <div *ngFor="let card of cards; let j = index;">
       <div class="row" *ngIf="j % 3 === 0">
@@ -188,9 +189,9 @@
 
 <!-- Add this after the middle-section -->
 <section *ngIf="showYearlySongs" class="section yearly-songs-section">
-  <ribbon [ribbonWidth]="'100%'" [ribbonTitle]="'#1 Song every year on your birthday'">
+  <ribbon [ribbonWidth]="'100%'" [ribbonTitle]="'#1 Songs on ' + lockedInMonthAndDay + ' Through the Years'">
     <div class="yearly-songs-header" (click)="toggleYearlySongsAccordion()">
-      <h3>See the #1 song for each year on your birthday</h3>
+      <h3>See the Number One Song for Each Year on Your Birthday</h3>
       <div class="expand-arrow">
         <i class="fa-solid" [class]="!isYearlySongsExpanded ? 'fa-angle-down': 'fa-angle-up'"></i>
       </div>
@@ -219,4 +220,44 @@
       </div>
     </div>
   </ribbon>
+</section>
+
+<!-- Add an FAQ section for additional keyword targeting -->
+<section class="section faq-section">
+  <h2>Frequently Asked Questions About Birthday Songs</h2>
+  <div class="faq-container">
+    <div class="faq-item">
+      <div class="faq-header" (click)="toggleFaqItem(0)">
+        <h3>How can I find the #1 song on my birthday?</h3>
+        <div class="expand-arrow">
+          <i class="fa-solid" [class]="!expandedFaqItems[0] ? 'fa-angle-down': 'fa-angle-up'"></i>
+        </div>
+      </div>
+      <div class="faq-content" [class.expanded]="expandedFaqItems[0]">
+        <p>Simply select your birth month, day, and year above, then click the "Find #1 Song on My Birthday" button to discover the number one song when you were born.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-header" (click)="toggleFaqItem(1)">
+        <h3>Can I see famous people born on the same day as me?</h3>
+        <div class="expand-arrow">
+          <i class="fa-solid" [class]="!expandedFaqItems[1] ? 'fa-angle-down': 'fa-angle-up'"></i>
+        </div>
+      </div>
+      <div class="faq-content" [class.expanded]="expandedFaqItems[1]">
+        <p>Yes! After searching for your birthday song, you'll also see a list of celebrities and famous people who share your birthday.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-header" (click)="toggleFaqItem(2)">
+        <h3>What was the top song on my birthday in different years?</h3>
+        <div class="expand-arrow">
+          <i class="fa-solid" [class]="!expandedFaqItems[2] ? 'fa-angle-down': 'fa-angle-up'"></i>
+        </div>
+      </div>
+      <div class="faq-content" [class.expanded]="expandedFaqItems[2]">
+        <p>Our yearly songs feature shows you the #1 song on your birthday for multiple years, allowing you to see how music has changed over time.</p>
+      </div>
+    </div>
+  </div>
 </section>

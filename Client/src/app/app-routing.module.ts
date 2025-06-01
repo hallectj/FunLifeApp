@@ -53,10 +53,16 @@ const routes: Routes = [
   { 
     path: 'birthday', component: BirthdayComponent, 
     data: { 
-      breadcrumb: 'Birthday',
+      breadcrumb: 'Birthday Song Finder',
       valid_urls: ["Home", "birthday"],
       long_urls: ["/", "birthday"]
     } 
+  },
+  { 
+    path: 'number-one-song-on-birthday', redirectTo: 'birthday', pathMatch: 'full'
+  },
+  { 
+    path: 'famous-people-born-this-day', redirectTo: 'birthday', pathMatch: 'full'
   },
   { 
     path: 'day-in-history/:month/:day',

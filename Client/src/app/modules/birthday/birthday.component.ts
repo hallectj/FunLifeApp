@@ -118,8 +118,23 @@ export class BirthdayComponent {
   }
 
   public async ngOnInit(){
-    this.title.setTitle("Number One Song on Your Birthday");
-    this.meta.updateTag({name: "description", content: "Find out what was the number one song on your birthday as well as celebrities you share a birthday with and more."})
+    this.title.setTitle("Find the #1 Song on Your Birthday | Famous People Born This Day");
+    this.meta.updateTag({name: "description", content: "Discover the number one song on your birthday, famous people born on this day, and more. Find out what was the #1 song when you were born and which celebrities share your birthday."});
+    
+    // Add additional meta tags for better SEO
+    this.meta.updateTag({name: "keywords", content: "number one song on my birthday, #1 song on your birthday, famous people born this day, born on this day, top song on birthday, what was the number one song on my birthday"});
+    
+    // Add Open Graph tags for better social sharing
+    this.meta.updateTag({property: "og:title", content: "Find the #1 Song on Your Birthday | Famous People Born This Day"});
+    this.meta.updateTag({property: "og:description", content: "Discover the number one song on your birthday, famous people born on this day, and more."});
+    this.meta.updateTag({property: "og:url", content: "https://yourwebsite.com/birthday"});
+    this.meta.updateTag({property: "og:type", content: "website"});
+    
+    // Add Twitter Card tags
+    this.meta.updateTag({name: "twitter:card", content: "summary_large_image"});
+    this.meta.updateTag({name: "twitter:title", content: "Find the #1 Song on Your Birthday | Famous People Born This Day"});
+    this.meta.updateTag({name: "twitter:description", content: "Discover what was the #1 song on your birthday and which celebrities were born on the same day."});
+    
     this.songs = await this.service.getNumberOneHitSongs().toPromise();
     this.movies = await this.service.getMovies().toPromise();
 
@@ -282,6 +297,20 @@ export class BirthdayComponent {
       const element = sArr[i].nativeElement as HTMLElement;
       element.style.setProperty('--bg-image', `url(${this.sportImages[i]})`);
     }
+    
+    // At the end of the method, after all data is loaded
+    this.addStructuredData();
+    
+    // After data is loaded and processed
+    if(songObj && movieObj){
+      // Update title and meta tags with specific date information
+      const formattedDate = `${this.selectedMonth} ${this.selectedDay}, ${this.selectedYear}`;
+      this.title.setTitle(`#1 Song on ${formattedDate} was ${songObj.songTitle} by ${songObj.artist}`);
+      this.meta.updateTag({name: "description", content: `The number one song on ${formattedDate} was ${songObj.songTitle} by ${songObj.artist}. Discover more about your birthday including famous people born on ${this.selectedMonth} ${this.selectedDay}.`});
+      
+      // Update structured data with specific song information
+      this.addStructuredDataWithSong(songObj, formattedDate);
+    }
   }
 
   public getYouTubeURLs(){
@@ -396,6 +425,68 @@ export class BirthdayComponent {
     this.showYearlySongs = this.yearlySongs.length > 0;
   }
 
+  private addStructuredData(): void {
+    // Remove any existing structured data
+    const existingScript = document.querySelector('#birthdayStructuredData');
+    if (existingScript) {
+      existingScript.remove();
+    }
+  
+    // Create structured data for the page
+    const script = document.createElement('script');
+    script.id = 'birthdayStructuredData';
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Find the #1 Song on Your Birthday | Famous People Born This Day',
+      'description': 'Discover the number one song on your birthday, famous people born on this day, and more.',
+      'mainEntity': {
+        '@type': 'WebApplication',
+        'name': 'Birthday Song Finder',
+        'applicationCategory': 'EntertainmentApplication',
+        'offers': {
+          '@type': 'Offer',
+          'price': '0',
+          'priceCurrency': 'USD'
+        }
+      }
+    });
+  
+    // Add the structured data to the document head
+    document.head.appendChild(script);
+  }
+
+  private addStructuredDataWithSong(song: ISong, dateStr: string): void {
+    // Remove any existing structured data
+    const existingScript = document.querySelector('#birthdayStructuredData');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Create structured data with specific song information
+    const script = document.createElement('script');
+    script.id = 'birthdayStructuredData';
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': `#1 Song on ${dateStr} was ${song.songTitle} by ${song.artist}`,
+      'description': `Discover the number one song on ${dateStr} and famous people born on this day.`,
+      'mainEntity': {
+        '@type': 'MusicRecording',
+        'name': song.songTitle,
+        'byArtist': {
+          '@type': 'MusicGroup',
+          'name': song.artist
+        }
+      }
+    });
+
+    // Add the structured data to the document head
+    document.head.appendChild(script);
+  }
+
   public goToPresidentPage(){
     let sluggedPresident = slugify(this.currentPresident.name);
     this.router.navigate(['/president/' + sluggedPresident])
@@ -403,5 +494,13 @@ export class BirthdayComponent {
 
   public toggleYearlySongsAccordion(): void {
     this.isYearlySongsExpanded = !this.isYearlySongsExpanded;
+  }
+
+  // Add this property to track which FAQ items are expanded
+  public expandedFaqItems: boolean[] = [false, false, false];
+
+  // Add this method to toggle FAQ items
+  public toggleFaqItem(index: number): void {
+    this.expandedFaqItems[index] = !this.expandedFaqItems[index];
   }
 }
