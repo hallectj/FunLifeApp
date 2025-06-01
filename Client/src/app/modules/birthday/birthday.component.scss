@@ -614,3 +614,144 @@ label {
     }
   }
 }
+
+/* Amazon Affiliate Banner Styles */
+.amazon-affiliate-banner {
+  margin-bottom: 30px;
+  width: 100%;
+  
+  .affiliate-content {
+    padding: 15px;
+    
+    .affiliate-intro {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    
+    .affiliate-products {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 20px;
+      
+      .affiliate-product {
+        width: 200px;
+        text-align: center;
+        transition: transform 0.3s ease;
+        
+        &:hover {
+          transform: translateY(-5px);
+        }
+        
+        a {
+          text-decoration: none;
+          color: inherit;
+          display: block;
+        }
+        
+        img {
+          max-width: 250px;
+          height: 150px !important;
+          object-fit: contain;
+          width: 100%;
+          height: auto;
+          border-radius: 8px;
+          margin-bottom: 10px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h4 {
+          margin: 10px 0 5px;
+          font-size: 1rem;
+        }
+        
+        .product-price {
+          font-weight: bold;
+          color: #B12704; /* Amazon's price color */
+          margin: 5px 0;
+        }
+      }
+    }
+    
+    .affiliate-disclaimer {
+      font-size: 0.8rem;
+      color: #666;
+      text-align: center;
+      margin-top: 20px;
+    }
+  }
+}
+
+/* Mobile responsive styles for affiliate banner */
+@media screen and (max-width: 767px) {
+  .amazon-affiliate-banner {
+    .affiliate-content {
+      .affiliate-products {
+        flex-direction: column;
+        align-items: center;
+        
+        .affiliate-product {
+          width: 80%;
+          max-width: 250px;
+          margin-bottom: 20px;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .yearly-songs-section {
+    .yearly-songs-header {
+      h3 {
+        font-size: 1rem;
+      }
+    }
+    
+    .yearly-songs-content {
+      &.expanded {
+        max-height: 600px; /* Increase for mobile to ensure content fits */
+      }
+      
+      .yearly-songs-scrollable {
+        max-height: 500px; /* Increase for mobile */
+      }
+      
+      .yearly-song-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px;
+        
+        .yearly-song-year {
+          margin-bottom: 8px;
+          font-size: 1.1rem;
+        }
+        
+        .yearly-song-thumbnail {
+          width: 100%;
+          margin-right: 0;
+          margin-bottom: 10px;
+          
+          img {
+            width: 100%;
+            height: auto;
+            max-height: 180px;
+          }
+        }
+        
+        .yearly-song-details {
+          width: 100%;
+          
+          h4 {
+            font-size: 1rem;
+          }
+          
+          p {
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+}
