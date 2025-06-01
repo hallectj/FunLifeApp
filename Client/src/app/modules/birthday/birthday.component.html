@@ -151,3 +151,38 @@
     </ribbon>
   </div>
 </section>
+
+<!-- Add this after the middle-section -->
+<section *ngIf="showYearlySongs" class="section yearly-songs-section">
+  <ribbon [ribbonWidth]="'100%'" [ribbonTitle]="'#1 Song every year on your birthday'">
+    <div class="yearly-songs-header" (click)="toggleYearlySongsAccordion()">
+      <h3>See the #1 song for each year on your birthday</h3>
+      <div class="expand-arrow">
+        <i class="fa-solid" [class]="!isYearlySongsExpanded ? 'fa-angle-down': 'fa-angle-up'"></i>
+      </div>
+    </div>
+    
+    <div class="yearly-songs-content" [class.expanded]="isYearlySongsExpanded">
+      <div class="yearly-songs-scrollable">
+        <div *ngFor="let song of yearlySongs" class="yearly-song-item">
+          <div class="yearly-song-year">{{song.yearForDisplay}}</div>
+          <div class="yearly-song-thumbnail">
+            <a [href]="'https://www.youtube.com/watch?v=' + song.youtubeId" target="_blank">
+              <img [src]="song.youtubeThumb" [alt]="song.songTitle" />
+            </a>
+          </div>
+          <div class="yearly-song-details">
+            <h4>{{song.songTitle}}</h4>
+            <p>By: {{song.artist}}</p>
+            <a class="youtube-link" [href]="'https://www.youtube.com/watch?v=' + song.youtubeId" target="_blank">
+              <i class="fa-brands fa-youtube"></i> Watch on YouTube
+            </a>
+          </div>
+        </div>
+        <div *ngIf="yearlySongs.length === 0" class="no-songs-message">
+          <p>No songs found for your birthday across different years.</p>
+        </div>
+      </div>
+    </div>
+  </ribbon>
+</section>

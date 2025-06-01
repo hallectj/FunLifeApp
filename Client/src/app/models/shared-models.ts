@@ -72,7 +72,8 @@ export interface ISong{
   endDate: Date,
   youtubeId: string,
   days?: number,
-  youtubeThumb?: string
+  youtubeThumb?: string,
+  yearForDisplay?: number // Add this optional property
 }
 
 export interface ISongInfoObj{

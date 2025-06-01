@@ -97,7 +97,11 @@ export class BirthdayComponent {
     '../../assets/baseball_pic.jpg',
     '../../assets/hockey_pic.jpg',
     '../../assets/basketball_pic.jpg'
-  ]
+  ];
+
+  public yearlySongs: ISong[] = [];
+  public showYearlySongs: boolean = false;
+  public isYearlySongsExpanded: boolean = false;
   
   @ViewChildren('sportCards') sportCards!: QueryList<ElementRef<HTMLElement>>;
 
@@ -201,6 +205,9 @@ export class BirthdayComponent {
       this.birthDaySong = {songTitle: "", artist: "", youtubeId: "", startDate: new Date(), endDate: new Date()};
     }
 
+    // Get songs for each year on the same month/day
+    this.getYearlySongs(birthDate);
+    
     this.showMedia = true;
     this.showCelebs = true;
     this.cards = this.createDummyCards(3, "large", 3);
@@ -349,8 +356,52 @@ export class BirthdayComponent {
     return age;
   }
 
+  private getYoutubeThumbnailUrl(youtubeId: string): string {
+    if (!youtubeId) return '';
+    return `https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`;
+  }
+
+  private getYearlySongs(birthDate: Date): void {
+    this.yearlySongs = [];
+    const birthMonth = birthDate.getMonth();
+    const birthDay = birthDate.getDate();
+    const birthYear = birthDate.getFullYear();
+    const currentYear = new Date().getFullYear();
+    
+    // Loop through each year from birth year to current year
+    for (let year = birthYear; year <= currentYear; year++) {
+      // Create a date for this year with same month/day as birthday
+      const dateToCheck = new Date(year, birthMonth, birthDay);
+      
+      // Find a song that was #1 on this date
+      for (const song of this.songs) {
+        const startDate = new Date(song.startDate);
+        const endDate = new Date(song.endDate);
+        
+        // Check if the date falls within this song's range
+        if (dateToCheck >= startDate && dateToCheck <= endDate) {
+          // Create a copy of the song with the specific year and thumbnail
+          const songForYear = {
+            ...song, 
+            yearForDisplay: year,
+            youtubeThumb: this.getYoutubeThumbnailUrl(song.youtubeId)
+          };
+          this.yearlySongs.push(songForYear);
+          break; // Found a song for this year, move to next year
+        }
+      }
+    }
+    
+    // Only show the section if we found songs
+    this.showYearlySongs = this.yearlySongs.length > 0;
+  }
+
   public goToPresidentPage(){
     let sluggedPresident = slugify(this.currentPresident.name);
     this.router.navigate(['/president/' + sluggedPresident])
+  }
+
+  public toggleYearlySongsAccordion(): void {
+    this.isYearlySongsExpanded = !this.isYearlySongsExpanded;
   }
 }
