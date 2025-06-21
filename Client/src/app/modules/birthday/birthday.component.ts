@@ -119,22 +119,18 @@ export class BirthdayComponent {
 
   public async ngOnInit(){
     // Update title to be more direct and engaging
-    this.title.setTitle("What Was the #1 Song on Your Birthday? Find Out Now!");
-    
-    // Improve meta description with clear value proposition and call-to-action
-    this.meta.updateTag({name: "description", content: "What was the #1 song the day you were born? Enter your birthday to instantly discover your birthday song, watch the music video, and explore top hits through the years. Free tool covering 1940-2023!"});
-    
+    this.title.setTitle("What Was the #1 Song on Your Birthday | Which celebrity was born same day as you?");    
     // Update keywords to target more specific long-tail phrases
-    this.meta.updateTag({name: "keywords", content: "number one song on my birthday, what song was number 1 when i was born, birthday number one hit, top song on birthday, birthday song finder"});
+    this.meta.updateTag({name: "keywords", content: "number one song on my birthday, what song was number 1 when i was born, birthday number one hit, top song on birthday, birthday song finder, find the number one song on my birthday, find number one song on your birthday"});
     
     // Enhance social sharing meta tags
-    this.meta.updateTag({property: "og:title", content: "What Was the #1 Song on Your Birthday? | Free Birthday Song Finder"});
-    this.meta.updateTag({property: "og:description", content: "Enter your birthday to instantly discover the #1 song when you were born! Watch the music video and explore chart-toppers through the years."});
+    this.meta.updateTag({property: "og:title", content: "What Was the #1 Song on Your Birthday? | Find out which celebrity was born on the same day as you."});
+    this.meta.updateTag({property: "og:description", content: "Enter your birthday to instantly discover the #1 song on your birthday! Also you can explore top #1 song every year on your birthday too."});
     this.meta.updateTag({property: "og:type", content: "website"});
     
     // Add Twitter Card tags with engaging content
     this.meta.updateTag({name: "twitter:card", content: "summary_large_image"});
-    this.meta.updateTag({name: "twitter:title", content: "Discover the #1 Song from the Day You Were Born 🎵"});
+    this.meta.updateTag({name: "twitter:title", content: "Discover the #1 Song from the Day You Were Born"});
     this.meta.updateTag({name: "twitter:description", content: "Find your birthday song instantly! Enter your birth date to see what topped the charts when you were born. #MyBirthdaySong"});
     this.meta.updateTag({name: "twitter:description", content: "Discover what was the #1 song on your birthday and which celebrities were born on the same day."});
     

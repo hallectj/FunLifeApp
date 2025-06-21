@@ -53,6 +53,41 @@ export class CelebrityComponent {
   public async ngOnInit(){
     this.title.setTitle("Celebrities Born this day");
     this.meta.updateTag({name: "description", content: "Find out which celebrities were born this month or any day of this month."})
+    
+    
+    this.title.setTitle(`celebrities Birthday & Facts | Find Celebrities Born on Your Birthday`);
+      
+    // Enhanced meta description targeting the keyphrase
+    this.meta.updateTag({
+      name: "description", 
+      content: `Discover which celebrity shares your birthday! Explore detailed facts, career highlights, and find other celebrities born on the same day!`
+    });
+    
+    // Add relevant keywords targeting birthday-related searches
+    this.meta.updateTag({
+      name: "keywords", 
+      content: "celebrity same birthday as me, celebrities born today, celebrities born tomorrow, celebrities born yesterday, which celebrities born this month, celebrities born on my birthday, famous people same birthday, celebrity birth date search, celebrity birthday matches, facts about celebrities"
+    });
+    
+    // Enhance social sharing meta tags
+    this.meta.updateTag({
+      property: "og:title", 
+      content: `Find Celebrities Who Share Your Birthday or Any Other Day | Celebrity Birthdays`
+    });
+    this.meta.updateTag({
+      property: "og:description", 
+      content: `Explore celebrity birthdays, life facts, and discover other famous people born on the same day. Your celebrity birthday twin awaits!`
+    });
+    this.meta.updateTag({property: "og:type", content: "website"});
+    
+    // Add Twitter Card tags
+    this.meta.updateTag({name: "twitter:card", content: "summary_large_image"});
+    this.meta.updateTag({
+      name: "twitter:description", 
+      content: `Find out what celebrity shares your birthday! Explore celebrity facts and discover who shares your birthday!`
+    });
+    
+    
     this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();
 
     this.todayDateNum = this.today.getDate();
