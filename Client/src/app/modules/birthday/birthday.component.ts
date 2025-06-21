@@ -118,21 +118,24 @@ export class BirthdayComponent {
   }
 
   public async ngOnInit(){
-    this.title.setTitle("Find the #1 Song on Your Birthday | Famous People Born This Day");
-    this.meta.updateTag({name: "description", content: "Discover the number one song on your birthday, famous people born on this day, and more. Find out what was the #1 song when you were born and which celebrities share your birthday."});
+    // Update title to be more direct and engaging
+    this.title.setTitle("What Was the #1 Song on Your Birthday? Find Out Now!");
     
-    // Add additional meta tags for better SEO
-    this.meta.updateTag({name: "keywords", content: "number one song on my birthday, #1 song on your birthday, famous people born this day, born on this day, top song on birthday, what was the number one song on my birthday"});
+    // Improve meta description with clear value proposition and call-to-action
+    this.meta.updateTag({name: "description", content: "What was the #1 song the day you were born? Enter your birthday to instantly discover your birthday song, watch the music video, and explore top hits through the years. Free tool covering 1940-2023!"});
     
-    // Add Open Graph tags for better social sharing
-    this.meta.updateTag({property: "og:title", content: "Find the #1 Song on Your Birthday | Famous People Born This Day"});
-    this.meta.updateTag({property: "og:description", content: "Discover the number one song on your birthday, famous people born on this day, and more."});
-    this.meta.updateTag({property: "og:url", content: "https://yourwebsite.com/birthday"});
+    // Update keywords to target more specific long-tail phrases
+    this.meta.updateTag({name: "keywords", content: "number one song on my birthday, what song was number 1 when i was born, birthday number one hit, top song on birthday, birthday song finder"});
+    
+    // Enhance social sharing meta tags
+    this.meta.updateTag({property: "og:title", content: "What Was the #1 Song on Your Birthday? | Free Birthday Song Finder"});
+    this.meta.updateTag({property: "og:description", content: "Enter your birthday to instantly discover the #1 song when you were born! Watch the music video and explore chart-toppers through the years."});
     this.meta.updateTag({property: "og:type", content: "website"});
     
-    // Add Twitter Card tags
+    // Add Twitter Card tags with engaging content
     this.meta.updateTag({name: "twitter:card", content: "summary_large_image"});
-    this.meta.updateTag({name: "twitter:title", content: "Find the #1 Song on Your Birthday | Famous People Born This Day"});
+    this.meta.updateTag({name: "twitter:title", content: "Discover the #1 Song from the Day You Were Born 🎵"});
+    this.meta.updateTag({name: "twitter:description", content: "Find your birthday song instantly! Enter your birth date to see what topped the charts when you were born. #MyBirthdaySong"});
     this.meta.updateTag({name: "twitter:description", content: "Discover what was the #1 song on your birthday and which celebrities were born on the same day."});
     
     this.songs = await this.service.getNumberOneHitSongs().toPromise();
