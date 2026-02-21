@@ -13,6 +13,7 @@ const songInfoRouter = require('./routes/song_info');
 const celebrityRouter = require('./routes/celebrities');
 const numberOneHitsRouter = require('./routes/number_one_songs');
 const postRouter = require('./routes/posts');
+const lyricsRouter = require('./routes/lyrics');
 const sitemapGenerator = require('./routes/generate-sitemap');
 const fetch = require("node-fetch-commonjs")
 const pgp = require('pg-promise')();
@@ -89,6 +90,7 @@ app.use('/api/song-info', songInfoRouter);
 app.use('/api/celebrities', celebrityRouter);
 app.use('/api/number-one-hits', numberOneHitsRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/lyrics', lyricsRouter);
 //app.use('/api/key', videoKeyRoute);
 
 let apiURL = '';

@@ -44,7 +44,8 @@ export class HotHundredSongComponent {
     this.lyrics = '';
     
     try {
-      const response = await this.http.get(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(song)}`, 
+      const lyricsUrl = `${this.service.server_url}/lyrics/${encodeURIComponent(artist)}/${encodeURIComponent(song)}`;
+      const response = await this.http.get(lyricsUrl, 
         { observe: 'response' }).toPromise();
       
       if (response?.status === 200 && response.body?.hasOwnProperty('lyrics')) {
@@ -95,15 +96,15 @@ export class HotHundredSongComponent {
         this.youTubeURL = "https://www.youtube.com/embed/" + this.songInfoObj.songObj.videoId;
       }
 
-      //The lyrics api needs the main artist only, otherwise it will return an error.
-      const mainArtist = this.extractArtists(obj.artist)[0];
-      await this.fetchLyrics(mainArtist, obj.song);
-
       this.loading = false;
 
       if(!!this.songInfoObj.songObj){
         this.isSongError = false;
       }
+
+      // Load lyrics in the background without blocking the page display
+      const mainArtist = this.extractArtists(obj.artist)[0];
+      this.fetchLyrics(mainArtist, obj.song);
     })
   }
   public async selectPosition(position: number){

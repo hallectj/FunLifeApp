@@ -23,7 +23,9 @@ export class YoutubePlayerComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.videoId) {
-      this.loadYouTubePlayer();
+      this.waitForYouTubeAPI().then(() => {
+        this.loadYouTubePlayer();
+      });
     }
   }
 
@@ -31,6 +33,29 @@ export class YoutubePlayerComponent implements OnInit {
     if (this.muteCheckInterval) {
       clearInterval(this.muteCheckInterval);
     }
+  }
+
+  private waitForYouTubeAPI(): Promise<void> {
+    return new Promise((resolve) => {
+      if (window['YT'] && window['YT'].Player) {
+        // API is already loaded
+        resolve();
+      } else {
+        // Wait for the onYouTubeIframeAPIReady callback
+        const checkInterval = setInterval(() => {
+          if (window['YT'] && window['YT'].Player) {
+            clearInterval(checkInterval);
+            resolve();
+          }
+        }, 100);
+        
+        // Fallback timeout after 5 seconds
+        setTimeout(() => {
+          clearInterval(checkInterval);
+          resolve();
+        }, 5000);
+      }
+    });
   }
 
   public loadYouTubePlayer() {
