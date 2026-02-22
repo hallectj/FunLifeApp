@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GeneralService } from '../../../app/services/general.service';
+import { firstValueFrom } from 'rxjs';
 import { Location } from '@angular/common';
 import { deslugify } from '../../../app/common/Toolbox/util';
 import { IPresident } from '../../../app/models/shared-models';
@@ -45,9 +46,9 @@ export class PresidentComponent {
       this.title.setTitle(presName);
       this.meta.updateTag({name: "description", content: "Interesting facts and information on " + presName});
 
-      let arr = await this.service.getTruePresidentName(presName).toPromise();
+      let arr = await firstValueFrom(this.service.getTruePresidentName(presName));
       const truePresName = (arr.length > 0) ? arr[0] : presName;
-      const presidents = await this.service.getPresidents().toPromise();
+      const presidents = await firstValueFrom(this.service.getPresidents());
 
       const presIdx = presidents.findIndex(v => v.name === truePresName);
       if(presIdx !== -1){
@@ -56,7 +57,7 @@ export class PresidentComponent {
 
       this.president.number = this.addNumberSuffix(+this.president.number)
 
-      const response = await this.service.callWikiAPITopic(this.president.name).toPromise();
+      const response = await firstValueFrom(this.service.callWikiAPITopic(this.president.name));
       const keys = Object.keys(response.query.pages)
       let paragraphs = []
 
@@ -87,7 +88,7 @@ export class PresidentComponent {
       
       this.wrappedText = wrappedText;
 
-      const presidents2 = await this.service.getPresidents().toPromise()
+      const presidents2 = await firstValueFrom(this.service.getPresidents())
     });
   }
 

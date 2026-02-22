@@ -4,6 +4,7 @@ import { IPostExcerpt } from '../../../app/models/shared-models';
 import { PostService } from '../../../app/services/post.service';
 import { isValidDate, slugify } from '../Toolbox/util';
 import { ReloadService } from '../../../app/services/reload.service';
+import { firstValueFrom } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
 
 const POSTPERPAGEPAGEN = 8;
@@ -54,7 +55,7 @@ export class PageComponent {
   }
 
   public async refreshPosts(){
-    this.postExcerpts = await this.postService.getAllPosts().toPromise();
+    this.postExcerpts = await firstValueFrom(this.postService.getAllPosts());
     const indices = this.calculateIndices(this.pageNumber, this.postExcerpts);
     this.startIndex = indices.startIndex;
     this.endIndex = indices.endIndex; 

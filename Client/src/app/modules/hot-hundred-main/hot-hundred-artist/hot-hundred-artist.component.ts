@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { deslugify, slugify } from '../../../../app/common/Toolbox/util';
 import { ISong2 } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
+import { firstValueFrom } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
@@ -30,7 +31,7 @@ export class HotHundredArtistComponent {
       this.meta.updateTag({name: "description", content: "Top Songs by " + artist})
       this.artist = (!!featuringStr) ? artist.split(featuringStr)[0] : artist;
       this.service.updateMainSongPageTitle(" ");
-      this.songs = await this.service.getSongsByArtist(this.artist, true).toPromise();
+      this.songs = await firstValueFrom(this.service.getSongsByArtist(this.artist, true));
     })
   }
 

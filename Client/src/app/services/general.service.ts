@@ -1,6 +1,6 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, forkJoin, of } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, forkJoin, of, firstValueFrom } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { GENERAL_URL, IBiographicalInfo, ICelebrity, IDateObj, IHistEvent, IMovie, IPresident, ISong, ISong2, ISongInfoObj, ISport, IToy } from '../models/shared-models';
 import { findMatchingName, slugify } from '../common/Toolbox/util';
@@ -433,9 +433,9 @@ export class GeneralService {
     };
   
     // Query Wikidata to get the site links
-    const wikidataResponse = await this.http
-      .get<any>(this.wikidataApiUrl, { params: wikidataParams })
-      .toPromise();
+    const wikidataResponse = await firstValueFrom(
+      this.http.get<any>(this.wikidataApiUrl, { params: wikidataParams })
+    );
   
     // Extract the Wikipedia title for the rapper
     const correctTitle = wikidataResponse?.entities[qid]?.sitelinks?.enwiki?.title;

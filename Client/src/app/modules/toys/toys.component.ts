@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IToy } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-toys',
@@ -15,6 +16,6 @@ export class ToysComponent {
 
   public async ngOnInit(){
     this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();
-    this.toys = await this.service.getToys().toPromise();
+    this.toys = await firstValueFrom(this.service.getToys());
   }
 }

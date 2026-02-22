@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs';
+import { map, firstValueFrom } from 'rxjs';
 import { deslugify, slugify } from '../../../../app/common/Toolbox/util';
 import { ISong2, ISongInfoObj } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
@@ -45,8 +45,9 @@ export class HotHundredSongComponent {
     
     try {
       const lyricsUrl = `${this.service.server_url}/lyrics/${encodeURIComponent(artist)}/${encodeURIComponent(song)}`;
-      const response = await this.http.get(lyricsUrl, 
-        { observe: 'response' }).toPromise();
+      const response = await firstValueFrom(
+        this.http.get<{lyrics: string}>(lyricsUrl, { observe: 'response' as const })
+      );
       
       if (response?.status === 200 && response.body?.hasOwnProperty('lyrics')) {
         // Clean up excessive newlines before setting lyrics
@@ -89,10 +90,10 @@ export class HotHundredSongComponent {
       this.service.updateMainSongPageTitle(" ");
 
       let obj: {artist: string, song: string} = {artist: "", song: ""};
-      obj = await this.service.getTrueSongInfo(year, song, artist).toPromise();
+      obj = await firstValueFrom(this.service.getTrueSongInfo(year, song, artist));
 
       if(!!obj.artist && !!obj.song){
-        this.songInfoObj = await this.service.getSongWithInfo(year, position).toPromise();
+        this.songInfoObj = await firstValueFrom(this.service.getSongWithInfo(year, position));
         this.youTubeURL = "https://www.youtube.com/embed/" + this.songInfoObj.songObj.videoId;
       }
 
@@ -110,7 +111,7 @@ export class HotHundredSongComponent {
   public async selectPosition(position: number){
     this.loading = true;
     this.currentRank = position;
-    this.songInfoObj = await this.service.getSongWithInfo(this.currentYear, this.currentRank).toPromise();
+    this.songInfoObj = await firstValueFrom(this.service.getSongWithInfo(this.currentYear, this.currentRank));
     const breadcrumb: {valid_urls: string, long_urls: string}[] = [];
     const longURL = `/ > charts/hot-hundred-songs > charts/hot-hundred-songs/${this.currentYear} > charts/hot-hundred-songs/${this.currentYear}/${position}/artist/${slugify(this.songInfoObj.songObj.artist)}/song/${slugify(this.songInfoObj.songObj.song)}`;
     const validURL = `Home > charts/hot-hundred-songs > ${this.currentYear} > ${this.currentYear}/${position}/artist/${slugify(this.songInfoObj.songObj.artist)}/song/${slugify(this.songInfoObj.songObj.song)}"`;

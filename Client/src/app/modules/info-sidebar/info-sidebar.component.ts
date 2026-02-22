@@ -1,6 +1,6 @@
 import { Component, Inject, Input, Output, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { slugify } from '../../..//app/common/Toolbox/util';
 import { IFamousQuote, ISong, ISong2, IToy } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
@@ -65,12 +65,12 @@ export class InfoSidebarComponent {
     await this.callSongsAPI(this.randomYear);
   
     if(!this.hideToys){
-      this.toys = await this.generalService.getToys().toPromise();
+      this.toys = await firstValueFrom(this.generalService.getToys());
       this.displayToy = this.toyByYear(+this.randomYear);
     }
   
     if(!this.hideQuote){
-      const quote = await this.generalService.getRandomQuote2().toPromise();
+      const quote = await firstValueFrom(this.generalService.getRandomQuote2());
       if(quote.length > 0 && quote[0]?.q !== ""){
         this.famousQuote2 = quote[0];
       }
@@ -112,7 +112,7 @@ export class InfoSidebarComponent {
     this.songsByYearArr = null;
     this.songsByYearArr = [];
 
-    const response2: ISong2[] = await this.generalService.getSongs(+year, this.orderByPosition, 10).toPromise();
+    const response2: ISong2[] = await firstValueFrom(this.generalService.getSongs(+year, this.orderByPosition, 10));
 
     this.songs = response2;
     this.songsByYearArr = response2;

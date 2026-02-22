@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LOADINGSPINNER } from '../../../app/common/base64Assests';
 import { IHistEvent, IPostExcerpt } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
+import { firstValueFrom } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
@@ -111,7 +112,7 @@ export class DayInHistoryComponent {
 
   public async getHistoryEvents(){
     const histDate = new Date(this.currentMonth + " " + this.currentDay + "," + this.defaultYear);
-    this.historyEvents = await this.service.getEvents(histDate).toPromise();
+    this.historyEvents = await firstValueFrom(this.service.getEvents(histDate));
 
     this.dispHistory = this.historyEvents.map((v: IHistEvent) => (
       {

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { IPostExcerpt } from '../../../app/models/shared-models';
 import { PostService } from '../../../app/services/post.service';
+import { firstValueFrom } from 'rxjs';
 import { slugify } from '../Toolbox/util';
 import { ReloadService } from '../../../app/services/reload.service';
 
@@ -34,7 +35,7 @@ export class MissedArticleWidgetComponent {
   constructor(public postService: PostService, public reloadService: ReloadService, private router: Router){}
 
   public async ngOnInit(){
-    this.dummyPostsExcerpts = await this.postService.getAllPosts().toPromise();
+    this.dummyPostsExcerpts = await firstValueFrom(this.postService.getAllPosts());
     if(this.dummyPostsExcerpts.length > 0){
       this.dummyPostsExcerpts.forEach(v => {
         if(!v.excerptDesc.endsWith("...")){

@@ -1,6 +1,7 @@
 import { Component, ElementRef, Inject, Input, PLATFORM_ID, ViewChild } from '@angular/core';
 import { ISport } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../../src/app/services/general.service';
+import { firstValueFrom } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
@@ -47,7 +48,7 @@ export class TvEffectComponentComponent {
   }
 
   public async ngOnInit(){
-    const response = await this.service.getSportsByYear(this.randomYear).toPromise();
+    const response = await firstValueFrom(this.service.getSportsByYear(this.randomYear));
     this.sportsArrFromServer = response;
     if(this.sportsArrFromServer && this.sportsArrFromServer.length > 0){
       const nflIdx = this.sportsArrFromServer.findIndex(v => v.sport.toUpperCase() === "NFL");

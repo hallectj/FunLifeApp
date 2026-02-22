@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { deslugify, numberWithCommas } from '../../../../app/common/Toolbox/util';
 import { IBiographicalInfo } from '../../../../app/models/shared-models';
 import { GeneralService } from '../../../../app/services/general.service';
+import { firstValueFrom } from 'rxjs';
 import { Location } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 
@@ -45,13 +46,13 @@ export class CelebrityPageComponent {
       this.title.setTitle(celebName);
       this.meta.updateTag({name: "description", content: "Interesting facts and information on " + celebName});
 
-      let arr = await this.service.getTrueCelebName(celebName).toPromise();
+      let arr = await firstValueFrom(this.service.getTrueCelebName(celebName));
       const trueCelebName = ((arr.length > 0) && arr[0]) ? arr[0] : celebName;
 
       //It's possible the celeb name has quotes in it, ie 'Evander "the real deal" Holyfield'
       let escapedCelebName = trueCelebName.replace(/"/g, '\\"');
 
-      const bioResponse = await this.service.getBiographicalInformation(escapedCelebName).toPromise();
+      const bioResponse = await firstValueFrom(this.service.getBiographicalInformation(escapedCelebName));
       if(!bioResponse){
         return;
       }
@@ -69,7 +70,7 @@ export class CelebrityPageComponent {
       wikiSearchTerm = (correctedTitle !== "") ? correctedTitle : bioResponse.name; 
       this.bioGraphObj.name = wikiSearchTerm;
 
-      const response = await this.service.callWikiAPITopic(wikiSearchTerm).toPromise();
+      const response = await firstValueFrom(this.service.callWikiAPITopic(wikiSearchTerm));
       const keys = Object.keys(response.query.pages)
       let paragraphs = []
 

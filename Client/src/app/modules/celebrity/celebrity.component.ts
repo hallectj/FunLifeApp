@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LOADINGSPINNER } from '../../../app/common/base64Assests';
 import { ICelebCard, ICelebrity, IDateObj } from '../../../app/models/shared-models';
 import { GeneralService } from '../../../app/services/general.service';
+import { firstValueFrom } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
 @Component({
   selector: 'app-celebrity',
@@ -127,9 +128,9 @@ export class CelebrityComponent {
       this.dateObjTomorow.month + "-" + this.dateObjTomorow.day,
     ]
 
-    const yesterdayCelebs: ICelebrity[] = await this.service.getCelebrityByDateSet(datesets[0]).toPromise();
-    const todayCelebs: ICelebrity[] = await this.service.getCelebrityByDateSet(datesets[1]).toPromise();
-    const tomorrowCelebs: ICelebrity[] = await this.service.getCelebrityByDateSet(datesets[2]).toPromise();
+    const yesterdayCelebs: ICelebrity[] = await firstValueFrom(this.service.getCelebrityByDateSet(datesets[0]));
+    const todayCelebs: ICelebrity[] = await firstValueFrom(this.service.getCelebrityByDateSet(datesets[1]));
+    const tomorrowCelebs: ICelebrity[] = await firstValueFrom(this.service.getCelebrityByDateSet(datesets[2]));
 
     const famousBirths: {yesterday: ICelebrity[], today: ICelebrity[], tomorrow: ICelebrity[]} = {
       yesterday: yesterdayCelebs,

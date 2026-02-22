@@ -5,6 +5,7 @@ import { slugify } from '../../../../src/app/common/Toolbox/util';
 import { LOADINGSPINNER } from '../../../../src/app/common/base64Assests';
 import { ICelebCard, ICelebrity, IHistEvent, IMovie, IPostExcerpt, IPresident, ISong, ISong2, ISport } from '../../../../src/app/models/shared-models';
 import { GeneralService } from '../../../../src/app/services/general.service';
+import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'birthday',
   templateUrl: './birthday.component.html',
@@ -134,8 +135,8 @@ export class BirthdayComponent {
     this.meta.updateTag({name: "twitter:description", content: "Find your birthday song instantly! Enter your birth date to see what topped the charts when you were born. #MyBirthdaySong"});
     this.meta.updateTag({name: "twitter:description", content: "Discover what was the #1 song on your birthday and which celebrities were born on the same day."});
     
-    this.songs = await this.service.getNumberOneHitSongs().toPromise();
-    this.movies = await this.service.getMovies().toPromise();
+    this.songs = await firstValueFrom(this.service.getNumberOneHitSongs());
+    this.movies = await firstValueFrom(this.service.getMovies());
 
     this.birthdate = this.service.getBirthDate();
     if(!!this.birthdate && this.service.hasBirthdayBtnClickedBefore){
@@ -226,7 +227,7 @@ export class BirthdayComponent {
     this.showCelebs = true;
     this.cards = this.createDummyCards(3, "large", 3);
 
-    this.historyEvents = await this.service.getEvents(birthDate).toPromise();
+    this.historyEvents = await firstValueFrom(this.service.getEvents(birthDate));
     this.dispHistory = this.historyEvents.map((v: IHistEvent) => (
       {
         post: {
@@ -254,10 +255,10 @@ export class BirthdayComponent {
 
     this.showHistEvents = true;
 
-    this.sports = await this.service.getSportsByYear(birthDate.getFullYear().toString()).toPromise();
+    this.sports = await firstValueFrom(this.service.getSportsByYear(birthDate.getFullYear().toString()));
     this.showSports = true;   
 
-    const presidents: IPresident[] = await this.service.getPresidents().toPromise();
+    const presidents: IPresident[] = await firstValueFrom(this.service.getPresidents());
     const thePresident = this.findObjectByDate(presidents, birthDate);
     if(thePresident){
       this.currentPresident = thePresident;
@@ -268,7 +269,7 @@ export class BirthdayComponent {
 
     //this.famousBirths = await this.service.getCelebrityBirths(new Date(birthDate), false).toPromise() as ICelebrity[];
 
-    this.famousBirths = await this.service.getCelebrityByDateSet(dateset).toPromise();
+    this.famousBirths = await firstValueFrom(this.service.getCelebrityByDateSet(dateset));
 
     this.famousBirths = this.famousBirths.filter((v: ICelebrity) =>
       v.occupations.every((occ) => !this.service.containsBadWord(occ)));

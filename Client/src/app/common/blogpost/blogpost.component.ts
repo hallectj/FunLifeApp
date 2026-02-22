@@ -3,7 +3,7 @@ import { DomSanitizer, Meta, SafeHtml, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PostService } from '../../services/post.service';
 import { deslugify } from '../Toolbox/util';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { ReloadService } from '../../../app/services/reload.service';
 import { IPostExcerpt } from '../../../app/models/shared-models';
 
@@ -52,7 +52,7 @@ export class BlogpostComponent {
 
   public async ngOnInit(){
     this.randomYear = (Math.floor(Math.random() * (2020 - 1950 + 1) + 1950)).toString();  
-    this.allExcerpts = await this.postService.getAllPosts().toPromise();
+    this.allExcerpts = await firstValueFrom(this.postService.getAllPosts());
 
     this.route.paramMap.subscribe(async (params) => {
       this.blogTitle = deslugify(params.get('postTitle'));
