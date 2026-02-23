@@ -2,11 +2,11 @@ import Fuse from "fuse.js";
 import { ISong2 } from "../../models/shared-models";
 
 export function slugify(str) {
+  // Allow Unicode letters (including accents like é) by using \p{L}
+  // Keep digits and a few punctuation marks, convert spaces to hyphens
   const sluggedStr = String(str)
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
     .trim()
-    .replace(/[^a-zA-Z0-9&'!+ -]/g, '') // Include '&' and "'" and '!' and '+'
+    .replace(/[^0-9\p{L}&'+ -]/gu, '') // Allow Unicode letters and numbers
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
 

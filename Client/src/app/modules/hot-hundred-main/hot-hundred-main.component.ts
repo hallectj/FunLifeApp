@@ -5,7 +5,7 @@ import { GeneralService } from '../../../app/services/general.service';
 import { Meta, Title } from '@angular/platform-browser';
 
 const STARTYEAR = 1950;
-const ENDYEAR = 2023;
+const ENDYEAR = 2025;
 
 @Component({
   selector: 'app-hot-hundred-main',
@@ -51,8 +51,8 @@ export class HotHundredMainComponent {
     },
     {
       startYear: 2020,
-      even_years: Array.from({ length: 2 }, (_, index) => 2020 + (index * 2)),
-      odd_years: Array.from({ length: 2 }, (_, index) => 2021 + (index * 2)),
+      even_years: Array.from({ length: 3 }, (_, index) => 2020 + (index * 2)),
+      odd_years: Array.from({ length: 3 }, (_, index) => 2021 + (index * 2)),
     }
   ];
 

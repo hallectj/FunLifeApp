@@ -355,7 +355,7 @@ export class GeneralService {
   }
 
   public getSongsByArtist(artist: string, includeSorting: boolean): Observable<ISong2[]>{
-    const url = this.server_url + "/artist/" + artist;
+    const url = this.server_url + "/artist/" + encodeURIComponent(artist);
     return this.http.get<any>(url).pipe(
       map((response: ISong2[]) => {
         const songObjects: ISong2[] = response.map((songObj: ISong2) => {
@@ -372,7 +372,7 @@ export class GeneralService {
   }
 
   public getTrueArtistName(artist: string): Observable<string[]>{
-    const url = this.server_url + "/artist/" + artist;
+    const url = this.server_url + "/artist/" + encodeURIComponent(artist);
     return this.http.get<any>(url).pipe(
       map((response: ISong2[]) => {
         const data = response;
@@ -484,8 +484,9 @@ export class GeneralService {
         throw new Error("Category does not exist on API");
       }
 
-      const wikiURL = `https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/${dataCategory}/${date.getMonth() + 1}/${d}`;
-      return this.http.get<any>(wikiURL);
+      // Use backend proxy to avoid CORS issues
+      const backendURL = `${this.server_url}/events/${date.getMonth() + 1}/${d}`;
+      return this.http.get<any>(backendURL);
     }
     
     return null;

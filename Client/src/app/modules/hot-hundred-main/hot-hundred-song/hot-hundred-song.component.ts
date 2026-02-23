@@ -121,6 +121,10 @@ export class HotHundredSongComponent {
     this.breadcrumbService.setBreadcrumb(breadcrumb)
     this.loading = false;
     this.youTubeURL = "https://www.youtube.com/embed/" + this.songInfoObj.songObj.videoId;
+    
+    // Load lyrics for the new song
+    const mainArtist = this.extractArtists(this.songInfoObj.songObj.artist)[0];
+    this.fetchLyrics(mainArtist, this.songInfoObj.songObj.song);
   }
   public onPositionSelect(event: Event): void {
     const selectedValue = (event.target as HTMLSelectElement).value;
@@ -161,7 +165,7 @@ export class HotHundredSongComponent {
           return 30;
       case (year >= 1956 && year <= 1959):
           return 50;
-      case (year >= 1960 && year <= 2023):
+      case (year >= 1960 && year <= 2025):
           return 100;
       default:
           return -1;
